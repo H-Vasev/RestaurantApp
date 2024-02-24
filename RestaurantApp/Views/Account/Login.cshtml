@@ -1,0 +1,45 @@
+﻿@model LoginFormModel
+
+@{
+    ViewData["Title"] = "Log In";
+}
+
+
+<div class="row vh-100 align-items-center justify-content-center bg-secondary">
+    <div class="col-md-4">
+        <section>
+            <h1 class="text-center">@ViewData["Title"]</h1>
+            <form id="account" method="post">
+                <hr />
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="text-center mb-3">
+                    <label asp-for="@Model.Username" class="form-label"></label>
+                    <input asp-for="@Model.Username" class="form-control" autocomplete="username" aria-required="true" />
+                    <span asp-validation-for="@Model.Username" class="text-danger"></span>
+                </div>
+                <div class="text-center mb-3">
+                    <label asp-for="@Model.Password" class="form-label"></label>
+                    <input asp-for="@Model.Password" type="password" class="form-control" autocomplete="password" aria-required="true" />
+                    <span asp-validation-for="@Model.Password" class="text-danger"></span>
+                </div>
+                <div class="checkbox">
+                    <label asp-for="RememberMe" class="form-label">
+                        <input class="form-check-input" asp-for="RememberMe" />
+                        @Html.DisplayNameFor(m => m.RememberMe)
+                    </label>
+                </div>
+                <div class="text-center">
+                    <button id="login-submit" type="submit" class="btn btn-primary">Log in</button>
+                    <span class="mx-2">Or</span>
+                    <a asp-area="" asp-controller="User" asp-action="Register" class="btn btn-primary">Register</a>
+                </div>
+            </form>
+        </section>
+    </div>
+</div>
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+

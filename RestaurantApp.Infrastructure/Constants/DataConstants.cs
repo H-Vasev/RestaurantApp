@@ -40,5 +40,29 @@
 			public const int NameMaxLenght = 50;
 			public const int NameMinLenght = 2;
 		}
-	}
+
+        public static class Register
+        {
+			public const int UsernameMaxLengh = 30;
+			public const int UsernameMinLengh = 5;
+
+            public const int FirstnameMaxLenght = 50;
+			public const int FirstnameMinLenght = 2;
+
+			public const int LastnameMaxLenght = 50;
+			public const int LastnameMinLenght = 2;
+
+			public const int EmailMaxLengh = 50;
+			public const int EmailMinLengh = 5;
+
+			public const int CityMaxLenght = 50;
+			public const int CityMinLenght = 2;
+
+			public const int StreetMaxLenght = 100;
+			public const int StreetMinLenght = 2;
+
+            public const int PostalCodeMaxLengh = 20;
+			public const int PostalCodeMinLengh = 4;
+        }
+    }
 }

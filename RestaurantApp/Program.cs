@@ -19,11 +19,17 @@ namespace RestaurantApp
 
 			builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
 			{
-				options.SignIn.RequireConfirmedAccount = true;
-			})
+				options.SignIn.RequireConfirmedAccount = false;
+				options.Password.RequireDigit = false;
+				options.Password.RequireLowercase = false;
+				options.Password.RequireNonAlphanumeric = false;
+				options.Password.RequireUppercase = false;
+            })
 				.AddRoles<IdentityRole<Guid>>()
 				.AddEntityFrameworkStores<ApplicationDbContext>();
 			builder.Services.AddControllersWithViews();
+
+			builder.Services.AddApplicationServices();
 
 			var app = builder.Build();
 

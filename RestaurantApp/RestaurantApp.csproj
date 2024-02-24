@@ -24,4 +24,8 @@
     <ProjectReference Include="..\RestaurantApp.Core\RestaurantApp.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Areas\Identity\Pages\Account\" />
+  </ItemGroup>
+
 </Project>
