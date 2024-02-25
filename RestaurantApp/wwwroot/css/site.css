@@ -20,9 +20,9 @@ html {
 
 body {
     font-family: "Open Sans", sans-serif;
-    background: #0c0b09;
+    /*background: #0c0b09;*/
+    background: #14213d;
     color: #fff;
-
     margin-bottom: 60px;
 }
 
