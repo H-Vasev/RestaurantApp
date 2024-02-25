@@ -9,6 +9,7 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             services.AddScoped<ITownService, TownService>();
             services.AddScoped<IMenuService, MenuService>();
+            services.AddScoped<IShoppingCartService, ShoppingCartService>();
 
 			return services;
         }

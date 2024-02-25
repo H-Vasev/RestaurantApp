@@ -1,0 +1,63 @@
+﻿@model IEnumerable<ShoppingCartViewModel>
+
+@{
+	ViewData["Title"] = "Shopping Cart";
+}
+
+<div class="card align-items-center justify-content-center mt-5 pt-5">
+	<div class="row mt-5 pt-5">
+		<div class="col-md-6 cart">
+			<div class="title">
+				<div class="row">
+					<div class="col"><h4><b>Shopping Cart</b></h4></div>
+				</div>
+			</div>
+			@foreach (var item in Model)
+			{
+				<div class="row border-top border-bottom mb-2">
+					<div class="row main align-items-center">
+						<div class="col-2">
+							<img class="img-fluid" src="~/@item.Image">
+						</div>
+						<div class="col">
+							<div class="row">@item.ProductName</div>
+						</div>
+						<div class="col">
+							<a asp-controller="Cart" asp-action="RemoveFromCart" asp-route-id="@item.ProductId">-</a>
+							<a class="border m-1">@item.Quantity</a>
+							<a asp-controller="Cart" asp-action="AddProduct" asp-route-id="@item.ProductId">+</a>
+						</div>
+						<div class="col">&euro; @item.TotalPrice</div>
+					</div>
+				</div>
+			}
+			<div class="back-to-shop">
+				<a href="#">&leftarrow;</a>
+				<span class="text-muted">Back to shop</span>
+			</div>
+		</div>
+		<div class="col-md-4 summary ms-5">
+			<div><h5><b>Summary</b></h5></div>
+			<hr>
+			<div class="row">
+				@* <div class="col">ITEMS @totalItems</div>
+				<div class="col text-right">&euro; @totalPrice</div> *@
+			</div>
+			<form>
+				<p>SHIPPING</p>
+				<select id="deliveryOptions">
+					<option class="text-muted">Choose your delivery options</option>
+					<option class="text-muted" value="5">Standard-Delivery- &euro;5.00</option>
+					<option class="text-muted" value="7">Express-Delivery- &euro;7.00</option>
+				</select>
+				<p>GIVE CODE</p>
+				<input id="code" placeholder="Enter your code">
+			</form>
+			<div class="row" style="border-top: 1px solid rgba(0,0,0,.1); padding: 2vh 0;">
+				<div class="col">TOTAL PRICE</div>
+	@* 			<div class="col text-right" id="totalPrice">&euro; @totalPrice</div> *@
+			</div>
+			<button class="btn">CHECKOUT</button>
+		</div>
+	</div>
+</div>
