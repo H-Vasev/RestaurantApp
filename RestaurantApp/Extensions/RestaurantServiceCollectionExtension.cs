@@ -8,8 +8,9 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
             services.AddScoped<ITownService, TownService>();
+            services.AddScoped<IMenuService, MenuService>();
 
-            return services;
+			return services;
         }
     }
 }

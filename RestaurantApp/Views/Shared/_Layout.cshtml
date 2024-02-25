@@ -18,7 +18,7 @@
                 <ul>
                     <li><a class="nav-link scrollto active" asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
                     <li><a class="nav-link scrollto" href="#about">About</a></li>
-                    <li><a class="nav-link scrollto" asp-area="" asp-controller="Product" asp-action="AllProducts">Menu</a></li>
+                    <li><a class="nav-link scrollto" asp-area="" asp-controller="Menu" asp-action="Index">Menu</a></li>
                     @if (User?.Identity?.IsAuthenticated ?? false)
                     {
                         <li><a class="nav-link scrollto" asp-area="" asp-controller="Reservation" asp-action="Index">My Reservations</a></li>

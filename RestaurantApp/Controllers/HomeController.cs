@@ -1,10 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using RestaurantApp.Models;
 using System.Diagnostics;
 
 namespace RestaurantApp.Controllers
 {
-	public class HomeController : Controller
+	public class HomeController : BaseController
 	{
 		private readonly ILogger<HomeController> _logger;
 
@@ -13,6 +14,7 @@ namespace RestaurantApp.Controllers
 			_logger = logger;
 		}
 
+		[AllowAnonymous]
 		public IActionResult Index()
 		{
 			return View();

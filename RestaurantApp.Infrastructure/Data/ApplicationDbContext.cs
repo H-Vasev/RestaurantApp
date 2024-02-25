@@ -24,10 +24,6 @@ namespace RestaurantApp.Data
 				.Property(p => p.Price)
 				.HasPrecision(18, 2);
 
-			builder.Entity<Product>()
-				.Property(p => p.Price)
-				.HasPrecision(18, 2);
-
 			builder.Entity<CartProduct>()
 				.HasKey(pk => new { pk.ShoppingCartId, pk.ProductId });
 
