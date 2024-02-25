@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http.Extensions;
+using Microsoft.AspNetCore.Mvc;
 using RestaurantApp.Core.Contracts;
 
 namespace RestaurantApp.Controllers
@@ -11,6 +12,7 @@ namespace RestaurantApp.Controllers
         {
 			this.shoppingCartService = shoppingCartService;
 		}
+
         public async Task<IActionResult> Index()
         {
             var userId = GetUserId();
@@ -19,5 +21,21 @@ namespace RestaurantApp.Controllers
 
             return View(model);
         }
+
+        public async Task<IActionResult> AddToCart(int id)
+        {
+			var userId = GetUserId();
+
+			try
+			{
+				await shoppingCartService.AddToCartAsync(userId, id);
+			}
+			catch (Exception)
+			{
+				return BadRequest();
+			}
+
+			return RedirectToAction("Index", "Menu");
+		}
     }
 }

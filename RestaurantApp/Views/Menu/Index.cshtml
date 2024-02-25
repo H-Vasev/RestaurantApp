@@ -1,4 +1,4 @@
-﻿@model IEnumerable<MenuViewModel>
+﻿@model IEnumerable<ProductViewModel>
 
 @{
 	ViewData["Title"] = "Menu";
@@ -41,7 +41,7 @@
                     <div class="menu-ingredients">
                         @item.Description
                     </div>
-                    <a asp-area="" asp-controller="Product" asp-action="Add" asp-route-id="@item.Id" class="offset-sm-8">Add to Basket</a>
+                    <a asp-area="" asp-controller="ShoppingCart" asp-action="AddToCart" asp-route-id="@item.Id" class="offset-sm-8">Add to Basket</a>
                 </div>
             }
         </div>

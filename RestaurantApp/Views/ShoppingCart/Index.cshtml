@@ -2,6 +2,9 @@
 
 @{
 	ViewData["Title"] = "Shopping Cart";
+
+	var totalItems = Model.Sum(p => p.Quantity);
+	var totalPrice = 0m;
 }
 
 <div class="card align-items-center justify-content-center mt-5 pt-5">
@@ -14,6 +17,9 @@
 			</div>
 			@foreach (var item in Model)
 			{
+				var itemTotalPrice = item.Quantity * item.Price;
+				totalPrice += itemTotalPrice;
+				
 				<div class="row border-top border-bottom mb-2">
 					<div class="row main align-items-center">
 						<div class="col-2">
@@ -25,9 +31,9 @@
 						<div class="col">
 							<a asp-controller="Cart" asp-action="RemoveFromCart" asp-route-id="@item.ProductId">-</a>
 							<a class="border m-1">@item.Quantity</a>
-							<a asp-controller="Cart" asp-action="AddProduct" asp-route-id="@item.ProductId">+</a>
+							<a asp-controller="ShoppingCart" asp-action="AddToCart" asp-route-id="@item.ProductId">+</a>
 						</div>
-						<div class="col">&euro; @item.TotalPrice</div>
+						<div class="col">&euro; @itemTotalPrice</div>
 					</div>
 				</div>
 			}
@@ -40,8 +46,8 @@
 			<div><h5><b>Summary</b></h5></div>
 			<hr>
 			<div class="row">
-				@* <div class="col">ITEMS @totalItems</div>
-				<div class="col text-right">&euro; @totalPrice</div> *@
+				<div class="col">ITEMS  @totalItems</div>
+				<div class="col text-right">&euro; @totalPrice</div>
 			</div>
 			<form>
 				<p>SHIPPING</p>
@@ -55,7 +61,7 @@
 			</form>
 			<div class="row" style="border-top: 1px solid rgba(0,0,0,.1); padding: 2vh 0;">
 				<div class="col">TOTAL PRICE</div>
-	@* 			<div class="col text-right" id="totalPrice">&euro; @totalPrice</div> *@
+				@* 			<div class="col text-right" id="totalPrice">&euro; @totalPrice</div> *@
 			</div>
 			<button class="btn">CHECKOUT</button>
 		</div>

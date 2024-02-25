@@ -2,6 +2,7 @@
 using RestaurantApp.Core.Contracts;
 using RestaurantApp.Core.Models.ShoppingCart;
 using RestaurantApp.Data;
+using RestaurantApp.Infrastructure.Data.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,6 +20,41 @@ namespace RestaurantApp.Core.Services
 			this.dbContext = dbContext;
 		}
 
+		public async Task AddToCartAsync(string userId, int id)
+		{
+			string shoppingCartId = await GetShoppingCartIdAsync(userId);
+
+			var cartProduct = await dbContext.CartProducts
+				.FirstOrDefaultAsync(c => c.ProductId == id && c.ShoppingCartId == Guid.Parse(shoppingCartId));
+
+			if (cartProduct == null)
+			{
+				cartProduct = new CartProduct()
+				{
+					ProductId = id,
+					ShoppingCartId = Guid.Parse(shoppingCartId),
+					Quantity = 1
+				};
+
+				await dbContext.CartProducts.AddAsync(cartProduct);
+			}
+			else
+			{
+				cartProduct.Quantity += 1;
+			}
+			
+
+			await dbContext.SaveChangesAsync();
+		}
+
+		private async Task<string> GetShoppingCartIdAsync(string userId)
+		{
+			var user = await dbContext.Users
+				.FirstOrDefaultAsync(u => u.Id == Guid.Parse(userId));
+
+			return user.ShoppingCartId.ToString();
+		}
+
 		public async Task<IEnumerable<ShoppingCartViewModel>> GetShoppingCartAsync(string userId)
 		{
 		   return await dbContext.CartProducts
@@ -27,7 +63,7 @@ namespace RestaurantApp.Core.Services
 				{
 					ProductId = c.ProductId,
 					ProductName = c.Product.Name,
-					TotalPrice = c.Product.Price,
+					Price = c.Product.Price,
 					Quantity = c.Quantity,
 					Image = c.Product.Image
 				}).ToArrayAsync();

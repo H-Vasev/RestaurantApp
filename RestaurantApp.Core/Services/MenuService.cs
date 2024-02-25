@@ -24,11 +24,11 @@ namespace RestaurantApp.Core.Services
                 }).ToArrayAsync();
         }
 
-        public async Task<IEnumerable<MenuViewModel>> GetMenuAsync(string? category)
+        public async Task<IEnumerable<ProductViewModel>> GetMenuAsync(string? category)
 		{
 			return await dbContext.Products
 				.Where(p => category == null || p.Category.CategoryName == category)
-				.Select(p => new MenuViewModel()
+				.Select(p => new ProductViewModel()
 				{
 					Id = p.Id,
 					Name = p.Name,
@@ -37,6 +37,28 @@ namespace RestaurantApp.Core.Services
 					CategoryId = p.CategoryId,
 					Description = p.Description
 				}).ToArrayAsync();
+		}
+
+		public async Task<ProductViewModel> GetProductByIdAsync(int id)
+		{
+			var model = await dbContext.Products
+				.Where(p => p.Id == id)
+				.Select(p => new ProductViewModel()
+				{
+					Id = p.Id,
+					Name = p.Name,
+					Image = p.Image,
+					Price = p.Price,
+					CategoryId = p.CategoryId,
+					Description = p.Description
+				}).FirstOrDefaultAsync();
+
+			if (model == null)
+			{
+				throw new ArgumentNullException(nameof(model));
+			}
+
+			return model;
 		}
 	}
 }

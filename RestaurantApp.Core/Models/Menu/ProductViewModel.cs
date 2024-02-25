@@ -1,8 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace RestaurantApp.Core.Models.Menu
+﻿namespace RestaurantApp.Core.Models.Menu
 {
-	public class MenuViewModel
+	public class ProductViewModel
 	{
         public int Id { get; set; }
 

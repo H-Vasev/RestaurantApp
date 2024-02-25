@@ -9,6 +9,8 @@ namespace RestaurantApp.Core.Contracts
 {
 	public interface IShoppingCartService
 	{
+		Task AddToCartAsync(string userId, int id);
+
 		Task<IEnumerable<ShoppingCartViewModel>> GetShoppingCartAsync(string userId);
 	}
 }

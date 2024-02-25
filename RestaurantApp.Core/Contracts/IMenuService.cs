@@ -11,6 +11,8 @@ namespace RestaurantApp.Core.Contracts
 	{
         Task<IEnumerable<CategoryViewModel>> GetCategoriesAsync();
 
-        Task<IEnumerable<MenuViewModel>> GetMenuAsync(string? category);
+        Task<IEnumerable<ProductViewModel>> GetMenuAsync(string? category);
+
+		Task<ProductViewModel> GetProductByIdAsync(int id);
 	}
 }
