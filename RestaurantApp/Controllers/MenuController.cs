@@ -14,9 +14,12 @@ namespace RestaurantApp.Controllers
 		}
 
 		[AllowAnonymous]
-		public async Task<IActionResult> Index()
+		public async Task<IActionResult> Index(string? category)
 		{
-			var model = await menuService.GetMenuAsync();
+			var model = await menuService.GetMenuAsync(category);
+
+            ViewBag.Categories = await menuService.GetCategoriesAsync();
+            ViewBag.CurrentCategory = category;
 
 			return View(model);
 		}

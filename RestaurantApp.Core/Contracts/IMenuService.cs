@@ -9,6 +9,8 @@ namespace RestaurantApp.Core.Contracts
 {
 	public interface IMenuService
 	{
-		Task<IEnumerable<MenuViewModel>> GetMenuAsync();
+        Task<IEnumerable<CategoryViewModel>> GetCategoriesAsync();
+
+        Task<IEnumerable<MenuViewModel>> GetMenuAsync(string? category);
 	}
 }

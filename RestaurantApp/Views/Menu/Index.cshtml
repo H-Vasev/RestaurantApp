@@ -15,10 +15,16 @@
         <div class="row aos-init aos-animate" data-aos="fade-up" data-aos-delay="100">
             <div class="col-lg-12 d-flex justify-content-center">
                 <ul id="menu-flters">
-                    @* @foreach (var category in categories)
+                    <li>
+                        <a asp-area="" asp-controller="Menu" asp-action="Index">Show All</a>
+                    </li>
+
+                    @foreach (var category in ViewBag.Categories)
                     {
-                        <li>@category.Name</li>
-                    } *@
+                        <li>
+                            <a asp-area="" asp-controller="Menu" asp-action="Index" asp-route-category="@category.Name">@category.Name</a>
+                        </li>
+                    }
                 </ul>
             </div>
         </div>
