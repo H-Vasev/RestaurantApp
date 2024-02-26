@@ -20,6 +20,16 @@ namespace RestaurantApp.Core.Services
 			this.dbContext = dbContext;
 		}
 
+		public async Task<int> GetItamsQuantityAsync(string userId)
+		{
+			var itmes = await dbContext.CartProducts
+				.AsNoTracking()
+				.Where(x => x.ShoppingCart.ApplicationUser.Id == Guid.Parse(userId))
+				.SumAsync(x => x.Quantity);
+
+			return itmes;
+		}
+
 		public async Task AddToCartAsync(string userId, int id)
 		{
 			string shoppingCartId = await GetShoppingCartIdAsync(userId);
@@ -55,9 +65,10 @@ namespace RestaurantApp.Core.Services
 			return user.ShoppingCartId.ToString();
 		}
 
-		public async Task<IEnumerable<ShoppingCartViewModel>> GetShoppingCartAsync(string userId)
+		public async Task<IEnumerable<ShoppingCartViewModel>> GetAllItemsAsync(string userId)
 		{
 		   return await dbContext.CartProducts
+				.AsNoTracking()
 				.Where(c => c.ShoppingCart.ApplicationUser.Id == Guid.Parse(userId))
 				.Select(c => new ShoppingCartViewModel()
 				{

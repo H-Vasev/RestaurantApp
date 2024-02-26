@@ -17,10 +17,11 @@ namespace RestaurantApp.Controllers
         {
             var userId = GetUserId();
 
-            var model = await shoppingCartService.GetShoppingCartAsync(userId);
+            var model = await shoppingCartService.GetAllItemsAsync(userId);
 
             return View(model);
         }
+
 
         public async Task<IActionResult> AddToCart(int id)
         {
