@@ -6,7 +6,6 @@
 
 <section id="menu" class="menu section-bg">
     <div class="container aos-init aos-animate" data-aos="fade-up">
-
         <div class="section-title mt-5 pt-5">
             <h2>Menu</h2>
             <p>Check Our Tasty Menu</p>
@@ -41,9 +40,10 @@
                     <div class="menu-ingredients">
                         @item.Description
                     </div>
-                    <a asp-area="" asp-controller="ShoppingCart" asp-action="AddToCart" asp-route-id="@item.Id" class="offset-sm-8">Add to Basket</a>
+                    <a id="add-to-cart" asp-area="" asp-controller="Menu" asp-action="AddToCart" asp-route-id="@item.Id" class="offset-sm-8">Add to Basket</a>
                 </div>
             }
         </div>
     </div>
 </section>
+

@@ -68,5 +68,28 @@ namespace RestaurantApp.Core.Services
 					Image = c.Product.Image
 				}).ToArrayAsync();
 		}
+
+		public async Task RemoveFromCartAsync(string userId, int id)
+		{
+			var itemToRemove = dbContext.CartProducts
+				.FirstOrDefault(c => c.ProductId == id && 
+								c.ShoppingCart.ApplicationUser.Id == Guid.Parse(userId));
+
+			if (itemToRemove == null)
+			{
+				throw new InvalidOperationException("Item not found in cart");
+			}
+
+			if (itemToRemove.Quantity > 1)
+			{
+				itemToRemove.Quantity -= 1;
+			}
+			else
+			{
+				dbContext.Remove(itemToRemove);
+			}
+			
+			await dbContext.SaveChangesAsync();
+		}
 	}
 }

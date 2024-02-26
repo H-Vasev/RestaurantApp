@@ -12,5 +12,6 @@ namespace RestaurantApp.Core.Contracts
 		Task AddToCartAsync(string userId, int id);
 
 		Task<IEnumerable<ShoppingCartViewModel>> GetShoppingCartAsync(string userId);
-	}
+        Task RemoveFromCartAsync(string userId, int id);
+    }
 }

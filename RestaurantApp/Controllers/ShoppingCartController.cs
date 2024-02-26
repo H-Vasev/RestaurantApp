@@ -35,7 +35,24 @@ namespace RestaurantApp.Controllers
 				return BadRequest();
 			}
 
-			return RedirectToAction("Index", "Menu");
+			return RedirectToAction(nameof(Index));
+		}
+
+		public async Task<IActionResult> RemoveFromCart(int id)
+		{
+			var userId = GetUserId();
+
+			try
+			{
+                await shoppingCartService.RemoveFromCartAsync(userId, id);
+            }
+            catch (Exception)
+			{
+                return BadRequest();
+            }
+
+			TempData["SuccessRemove"] = "Product removed from cart successfully!";
+			return RedirectToAction(nameof(Index));
 		}
     }
 }
