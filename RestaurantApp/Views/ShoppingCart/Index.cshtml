@@ -10,7 +10,11 @@
 <div class="card align-items-center justify-content-center mt-5 pt-5">
 	@if (TempData["SuccessRemove"] != null)
 	{
-		<div id="successRemove" class="alert alert-success text-center mt-5">@TempData["SuccessRemove"]</div>
+		<div id="successResult" class="customAlertMessage alert alert-success text-center mt-5">@TempData["SuccessRemove"]</div>
+	}
+	@if (TempData["SuccessAdd"] != null)
+	{
+		<div id="successResult" class="customAlertMessage alert alert-success text-center mt-5">@TempData["SuccessAdd"]</div>
 	}
 
 	<div class="row mt-5 pt-5">
@@ -77,7 +81,7 @@
 	<script>
 		$(document).ready(function () {
 			setTimeout(function () {
-				$('#successRemove').fadeOut('slow', function () {
+				$('#successResult').fadeOut('slow', function () {
 					$(this).remove();
 				})
 			}, 2000);

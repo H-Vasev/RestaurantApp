@@ -36,6 +36,7 @@ namespace RestaurantApp.Controllers
 				return BadRequest();
 			}
 
+			TempData["SuccessAdd"] = "Successfully add product to your basket!";
 			return RedirectToAction(nameof(Index));
 		}
 

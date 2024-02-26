@@ -68,6 +68,15 @@ h6 {
     font-size: 12px;
 }
 
+.customAlertMessage {
+    position: fixed; 
+    top: 5rem; 
+    left: 50%; 
+    transform: translateX(-50%); 
+    width: auto; 
+    padding: 10px;
+}
+
 /*--------------------------------------------------------------
 # Preloader
 --------------------------------------------------------------*/
