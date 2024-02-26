@@ -47,7 +47,7 @@
 				</div>
 			}
 			<div class="back-to-shop">
-				<a href="#">&leftarrow;</a>
+				<a asp-area="" asp-controller="Menu" asp-action="Index">&leftarrow;</a>
 				<span class="text-muted">Back to shop</span>
 			</div>
 		</div>
@@ -87,6 +87,7 @@
 			}, 2000);
 		});
 	</script>
+
 	<script>
 		$(document).ready(function () {
 			var currentTotalPrice = @totalPrice;
