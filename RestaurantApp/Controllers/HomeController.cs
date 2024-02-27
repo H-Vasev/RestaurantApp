@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using RestaurantApp.Core.Contracts;
 using RestaurantApp.Models;
 using System.Diagnostics;
 
@@ -8,16 +9,20 @@ namespace RestaurantApp.Controllers
 	public class HomeController : BaseController
 	{
 		private readonly ILogger<HomeController> _logger;
+		private readonly IEventService eventService;
 
-		public HomeController(ILogger<HomeController> logger)
+		public HomeController(ILogger<HomeController> logger, IEventService eventService)
 		{
 			_logger = logger;
+			this.eventService = eventService;
 		}
 
 		[AllowAnonymous]
-		public IActionResult Index()
+		public async Task<IActionResult> Index()
 		{
-			return View();
+			var model = await eventService.GetAllEventsAsync();
+
+			return View(model);
 		}
 
 		public IActionResult Privacy()
