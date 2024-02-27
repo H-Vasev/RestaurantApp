@@ -41,5 +41,9 @@ namespace RestaurantApp.Data
 		public DbSet<CartProduct> CartProducts { get; set; } = null!;
 
         public DbSet<Category> Categories { get; set; } = null!;
-    }
+
+        public DbSet<Reservation> Reservations { get; set; } = null!;
+
+        public DbSet<Event> Events { get; set; } = null!;
+	}
 }
