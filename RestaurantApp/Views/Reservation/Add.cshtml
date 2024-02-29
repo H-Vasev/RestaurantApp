@@ -38,7 +38,10 @@
 				<div class="col-lg-4 col-md-6 form-group mt-3 tableColor">
 					@if (eventName != null)
 					{
-						<input readonly type="datetime-local" asp-for="@Model.Date" class="form-control">
+						{
+							date = DateTime.Parse(Model.Date);
+						}
+						<input readonly type="datetime-local" asp-for="@date" class="form-control">
 					}
 					else
 					{

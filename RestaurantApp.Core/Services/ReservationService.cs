@@ -6,7 +6,7 @@ using RestaurantApp.Infrastructure.Data.Models;
 
 namespace RestaurantApp.Core.Services
 {
-    public class ReservationService : IReservationService
+	public class ReservationService : IReservationService
 	{
 		private readonly ApplicationDbContext dbContext;
 
@@ -53,7 +53,13 @@ namespace RestaurantApp.Core.Services
 				}).ToArrayAsync();
         }
 
-        public async Task RemoveReservationAsync(string userId, string id)
+		public async Task<bool> IsReservedAsync(DateTime date, string userId)
+		{
+			return await dbContext.Reservations
+				.AnyAsync(r => r.Date.Date == date.Date && r.ApplicationUserId == Guid.Parse(userId));
+		}
+
+		public async Task RemoveReservationAsync(string userId, string id)
         {
 			var reservationToRemove = await dbContext.Reservations
 				.FirstOrDefaultAsync(r => r.ApplicationUserId == Guid.Parse(userId) && r.Id == Guid.Parse(id));

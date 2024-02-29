@@ -7,22 +7,31 @@ namespace RestaurantApp.Controllers
 	public class ReservationController : BaseController
 	{
 		private readonly IReservationService reservationService;
+		private readonly IEventService eventService;
 
-		public ReservationController(IReservationService reservationService)
+		public ReservationController(IReservationService reservationService, IEventService eventService)
 		{
 			this.reservationService = reservationService;
+			this.eventService = eventService;
 		}
 
 		[HttpGet]
-		public IActionResult Add()
+		public async Task<IActionResult> Add(int id)
 		{
+            var ev = await eventService.GetEventByIdAsync(id);
 			var model = new ReservationFormModel();
+
+			if (ev != null)
+			{
+                model.EventName = ev.Title;
+				model.Date = ev.StartEvent.ToString("g");
+            }
 
 			return View(model);
 		}
 
 		[HttpPost]
-		public async Task<IActionResult> Add(ReservationFormModel model)
+		public async Task<IActionResult> Add(ReservationFormModel model, int id)
 		{
 			if (!ModelState.IsValid)
 			{
@@ -31,7 +40,25 @@ namespace RestaurantApp.Controllers
 
 			var userId = GetUserId();
 
-			await reservationService.AddReservationAsync(model, userId);
+			var ev= await eventService.GetEventByIdAsync(id);
+
+			if (ev != null)
+			{
+				model.EventId = ev.Id;
+				model.EventName = ev.Title;
+				model.Date = ev.StartEvent.ToString("g");
+			}
+			var date = DateTime.Parse(model.Date);
+			var isReserved = await reservationService.IsReservedAsync(date, userId);
+
+            if (isReserved)
+            {
+				TempData["Reserved"] = "You have already made a reservation for this date!";
+                return View(model);
+            }
+
+            await reservationService.AddReservationAsync(model, userId);
+			
 
 			return RedirectToAction("Index", "Home");
 		}

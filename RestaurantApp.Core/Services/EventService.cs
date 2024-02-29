@@ -28,5 +28,22 @@ namespace RestaurantApp.Core.Services
 				})
 				.ToArrayAsync();
 		}
-	}
+
+        public async Task<EventViewModel?> GetEventByIdAsync(int id)
+        {
+           var ev = await dbContext.Events
+				.AsNoTracking()
+                .Where(e => e.Id == id)
+                .Select(e => new EventViewModel
+				{
+                    Id = e.Id,
+                    Title = e.Title,
+                    Description = e.Description,
+                    StartEvent = e.StartEvent
+                })
+                .FirstOrDefaultAsync();
+
+			return ev;
+        }
+    }
 }
