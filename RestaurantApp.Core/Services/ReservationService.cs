@@ -52,5 +52,19 @@ namespace RestaurantApp.Core.Services
 					Date = r.Date.ToString("g")
 				}).ToArrayAsync();
         }
+
+        public async Task RemoveReservationAsync(string userId, string id)
+        {
+			var reservationToRemove = await dbContext.Reservations
+				.FirstOrDefaultAsync(r => r.ApplicationUserId == Guid.Parse(userId) && r.Id == Guid.Parse(id));
+
+			if (reservationToRemove == null)
+			{
+				throw new ArgumentNullException(nameof(reservationToRemove));
+			}
+
+			dbContext.Reservations.Remove(reservationToRemove);
+			await dbContext.SaveChangesAsync();
+        }
     }
 }

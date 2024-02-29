@@ -39,9 +39,35 @@ namespace RestaurantApp.Controllers
 		public async Task<IActionResult> Index()
 		{
 			var userId = GetUserId();
-			var model = await reservationService.GetAllReservationAsync(userId);
 
-			return View(model);
+			try
+			{
+                var model = await reservationService.GetAllReservationAsync(userId);
+                return View(model);
+            }
+            catch (Exception)
+			{
+				return BadRequest();
+			}
+
 		}
-	}
+
+		public async Task<IActionResult> Cancel(string id)
+		{
+			var userId = GetUserId();
+
+			try
+			{
+                await reservationService.RemoveReservationAsync(userId, id);
+            }
+            catch (Exception)
+			{
+
+				return BadRequest();
+			}
+
+			return RedirectToAction(nameof(Index));
+		}
+
+    }
 }

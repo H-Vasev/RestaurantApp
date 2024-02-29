@@ -12,5 +12,6 @@ namespace RestaurantApp.Core.Contracts
 		Task AddReservationAsync(ReservationFormModel model, string userId);
 
         Task<IEnumerable<ReservationViewModel>> GetAllReservationAsync(string userId);
+        Task RemoveReservationAsync(string userId, string id);
     }
 }
