@@ -4,16 +4,11 @@
 	ViewData["Title"] = "Book a reservation";
 
 	var eventName = Model.EventName;
+	var date = DateTime.Parse(DateTime.Now.ToString("g"));
 }
 
 <section id="book-a-table" class="book-a-table mt-5">
 	<div class="container aos-init aos-animate mt-5" data-aos="fade-up">
-
-		@if (TempData["SameDate"] != null)
-		{
-			<div class="alert alert-danger" role="alert" id="alertDanger">@TempData["SameDate"]</div>
-		}
-
 		<div class="section-title">
 			<h2>Reservation</h2>
 			<p>Book a Table</p>
@@ -47,7 +42,7 @@
 					}
 					else
 					{
-						<input type="date" asp-for="@Model.Date" class="form-control">
+						<input type="datetime-local" asp-for="@date" class="form-control">
 					}
 					<span asp-validation-for="@Model.Date"></span>
 				</div>

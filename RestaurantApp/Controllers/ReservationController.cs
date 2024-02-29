@@ -20,5 +20,20 @@ namespace RestaurantApp.Controllers
 
 			return View(model);
 		}
+
+		[HttpPost]
+		public async Task<IActionResult> Add(ReservationFormModel model)
+		{
+			if (!ModelState.IsValid)
+			{
+				return View(model);
+			}
+
+			var userId = GetUserId();
+
+			await reservationService.AddReservationAsync(model, userId);
+
+			return RedirectToAction("Index", "Home");
+		}
 	}
 }

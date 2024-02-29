@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RestaurantApp.Core.Models.Reservation;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +9,6 @@ namespace RestaurantApp.Core.Contracts
 {
 	public interface IReservationService
 	{
+		Task AddReservationAsync(ReservationFormModel model, string userId);
 	}
 }

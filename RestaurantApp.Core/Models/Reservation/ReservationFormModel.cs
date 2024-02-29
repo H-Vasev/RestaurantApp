@@ -27,11 +27,10 @@ namespace RestaurantApp.Core.Models.Reservation
         public string Email { get; set; } = string.Empty;
 
         [Required]
-        public DateTime Date { get; set; } = DateTime.Now.Date;
+		public string Date { get; set; } = string.Empty;
 
-        [Required]
-        [Range(1, 12)]
-        [Display(Name = "Number of people")]
+		[Required]
+        [Range(1, 60)]
         public int PeopleCount { get; set; } = 1;
 
         [StringLength(DescriptionMaxLenght, MinimumLength = DescriptionMinLenght)]
