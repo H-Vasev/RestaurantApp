@@ -35,5 +35,13 @@ namespace RestaurantApp.Controllers
 
 			return RedirectToAction("Index", "Home");
 		}
+
+		public async Task<IActionResult> Index()
+		{
+			var userId = GetUserId();
+			var model = await reservationService.GetAllReservationAsync(userId);
+
+			return View(model);
+		}
 	}
 }

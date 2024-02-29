@@ -10,5 +10,7 @@ namespace RestaurantApp.Core.Contracts
 	public interface IReservationService
 	{
 		Task AddReservationAsync(ReservationFormModel model, string userId);
-	}
+
+        Task<IEnumerable<ReservationViewModel>> GetAllReservationAsync(string userId);
+    }
 }

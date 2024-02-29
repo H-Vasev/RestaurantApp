@@ -1,22 +1,18 @@
-﻿using RestaurantApp.Core.Contracts;
+﻿using Microsoft.EntityFrameworkCore;
+using RestaurantApp.Core.Contracts;
 using RestaurantApp.Core.Models.Reservation;
 using RestaurantApp.Data;
 using RestaurantApp.Infrastructure.Data.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RestaurantApp.Core.Services
 {
-	public class ReservationService : IReservationService
+    public class ReservationService : IReservationService
 	{
-		private readonly ApplicationDbContext data;
+		private readonly ApplicationDbContext dbContext;
 
 		public ReservationService(ApplicationDbContext data)
 		{
-			this.data = data;
+			this.dbContext = data;
 		}
 
 		public async Task AddReservationAsync(ReservationFormModel model, string userId)
@@ -34,8 +30,27 @@ namespace RestaurantApp.Core.Services
 				EventId = model.EventId
 			};
 
-			await data.Reservations.AddAsync(reservation);
-			await data.SaveChangesAsync();
+			await dbContext.Reservations.AddAsync(reservation);
+			await dbContext.SaveChangesAsync();
 		}
-	}
+
+        public async Task<IEnumerable<ReservationViewModel>> GetAllReservationAsync(string userId)
+        {
+			return await dbContext.Reservations
+				.Where(u => u.ApplicationUserId == Guid.Parse(userId))
+				.Select(r => new ReservationViewModel()
+				{
+					Id = r.Id.ToString(),
+					FirstName = r.FirstName,
+					LastName = r.LastName,
+					PhoneNumber = r.PhoneNumber,
+					Email = r.Email,
+					Description = r.Description,
+					EventName = r.Event.Title,
+					PeopleCount = r.PeopleCount,
+					EventId = r.EventId,
+					Date = r.Date.ToString("g")
+				}).ToArrayAsync();
+        }
+    }
 }
