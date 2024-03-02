@@ -9,6 +9,10 @@
 
 <section id="book-a-table" class="book-a-table mt-5">
 	<div class="container aos-init aos-animate mt-5" data-aos="fade-up">
+		@if (TempData["Reserved"] != null)
+		{
+			<div id="reservedDate" class="customAlertMessage alert alert-danger text-center mt-5">@TempData["Reserved"]</div>
+		}
 		<div class="section-title">
 			<h2>Reservation</h2>
 			<p>Book a Table</p>
@@ -69,3 +73,15 @@
 
 	</div>
 </section>
+
+@section Scripts{
+	<script>
+		$(document).ready(function () {
+			setTimeout(function () {
+				$('#reservedDate').fadeOut('slow', function () {
+					$(this).remove();
+				})
+			}, 3000);
+		});
+	</script>
+}

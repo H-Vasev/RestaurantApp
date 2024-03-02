@@ -53,7 +53,7 @@ namespace RestaurantApp.Controllers
 
             if (isReserved)
             {
-				TempData["Reserved"] = "You have already made a reservation for this date!";
+				TempData["Reserved"] = "You have already made a reservation for this date or check yuor Reservation!";
                 return View(model);
             }
 
