@@ -58,6 +58,8 @@ namespace RestaurantApp.Core.Services
 		public async Task<IEnumerable<ReservationViewModel>> GetAllReservationAsync(string userId)
         {
 			return await dbContext.Reservations
+				.AsNoTracking()
+				.OrderBy(r => r.Date)
 				.Where(u => u.ApplicationUserId == Guid.Parse(userId))
 				.Select(r => new ReservationViewModel()
 				{
