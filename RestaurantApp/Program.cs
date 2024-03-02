@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using RestaurantApp.Data;
+using RestaurantApp.Extensions;
 using RestaurantApp.Infrastructure.Data.Models;
 
 namespace RestaurantApp
@@ -53,10 +54,22 @@ namespace RestaurantApp
 			app.UseAuthentication();
 			app.UseAuthorization();
 
-			app.MapControllerRoute(
-				name: "default",
-				pattern: "{controller=Home}/{action=Index}/{id?}");
-			app.MapRazorPages();
+			app.PrepareData();
+
+			app.UseEndpoints(config =>
+			{
+				config.MapControllerRoute(
+					name: "areas",
+					pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+
+				config.MapControllerRoute(
+					name: "default",
+					pattern: "{controller=Home}/{action=Index}/{id?}");
+
+				app.MapRazorPages();
+			});
+
+			
 
 			app.Run();
 		}
