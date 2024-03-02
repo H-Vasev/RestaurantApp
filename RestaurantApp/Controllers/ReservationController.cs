@@ -15,6 +15,22 @@ namespace RestaurantApp.Controllers
 			this.eventService = eventService;
 		}
 
+		public async Task<IActionResult> Index()
+		{
+			var userId = GetUserId();
+
+			try
+			{
+				var model = await reservationService.GetAllReservationAsync(userId);
+				return View(model);
+			}
+			catch (Exception)
+			{
+				return BadRequest();
+			}
+
+		}
+
 		[HttpGet]
 		public async Task<IActionResult> Add(int id)
 		{
@@ -63,21 +79,50 @@ namespace RestaurantApp.Controllers
 			return RedirectToAction("Index", "Home");
 		}
 
-		public async Task<IActionResult> Index()
+		[HttpGet]
+		public async Task<IActionResult> Edit(string id)
 		{
+			var userId = GetUserId();
+			try
+			{
+				var model = await reservationService.GetReservationByIdAsync(userId, id);
+				return View(model);
+
+			}
+			catch (Exception)
+			{
+				return BadRequest();
+			}
+		}
+
+		[HttpPost]
+		public async Task<IActionResult> Edit(ReservationFormModel model, string id)
+		{
+			if (DateTime.Parse(model.Date) < DateTime.Now)
+			{
+				ModelState.AddModelError(model.Date, "Date must be biger than today!");
+			}
+
+			if (!ModelState.IsValid)
+			{
+				return View(model);
+			}
+
 			var userId = GetUserId();
 
 			try
 			{
-                var model = await reservationService.GetAllReservationAsync(userId);
-                return View(model);
-            }
-            catch (Exception)
+				await reservationService.EditReservationAsync(model, userId, id);
+			}
+			catch (Exception)
 			{
 				return BadRequest();
 			}
 
+			return RedirectToAction(nameof(Index));
 		}
+
+	
 
 		public async Task<IActionResult> Cancel(string id)
 		{

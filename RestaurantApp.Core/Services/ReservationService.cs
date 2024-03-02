@@ -10,9 +10,9 @@ namespace RestaurantApp.Core.Services
 	{
 		private readonly ApplicationDbContext dbContext;
 
-		public ReservationService(ApplicationDbContext data)
+		public ReservationService(ApplicationDbContext dbContext)
 		{
-			this.dbContext = data;
+			this.dbContext = dbContext;
 		}
 
 		public async Task AddReservationAsync(ReservationFormModel model, string userId)
@@ -34,7 +34,28 @@ namespace RestaurantApp.Core.Services
 			await dbContext.SaveChangesAsync();
 		}
 
-        public async Task<IEnumerable<ReservationViewModel>> GetAllReservationAsync(string userId)
+		public async Task EditReservationAsync(ReservationFormModel model, string userId, string id)
+		{
+			var reservation = await dbContext.Reservations
+				.FirstOrDefaultAsync(r => r.ApplicationUserId == Guid.Parse(userId) && r.Id == Guid.Parse(id));
+
+			if (reservation == null)
+			{
+				throw new ArgumentNullException(nameof(reservation));
+			}
+
+			reservation.FirstName = model.FirstName;
+			reservation.LastName = model.LastName;
+			reservation.PhoneNumber = model.PhoneNumber;
+			reservation.Email = model.Email;
+			reservation.Date = DateTime.Parse(model.Date);
+			reservation.PeopleCount = model.PeopleCount;
+			reservation.Description = model.Description;
+
+			await dbContext.SaveChangesAsync();
+		}
+
+		public async Task<IEnumerable<ReservationViewModel>> GetAllReservationAsync(string userId)
         {
 			return await dbContext.Reservations
 				.Where(u => u.ApplicationUserId == Guid.Parse(userId))
@@ -53,7 +74,32 @@ namespace RestaurantApp.Core.Services
 				}).ToArrayAsync();
         }
 
-		public async Task<bool> IsReservedAsync(DateTime date, string userId)
+        public async Task<ReservationFormModel> GetReservationByIdAsync(string userId, string id)
+        {
+           var reservation = await dbContext.Reservations
+				.Where(r => r.ApplicationUserId == Guid.Parse(userId) && r.Id == Guid.Parse(id))
+				.Select(r => new ReservationFormModel()
+				{
+					FirstName = r.FirstName,
+					LastName = r.LastName,
+					PhoneNumber = r.PhoneNumber,
+					Email = r.Email,
+					Description = r.Description,
+					EventName = r.Event.Title,
+					PeopleCount = r.PeopleCount,
+					Date = r.Date.ToString("g"),
+				})
+				.FirstOrDefaultAsync();
+
+			if (reservation == null)
+			{
+				throw new ArgumentNullException(nameof(reservation));
+			}
+
+			return reservation;
+        }
+
+        public async Task<bool> IsReservedAsync(DateTime date, string userId)
 		{
 			return await dbContext.Reservations
 				.AnyAsync(r => r.Date.Date == date.Date && r.ApplicationUserId == Guid.Parse(userId));
