@@ -7,5 +7,7 @@ namespace RestaurantApp.Core.Contracts
 		Task<IEnumerable<EventViewModel>> GetAllEventsAsync();
 
         Task<EventViewModel?> GetEventByIdAsync(int id);
-    }
+
+		Task<IEnumerable<int>> GetAllBoockedEventIdsAsync(string userId);
+	}
 }

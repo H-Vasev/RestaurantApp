@@ -45,5 +45,15 @@ namespace RestaurantApp.Core.Services
 
 			return ev;
         }
-    }
+
+		public async Task<IEnumerable<int>> GetAllBoockedEventIdsAsync(string userId)
+		{
+			 var evIds = await dbContext.Events
+				.Where(e => e.Reservations.Any(a => a.ApplicationUserId == Guid.Parse(userId)))
+				.Select(e => e.Id)
+				.ToArrayAsync();
+
+			return evIds;
+		}
+	}
 }
