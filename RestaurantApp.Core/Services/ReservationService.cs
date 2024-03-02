@@ -60,7 +60,7 @@ namespace RestaurantApp.Core.Services
 			return await dbContext.Reservations
 				.AsNoTracking()
 				.OrderBy(r => r.Date)
-				.Where(u => u.ApplicationUserId == Guid.Parse(userId))
+				.Where(u => u.ApplicationUserId == Guid.Parse(userId) && u.Date.Date > DateTime.Now.Date)
 				.Select(r => new ReservationViewModel()
 				{
 					Id = r.Id.ToString(),

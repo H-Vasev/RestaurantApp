@@ -11,7 +11,11 @@
 	<div class="container aos-init aos-animate mt-5" data-aos="fade-up">
 		@if (TempData["Reserved"] != null)
 		{
-			<div id="reservedDate" class="customAlertMessage alert alert-danger text-center mt-5">@TempData["Reserved"]</div>
+			<div id="dateMessage" class="customAlertMessage alert alert-danger text-center mt-5">@TempData["Reserved"]</div>
+		}
+		@if (TempData["Error"] != null)
+		{
+			<div id="dateMessage" class="customAlertMessage alert alert-danger text-center mt-5">@TempData["Error"]</div>
 		}
 		<div class="section-title">
 			<h2>Reservation</h2>
@@ -78,7 +82,7 @@
 	<script>
 		$(document).ready(function () {
 			setTimeout(function () {
-				$('#reservedDate').fadeOut('slow', function () {
+				$('#dateMessage').fadeOut('slow', function () {
 					$(this).remove();
 				})
 			}, 3000);

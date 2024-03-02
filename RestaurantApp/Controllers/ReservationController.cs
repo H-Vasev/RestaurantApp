@@ -49,6 +49,12 @@ namespace RestaurantApp.Controllers
 		[HttpPost]
 		public async Task<IActionResult> Add(ReservationFormModel model, int id)
 		{
+			if (DateTime.Parse(model.Date) < DateTime.Now)
+			{
+				ModelState.AddModelError(model.Date, "Date must be biger than today!");
+				TempData["Error"] = "Date must be biger than today!";
+			}
+
 			if (!ModelState.IsValid)
 			{
 				return View(model);
