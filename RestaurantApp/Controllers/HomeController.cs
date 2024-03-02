@@ -20,12 +20,16 @@ namespace RestaurantApp.Controllers
 		[AllowAnonymous]
 		public async Task<IActionResult> Index()
 		{
-			var userId = GetUserId();	
+			var userId = GetUserId();
 
 			var model = await eventService.GetAllEventsAsync();
-			var eventsIds = await eventService.GetAllBoockedEventIdsAsync(userId);
+			if (userId != null)
+			{
+				var eventsIds = await eventService.GetAllBoockedEventIdsAsync(userId);
 
-			ViewBag.EventsIds = eventsIds;
+				ViewBag.EventsIds = eventsIds;
+			}
+
 			return View(model);
 		}
 

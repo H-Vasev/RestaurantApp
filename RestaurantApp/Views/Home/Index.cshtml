@@ -2,7 +2,7 @@
 
 @{
 	ViewData["Title"] = "Home Page";
-	IEnumerable<int> eventsIds = ViewBag.EventsIds;
+	IEnumerable<int>? eventsIds = ViewBag.EventsIds;
 }
 
 <section id="hero" class="d-flex align-items-center">
@@ -41,7 +41,7 @@
 									<h4>@item.Title</h4>
 									<p>@item.Description</p>
 									<div class="d-flex justify-content-end mt-2">
-										@if (eventsIds.Contains(item.Id))
+										@if (eventsIds != null && eventsIds.Contains(item.Id))
 										{
 											<a asp-area="" asp-controller="Reservation" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-light">Menage Reservation</a>
 										}
