@@ -6,7 +6,7 @@
 
 		public string Title { get; set; } = string.Empty;
 
-		public string Description { get; set; } = string.Empty;
+		public string? Description { get; set; }
 
 		public DateTime StartEvent { get; set; } = DateTime.Now;
     }

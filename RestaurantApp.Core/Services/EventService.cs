@@ -19,6 +19,7 @@ namespace RestaurantApp.Core.Services
 		{
 			return await dbContext.Events
 				.AsNoTracking()
+				.Where(e => e.StartEvent.Date >= DateTime.Now.Date)
 				.OrderBy(e => e.StartEvent)
 				.Select(e => new EventViewModel
 				{
