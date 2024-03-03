@@ -1,5 +1,6 @@
 ﻿using Humanizer.Localisation.TimeToClockNotation;
 using Microsoft.AspNetCore.Mvc;
+using RestaurantApp.Attributes;
 using RestaurantApp.Core.Contracts;
 using RestaurantApp.Core.Models.Event;
 
@@ -29,22 +30,12 @@ namespace RestaurantApp.Areas.Administrator.Controllers
         }
 
         [HttpPost]
+		[EventDateValidation]
         public async Task<IActionResult> Add(EventFormModel model)
         {          
-			if (model.StartEvent < DateTime.Now)
-			{
-				TempData["ErrorDate"] = "Start date must be valid date!";
-				ModelState.AddModelError("", "Start date must be valid date!");
-			}
-
-			if (model.EndEvent <= model.StartEvent)
-			{
-				TempData["ErrorDate"] = "Start date must be after end date!";
-				ModelState.AddModelError("", "Start date must be after end date!");
-			}
-
 			if (!ModelState.IsValid)
             {
+				TempData["ErrorDate"] = HttpContext.Items["ErrorDate"];
 				return View(model);
 			}
 
@@ -76,22 +67,12 @@ namespace RestaurantApp.Areas.Administrator.Controllers
 		}
 
 		[HttpPost]
+		[EventDateValidation]
 		public async Task<IActionResult> Edit(EventFormModel model, int id)
 		{
-			if (model.StartEvent < DateTime.Now)
-			{
-				TempData["ErrorDate"] = "Start date must be valid date!";
-				ModelState.AddModelError("", "Start date must be valid date!");
-			}
-
-			if (model.EndEvent <= model.StartEvent)
-			{
-				TempData["ErrorDate"] = "Start date must be after end date!";
-				ModelState.AddModelError("", "Start date must be after end date!");
-			}
-
 			if (!ModelState.IsValid)
 			{
+				TempData["ErrorDate"] = HttpContext.Items["ErrorDate"];
 				return View(model);
 			}
 
