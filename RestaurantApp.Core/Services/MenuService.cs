@@ -17,6 +17,7 @@ namespace RestaurantApp.Core.Services
         public async Task<IEnumerable<CategoryViewModel>> GetCategoriesAsync()
         {
             return await dbContext.Categories
+				.AsNoTracking()
                 .Select(c => new CategoryViewModel()
 				{
                     Id = c.Id,

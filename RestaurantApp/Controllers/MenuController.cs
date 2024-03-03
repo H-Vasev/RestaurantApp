@@ -19,6 +19,11 @@ namespace RestaurantApp.Controllers
 		[AllowAnonymous]
 		public async Task<IActionResult> Index(string? category)
 		{
+			if (User.IsInRole("Administrator"))
+			{
+				return RedirectToAction("Index", "Product", new { Area = "Administrator" });
+			}
+
 			var model = await menuService.GetMenuAsync(category);
 
             ViewBag.Categories = await menuService.GetCategoriesAsync();
