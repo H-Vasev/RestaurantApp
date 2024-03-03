@@ -54,22 +54,23 @@ namespace RestaurantApp
 			app.UseAuthentication();
 			app.UseAuthorization();
 
-			app.PrepareData();
+			if (app.Environment.IsDevelopment())
+			{
+				app.PrepareData();
+			}
 
 			app.UseEndpoints(config =>
 			{
 				config.MapControllerRoute(
 					name: "areas",
-					pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+					pattern: "/{area:exists}/{controller=Home}/{action=Index}/{id?}");
 
 				config.MapControllerRoute(
 					name: "default",
-					pattern: "{controller=Home}/{action=Index}/{id?}");
+					pattern: "/{controller=Home}/{action=Index}/{id?}");
 
 				app.MapRazorPages();
 			});
-
-			
 
 			app.Run();
 		}

@@ -20,6 +20,10 @@ namespace RestaurantApp.Controllers
 		[AllowAnonymous]
 		public async Task<IActionResult> Index()
 		{
+			if (User.IsInRole("Administrator"))
+			{
+				return RedirectToAction("Index", "Home", new { Area = "Administrator" });
+			}
 			var userId = GetUserId();
 
 			var model = await eventService.GetAllEventsAsync();
