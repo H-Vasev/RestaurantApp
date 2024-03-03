@@ -12,9 +12,8 @@ namespace RestaurantApp.Infrastructure.Data.Models
 		[StringLength(TitleMaxLenght)]
 		public string Title { get; set; } = string.Empty;
 
-		[Required]
 		[StringLength(DescriptionMaxLenght)]
-		public string Description { get; set; } = string.Empty;
+		public string? Description { get; set; }
 
 		public DateTime StartEvent { get; set; } = DateTime.Now;
 
