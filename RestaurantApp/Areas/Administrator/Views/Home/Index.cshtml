@@ -38,8 +38,8 @@
 									<span>@item.StartEvent.ToString("dd.MM.yy HH:mm")</span>
 									<h4>@item.Title</h4>
 									<div class="d-flex justify-content-end mt-2">
-										<a asp-area="Administrator" asp-controller="Event" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-light me-2">Edit</a>
-										<a asp-area="Administrator" asp-controller="Event" asp-action="Remove" asp-route-id="@item.Id" class="btn btn-sm btn-light">Remove</a>
+										<a asp-area="Administrator" asp-controller="Home" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-light me-2">Edit</a>
+										<a asp-area="Administrator" asp-controller="Home" asp-action="Remove" asp-route-id="@item.Id" onclick="return removeEvent('@item.Title')" class="btn btn-sm btn-light">Remove</a>
 									</div>
 								</div>
 							</div>
@@ -129,3 +129,11 @@
 		</div>
 	</section>
 </main>
+
+@section Scripts {
+	<script>
+		function removeEvent(title) {
+			return confirm('Are you sure you want to remove ' + title + '?');
+		};
+	</script>
+}

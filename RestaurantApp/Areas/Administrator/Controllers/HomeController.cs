@@ -47,7 +47,28 @@ namespace RestaurantApp.Areas.Administrator.Controllers
 				return View(model);
 			}
 
-			await eventService.AddEventAsync(model);
+			try
+			{
+				await eventService.AddEventAsync(model);
+			}
+			catch (Exception)
+			{
+				return BadRequest();
+			}
+
+			return RedirectToAction(nameof(Index));
+		}
+
+        public async Task<IActionResult> Remove(int id)
+        {
+			try
+			{
+				await eventService.RemoveEventAsync(id);
+			}
+			catch (Exception)
+			{
+				return BadRequest();
+			}
 
 			return RedirectToAction(nameof(Index));
 		}

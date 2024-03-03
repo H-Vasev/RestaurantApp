@@ -70,5 +70,19 @@ namespace RestaurantApp.Core.Services
 			await dbContext.Events.AddAsync(ev);
 			await dbContext.SaveChangesAsync();
 		}
+
+		public async Task RemoveEventAsync(int id)
+		{
+			var ev = await dbContext.Events
+				.FindAsync(id);
+
+            if (ev == null)
+            {
+                throw new ArgumentNullException(nameof(ev));
+            }
+
+			dbContext.Events.Remove(ev);
+			await dbContext.SaveChangesAsync();
+        }
 	}
 }
