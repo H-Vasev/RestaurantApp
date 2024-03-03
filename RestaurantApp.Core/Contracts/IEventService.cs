@@ -14,5 +14,9 @@ namespace RestaurantApp.Core.Contracts
 		Task AddEventAsync(EventFormModel model);
 
 		Task RemoveEventAsync(int id);
+
+		Task<EventFormModel?> GetEventByIdForEditAsync(int id);
+
+		Task EditEventAsync(EventFormModel model, int id);
 	}
 }

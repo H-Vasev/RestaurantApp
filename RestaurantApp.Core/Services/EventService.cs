@@ -84,5 +84,44 @@ namespace RestaurantApp.Core.Services
 			dbContext.Events.Remove(ev);
 			await dbContext.SaveChangesAsync();
         }
+
+		public Task<EventFormModel?> GetEventByIdForEditAsync(int id)
+		{
+			var ev = dbContext.Events
+				.Where(e => e.Id == id)
+				.Select(e => new EventFormModel
+				{
+					Title = e.Title,
+					Description = e.Description,
+					StartEvent = e.StartEvent,
+					EndEvent = e.EndEvent
+				})
+				.FirstOrDefaultAsync();
+
+			if (ev == null)
+			{
+				throw new ArgumentNullException(nameof(ev));
+			}
+
+			return ev;
+		}
+
+		public async Task EditEventAsync(EventFormModel model, int id)
+		{
+			var ev = await dbContext.Events
+				.FindAsync(id);
+
+			if (ev == null)
+			{
+				throw new ArgumentNullException(nameof(ev));
+			}
+
+			ev.Title = model.Title;
+			ev.Description = model.Description;
+			ev.StartEvent = model.StartEvent;
+			ev.EndEvent = model.EndEvent;
+
+			await dbContext.SaveChangesAsync();
+		}
 	}
 }
