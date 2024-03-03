@@ -24,8 +24,12 @@
 				<h2>Events</h2>
 				<p>Organize Your Events in our Restaurant</p>
 			</div>
+			
 			<div class="why-us">
 				<div class="container aos-init aos-animate" data-aos="fade-up">
+					<div>
+						<a asp-area="Administrator" asp-controller="Home" asp-action="Add" class="btn btn-sm btn-light">Add Event</a>
+					</div>
 					<div class="row">
 						@foreach (var item in Model)
 						{
@@ -33,10 +37,9 @@
 								<div class="box aos-init aos-animate" data-aos="zoom-in" data-aos-delay="100">
 									<span>@item.StartEvent.ToString("dd.MM.yy HH:mm")</span>
 									<h4>@item.Title</h4>
-									<p>@item.Description</p>
 									<div class="d-flex justify-content-end mt-2">
-										<a asp-area="" asp-controller="Reservation" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-light me-2">Edit</a>
-										<a asp-area="" asp-controller="Reservation" asp-action="Add" asp-route-id="@item.Id" class="btn btn-sm btn-light">Remove</a>
+										<a asp-area="Administrator" asp-controller="Event" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-light me-2">Edit</a>
+										<a asp-area="Administrator" asp-controller="Event" asp-action="Remove" asp-route-id="@item.Id" class="btn btn-sm btn-light">Remove</a>
 									</div>
 								</div>
 							</div>

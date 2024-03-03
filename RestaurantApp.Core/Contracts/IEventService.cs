@@ -1,5 +1,6 @@
 ﻿using RestaurantApp.Core.Models.Event;
 
+
 namespace RestaurantApp.Core.Contracts
 {
 	public interface IEventService
@@ -9,5 +10,6 @@ namespace RestaurantApp.Core.Contracts
         Task<EventViewModel?> GetEventByIdAsync(int id);
 
 		Task<IEnumerable<int>?> GetAllBoockedEventIdsAsync(string userId);
+		Task AddEventAsync(EventFormModel model);
 	}
 }

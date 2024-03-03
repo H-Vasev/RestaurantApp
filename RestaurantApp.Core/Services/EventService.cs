@@ -2,6 +2,7 @@
 using RestaurantApp.Core.Contracts;
 using RestaurantApp.Core.Models.Event;
 using RestaurantApp.Data;
+using RestaurantApp.Infrastructure.Data.Models;
 
 namespace RestaurantApp.Core.Services
 {
@@ -54,6 +55,20 @@ namespace RestaurantApp.Core.Services
 				.ToArrayAsync();
 
 			return evIds;
+		}
+
+		public async Task AddEventAsync(EventFormModel model)
+		{
+			var ev = new Event()
+			{
+				Title = model.Title,
+				Description = model.Description,
+				StartEvent = model.StartEvent,
+				EndEvent = model.EndEvent
+			};
+
+			await dbContext.Events.AddAsync(ev);
+			await dbContext.SaveChangesAsync();
 		}
 	}
 }
