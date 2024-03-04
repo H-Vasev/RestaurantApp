@@ -60,5 +60,40 @@ namespace RestaurantApp.Areas.Administrator.Controllers
 
             return RedirectToAction(nameof(Index));
         }
+
+		[HttpPost]
+		public async Task<IActionResult> Remove(int id)
+		{
+			var imgPath = await productService.GetProductImagePathAsync(id);
+
+			if (!string.IsNullOrEmpty(imgPath))
+			{
+				var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/", imgPath);
+
+				if (System.IO.File.Exists(filePath))
+				{
+					System.IO.File.Delete(filePath);
+				}
+				else
+				{
+					return NotFound("Image not found.");
+				}
+			}
+			else
+			{
+				return NotFound("Image not found.");
+			}
+
+			try
+			{
+                await productService.RemoveProductAsync(id);
+            }
+            catch (Exception)
+			{
+				return BadRequest();
+			}
+
+			return RedirectToAction(nameof(Index));
+		}
 	}
 }

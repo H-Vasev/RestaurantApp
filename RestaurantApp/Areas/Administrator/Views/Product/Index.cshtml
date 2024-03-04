@@ -45,11 +45,22 @@
 						@item.Description
 					</div>
 					<div class="d-flex justify-content-end">
-						<a asp-area="Administrator" asp-controller="Product" asp-action="Edit" asp-route-id="@item.Id" class="me-2">Edit</a>
-						<a asp-area="Administrator" asp-controller="Product" asp-action="Remove" asp-route-id="@item.Id">Remove</a>
+						<form method="post">
+							<input type="submit" asp-area="Administrator" asp-controller="Product" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-light btn-sm" value="Edit" />
+							<input type="submit" asp-area="Administrator" asp-controller="Product" asp-action="Remove" asp-route-id="@item.Id" onclick="return confirmRemove('@item.Name')" class="btn btn-light btn-sm" value="Remove" />
+						</form>
 					</div>
 				</div>
 			}
 		</div>
 	</div>
 </section>
+
+
+@section Scripts {
+	<script>
+		function confirmRemove(name) {
+			return confirm('Are you sure you want to remove ' + name + '?');
+		}
+	</script>
+}

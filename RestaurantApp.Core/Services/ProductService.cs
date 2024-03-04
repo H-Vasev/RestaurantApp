@@ -28,5 +28,32 @@ namespace RestaurantApp.Core.Services
             await dbContext.Products.AddAsync(product);
             await dbContext.SaveChangesAsync();
         }
+
+		public async Task<string> GetProductImagePathAsync(int id)
+		{
+			var product = await dbContext.Products
+                .FindAsync(id);
+
+            if (product == null)
+            {
+                throw new ArgumentNullException(nameof(product));
+            }
+
+            return product.Image;
+		}
+
+		public async Task RemoveProductAsync(int id)
+        {
+            var product = await dbContext.Products
+                  .FindAsync(id);
+
+            if (product == null)
+            {
+                throw new ArgumentNullException(nameof(product));
+            }
+
+            dbContext.Products.Remove(product);
+            await dbContext.SaveChangesAsync();
+        }
     }
 }
