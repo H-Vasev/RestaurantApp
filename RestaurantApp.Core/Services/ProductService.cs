@@ -1,4 +1,5 @@
-﻿using RestaurantApp.Core.Contracts;
+﻿using Microsoft.EntityFrameworkCore;
+using RestaurantApp.Core.Contracts;
 using RestaurantApp.Core.Models.Menu;
 using RestaurantApp.Data;
 using RestaurantApp.Infrastructure.Data.Models;
@@ -28,6 +29,46 @@ namespace RestaurantApp.Core.Services
             await dbContext.Products.AddAsync(product);
             await dbContext.SaveChangesAsync();
         }
+
+        public async Task EditProductAsync(ProductFormModel model, int id)
+        {
+            var product = await dbContext.Products
+                .FindAsync(id);
+
+            if (product == null)
+            {
+                throw new ArgumentNullException(nameof(product));
+            }
+
+            product.Name = model.Title;
+            product.Description = model.Description;
+            product.Price = model.Price;
+            product.CategoryId = model.CategoryId;
+
+            await dbContext.SaveChangesAsync();
+        }
+
+        public async Task<ProductFormModel> GetProductByIdForEditAsync(int id)
+		{
+			var product = await dbContext.Products
+                .Where(p => p.Id == id)
+                .Select(p => new ProductFormModel()
+                {
+                    Id = p.Id,
+                    Title = p.Name,
+                    Description = p.Description,
+                    Price = p.Price,
+                    ImagePath = p.Image,
+                    CategoryId = p.CategoryId,
+                }).FirstOrDefaultAsync();
+
+            if (product == null)
+            {
+                throw new ArgumentNullException(nameof(product));
+            }
+
+            return product;
+		}
 
 		public async Task<string> GetProductImagePathAsync(int id)
 		{

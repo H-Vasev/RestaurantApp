@@ -17,6 +17,7 @@ namespace RestaurantApp.Core.Models.Menu
         [Required]
         public decimal Price { get; set; }
 
+        [Display(Name = "Image")]
         public string? ImagePath { get; set; }
 
         [Display(Name = "Category")]

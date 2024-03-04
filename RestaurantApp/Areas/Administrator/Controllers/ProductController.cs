@@ -61,6 +61,43 @@ namespace RestaurantApp.Areas.Administrator.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+		[HttpGet]
+		public async Task<IActionResult> Edit(int id)
+		{
+			try
+			{
+				var model = await productService.GetProductByIdForEditAsync(id);
+				model.Categories = await menuService.GetCategoriesAsync();
+
+				return View(model);
+			}
+			catch (Exception)
+			{
+				return BadRequest();
+			}
+		}
+
+		[HttpPost]
+		public async Task<IActionResult> Edit(ProductFormModel model, int id)
+		{
+            if (!ModelState.IsValid)
+			{
+                model.Categories = await menuService.GetCategoriesAsync();
+                return View(model);
+            }
+
+			try
+			{
+                await productService.EditProductAsync(model, id);
+            }
+            catch (Exception)
+			{
+				return BadRequest();
+			}
+
+            return RedirectToAction(nameof(Index));
+        }
+
 		[HttpPost]
 		public async Task<IActionResult> Remove(int id)
 		{
