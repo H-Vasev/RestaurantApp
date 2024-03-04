@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using RestaurantApp.Areas.Administrator.Models.Product;
 using RestaurantApp.Core.Contracts;
+using RestaurantApp.Core.Models.Menu;
 
 namespace RestaurantApp.Areas.Administrator.Controllers
 {
-	public class ProductController : BaseAdministratorController
+    public class ProductController : BaseAdministratorController
 	{
 		private readonly IMenuService menuService;
 		private readonly IProductService productService;
@@ -33,5 +33,32 @@ namespace RestaurantApp.Areas.Administrator.Controllers
 
 			return View(model);
 		}
+
+		[HttpPost]
+		public async Task<IActionResult> Add(ProductFormModel model, IFormFile imagePath)
+		{
+            if (!ModelState.IsValid)
+			{
+                model.Categories = await menuService.GetCategoriesAsync();
+                return View(model);
+            }
+
+			if (imagePath != null && imagePath.Length > 0)
+			{
+				var fileName = Guid.NewGuid().ToString() + Path.GetExtension(imagePath.FileName);
+				var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/img/menu", fileName);
+
+				using (var fileStream = new FileStream(filePath, FileMode.Create))
+				{
+					await imagePath.CopyToAsync(fileStream);
+				}
+
+				model.ImagePath = "img/menu/" + fileName;
+			}
+
+			await productService.AddProductAsync(model);
+
+            return RedirectToAction(nameof(Index));
+        }
 	}
 }

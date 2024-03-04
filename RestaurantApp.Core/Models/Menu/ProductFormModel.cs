@@ -1,7 +1,6 @@
-﻿using RestaurantApp.Core.Models.Menu;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace RestaurantApp.Areas.Administrator.Models.Product
+namespace RestaurantApp.Core.Models.Menu
 {
     public class ProductFormModel
     {
@@ -18,7 +17,7 @@ namespace RestaurantApp.Areas.Administrator.Models.Product
         [Required]
         public decimal Price { get; set; }
 
-        public string? Image { get; set; }
+        public string? ImagePath { get; set; }
 
         [Display(Name = "Category")]
         public int CategoryId { get; set; }
