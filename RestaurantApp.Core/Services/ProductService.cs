@@ -80,7 +80,7 @@ namespace RestaurantApp.Core.Services
                 throw new ArgumentNullException(nameof(product));
             }
 
-            return product.Image;
+            return product.Image ?? "";
 		}
 
 		public async Task RemoveProductAsync(int id)

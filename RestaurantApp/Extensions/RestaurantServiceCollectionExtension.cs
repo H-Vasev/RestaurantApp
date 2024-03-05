@@ -13,6 +13,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddScoped<IEventService, EventService>();
             services.AddScoped<IReservationService, ReservationService>();
             services.AddScoped<IProductService, ProductService>();
+            services.AddScoped<IGalleryService, GalleryService>();
 
 			return services;
         }
