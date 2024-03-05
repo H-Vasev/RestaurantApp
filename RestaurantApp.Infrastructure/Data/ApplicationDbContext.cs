@@ -45,5 +45,9 @@ namespace RestaurantApp.Data
         public DbSet<Reservation> Reservations { get; set; } = null!;
 
         public DbSet<Event> Events { get; set; } = null!;
+
+		public DbSet<GalleryImage> GalleryImages { get; set; } = null!;
+
+		public DbSet<ImageStatistic> ImageStatistics { get; set; } = null!;
 	}
 }
