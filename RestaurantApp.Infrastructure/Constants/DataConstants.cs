@@ -91,5 +91,11 @@
 			public const int DescriptionMaxLenght = 50;
 			public const int DescriptionMinLenght = 2;
 		}
+
+		public static class GalleryImage
+		{
+			public const int CaptionMaxLenght = 50;
+			public const int CaptionMinLenght = 2;
+		}
     }
 }

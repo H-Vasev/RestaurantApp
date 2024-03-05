@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RestaurantApp.Data;
 
@@ -11,9 +12,10 @@ using RestaurantApp.Data;
 namespace RestaurantApp.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240305205010_AddGalleryAndImageStatisticsTables")]
+    partial class AddGalleryAndImageStatisticsTables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -416,56 +418,6 @@ namespace RestaurantApp.Infrastructure.Migrations
                     b.HasIndex("ApplicationUserId");
 
                     b.ToTable("GalleryImages");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            CreatedOn = new DateTime(2024, 3, 5, 21, 6, 42, 889, DateTimeKind.Local).AddTicks(2168),
-                            ImagePaht = "img/gallery/gallery-1.jpg"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            CreatedOn = new DateTime(2024, 3, 4, 21, 6, 42, 889, DateTimeKind.Local).AddTicks(2172),
-                            ImagePaht = "img/gallery/gallery-2.jpg"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            CreatedOn = new DateTime(2024, 3, 3, 21, 6, 42, 889, DateTimeKind.Local).AddTicks(2175),
-                            ImagePaht = "img/gallery/gallery-3.jpg"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            CreatedOn = new DateTime(2024, 3, 2, 21, 6, 42, 889, DateTimeKind.Local).AddTicks(2176),
-                            ImagePaht = "img/gallery/gallery-4.jpg"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            CreatedOn = new DateTime(2024, 3, 1, 21, 6, 42, 889, DateTimeKind.Local).AddTicks(2178),
-                            ImagePaht = "img/gallery/gallery-5.jpg"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            CreatedOn = new DateTime(2024, 2, 29, 21, 6, 42, 889, DateTimeKind.Local).AddTicks(2180),
-                            ImagePaht = "img/gallery/gallery-6.jpg"
-                        },
-                        new
-                        {
-                            Id = 7,
-                            CreatedOn = new DateTime(2024, 2, 28, 21, 6, 42, 889, DateTimeKind.Local).AddTicks(2181),
-                            ImagePaht = "img/gallery/gallery-7.jpg"
-                        },
-                        new
-                        {
-                            Id = 8,
-                            CreatedOn = new DateTime(2024, 2, 27, 21, 6, 42, 889, DateTimeKind.Local).AddTicks(2183),
-                            ImagePaht = "img/gallery/gallery-8.jpg"
-                        });
                 });
 
             modelBuilder.Entity("RestaurantApp.Infrastructure.Data.Models.ImageStatistic", b =>
