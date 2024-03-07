@@ -1,5 +1,4 @@
-﻿<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
-
+﻿
 @model IEnumerable<GalleryViewModel>
 
 @{
@@ -22,7 +21,7 @@
             {
                 <div class="col-lg-3 col-md-4 position-relative">
                     <div class="gallery-item">
-                        <a href="~/@item.ImagePath" class="gallery-lightbox" data-gall="gallery-item">
+                        <a asp-area="" asp-action="ImageDetails" asp-controller="Gallery" asp-route-id="@item.Id" class="gallery-lightbox">
                             <img src="~/@item.ImagePath" alt="" class="img-fluid">
                         </a>
                         <div class="info-icons position-absolute bottom-0 end-0 p-2">
