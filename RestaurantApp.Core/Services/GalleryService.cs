@@ -25,6 +25,8 @@ namespace RestaurantApp.Core.Services
                     CreatedOn = x.CreatedOn,
                     CreatedBy = x.CreatedBy,
                     ImagePath = x.ImagePaht,
+                    ViewsCount = x.ViewsCount,
+                    LikesCount = x.LikesCount,
                     ApplicationUserId = x.ApplicationUserId.ToString()
                 }).ToArrayAsync();
         }
