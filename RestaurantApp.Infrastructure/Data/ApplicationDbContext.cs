@@ -48,6 +48,5 @@ namespace RestaurantApp.Data
 
 		public DbSet<GalleryImage> GalleryImages { get; set; } = null!;
 
-		public DbSet<ImageStatistic> ImageStatistics { get; set; } = null!;
 	}
 }

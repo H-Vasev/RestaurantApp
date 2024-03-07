@@ -24,11 +24,14 @@ namespace RestaurantApp.Infrastructure.Data.Models
         [Required]
         public string ImagePaht { get; set; } = null!;
 
+        public int ViewsCount { get; set; }
+
+        public int LikesCount { get; set; }
+
         public Guid? ApplicationUserId { get; set; }
 
         [ForeignKey(nameof(ApplicationUserId))]
         public ApplicationUser? ApplicationUser { get; set; }
 
-        public ImageStatistic ImageStatistic { get; set; } = null!;
     }
 }
