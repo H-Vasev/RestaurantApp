@@ -3,7 +3,6 @@
         e.preventDefault();
 
         var productId = $(this).data('id');
-        console.log(productId)
         $.ajax({
             url: '/Menu/AddToCart',
             type: 'POST',
@@ -24,8 +23,12 @@
                     });
                 }, 3000);
             },
-            error: function (error) {
-                console.error("Error adding to cart: ", error);
+            error: function (xhr,error) {
+                if (xhr.status == 401) { 
+                    window.location.href = '/Account/Login'; 
+                } else {
+                    console.error("Error adding to cart: ", error);
+                }
             }
         });
 
