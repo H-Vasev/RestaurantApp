@@ -1,7 +1,7 @@
 ﻿$(document).ready(function () {
     $('.gallery-item a').click(function (e) {
         e.preventDefault();
-        var imageUrl = $(this).attr('href');
+        var imageUrl = $(this).data('img-url');
         var modalBody = $('#imageModal .modal-body');
         modalBody.empty();
         modalBody.append(`<img src="${imageUrl}" class="img-fluid">`);
