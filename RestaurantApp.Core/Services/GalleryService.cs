@@ -5,7 +5,7 @@ using RestaurantApp.Data;
 
 namespace RestaurantApp.Core.Services
 {
-    public class GalleryService : IGalleryService
+	public class GalleryService : IGalleryService
     {
         private readonly ApplicationDbContext dbContext;
 
@@ -29,6 +29,22 @@ namespace RestaurantApp.Core.Services
                     LikesCount = x.LikesCount,
                     ApplicationUserId = x.ApplicationUserId.ToString()
                 }).ToArrayAsync();
+        }
+
+        public async Task<int> IncrementImageViewsCountAsync(int id, bool isIdExist)
+        {
+            var image = dbContext.GalleryImages.Find(id);
+            if (image == null)
+            {
+                throw new ArgumentNullException(nameof(image));
+            }
+            if (!isIdExist)
+            {
+				image.ViewsCount += 1;
+				await dbContext.SaveChangesAsync();
+			}
+
+            return image.ViewsCount;
         }
     }
 }
