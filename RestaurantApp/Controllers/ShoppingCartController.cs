@@ -56,5 +56,21 @@ namespace RestaurantApp.Controllers
 			TempData["SuccessRemove"] = "Product removed from cart successfully!";
 			return RedirectToAction(nameof(Index));
 		}
+
+		public async Task<IActionResult> GetCartItemsCount()
+		{
+			var userId = GetUserId();
+
+			if (!string.IsNullOrEmpty(userId))
+			{
+				var cartItemsCount = await shoppingCartService.GetItamsQuantityAsync(userId);
+
+				return Json(new {Count = cartItemsCount});
+			}
+			else
+			{
+				return Json(new {Count = 0});
+			}
+		}
     }
 }
