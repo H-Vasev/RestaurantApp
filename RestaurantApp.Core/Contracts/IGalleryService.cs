@@ -8,5 +8,6 @@ namespace RestaurantApp.Core.Contracts
         Task<IEnumerable<GalleryViewModel>> GetAllGalleryImagesAsync();
 
         Task<int> IncrementImageViewsCountAsync(int id, bool isIdExist);
+		Task IncrementLikeCountAsync(int id, string userId);
 	}
 }

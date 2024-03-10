@@ -21,6 +21,21 @@ namespace RestaurantApp.Controllers
             return View(model);
         }
 
+        public async Task<IActionResult> IncrementLikeCount(int id)
+        {
+            var userId = GetUserId();
+            try
+            {
+				await galleryService.IncrementLikeCountAsync(id, userId);
+			}
+			catch (Exception)
+            {
+                return BadRequest();
+            }
+
+			return RedirectToAction(nameof(Index));
+		}
+
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -48,9 +63,17 @@ namespace RestaurantApp.Controllers
                 isIdExist = false;
 			}
 
-            var imageCount = await galleryService.IncrementImageViewsCountAsync(id, isIdExist);
+            try
+            {
+				var imageCount = await galleryService.IncrementImageViewsCountAsync(id, isIdExist);
+				return Json(new { viewCount = imageCount });
+			}
+			catch (Exception)
+            {
+                return BadRequest();
+            }
 
-            return Json(new {viewCount = imageCount});
+            
         }
     }
 }

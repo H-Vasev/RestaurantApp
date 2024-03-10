@@ -2,6 +2,7 @@
 using RestaurantApp.Core.Contracts;
 using RestaurantApp.Core.Models.Gallery;
 using RestaurantApp.Data;
+using RestaurantApp.Infrastructure.Data.Models;
 
 namespace RestaurantApp.Core.Services
 {
@@ -46,5 +47,25 @@ namespace RestaurantApp.Core.Services
 
             return image.ViewsCount;
         }
-    }
+
+		public async Task IncrementLikeCountAsync(int id, string userId)
+		{
+            var image = await dbContext.GalleryImages
+                .FindAsync(id);
+
+            if (image == null)
+            {
+              throw new ArgumentNullException(nameof(image));
+            }
+
+            var isUserLiked = image.ApplicationUserId;
+            if (isUserLiked != Guid.Parse(userId))
+            {
+                image.LikesCount += 1;
+                image.ApplicationUserId = Guid.Parse(userId);
+
+                await dbContext.SaveChangesAsync();
+            }
+        }
+	}
 }
