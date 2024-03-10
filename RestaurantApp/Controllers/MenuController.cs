@@ -32,6 +32,8 @@ namespace RestaurantApp.Controllers
 			return View(model);
 		}
 
+		[HttpPost]
+		[ValidateAntiForgeryToken]
         public async Task<IActionResult> AddToCart(int id)
         {
             var userId = GetUserId();
@@ -45,7 +47,6 @@ namespace RestaurantApp.Controllers
                 return BadRequest();
             }
 
-			TempData["SuccessAdd"] = "Successfully add product to your basket!";
 			return RedirectToAction(nameof(Index));
         }
     }

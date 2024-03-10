@@ -6,10 +6,9 @@
 
 <section id="menu" class="menu section-bg">
 	<div class="container aos-init aos-animate" data-aos="fade-up">
-		@if (TempData["SuccessAdd"] != null)
-		{
-			<div id="successResult" class="customAlertMessage alert alert-success text-center mt-5">@TempData["SuccessAdd"]</div>
-		}
+
+		<div id="message-container"></div>
+
 		<div class="section-title mt-5 pt-5">
 			<h2>Menu</h2>
 			<p>Check Our Tasty Menu</p>
@@ -35,7 +34,8 @@
 		<div class="row menu-container aos-init aos-animate">
 			@foreach (var item in Model)
 			{
-				<div class="col-lg-6 menu-item">
+				<form method="post" class="col-lg-6 menu-item">
+					@Html.AntiForgeryToken()
 					<img src="~/@item.Image" class="menu-img" alt="">
 					<div class="menu-content">
 						<a href="#">@item.Name</a>
@@ -44,21 +44,13 @@
 					<div class="menu-ingredients">
 						@item.Description
 					</div>
-					<a id="add-to-cart" asp-area="" asp-controller="Menu" asp-action="AddToCart" asp-route-id="@item.Id" class="offset-sm-8">Add to Basket</a>
-				</div>
+					<a href="#" class="add-to-cart offset-sm-8" data-id="@item.Id">Add to Basket</a>
+				</form>
 			}
 		</div>
 	</div>
 </section>
 
 @section Scripts {
-	<script>
-		$(document).ready(function () {
-			setTimeout(function () {
-				$('#successResult').fadeOut('slow', function () {
-					$(this).remove();
-				})
-			}, 3000);
-		});
-	</script>
+	<script src="~/js/menu.js"></script>
 }
