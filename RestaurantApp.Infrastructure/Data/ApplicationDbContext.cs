@@ -24,6 +24,20 @@ namespace RestaurantApp.Data
 				.Property(p => p.Price)
 				.HasPrecision(18, 2);
 
+			builder.Entity<Order>()
+				.Property(p => p.TotalPrice)
+				.HasPrecision(18, 2);
+
+			builder.Entity<OrderItem>()
+				.Property(p => p.Price)
+				.HasPrecision(18, 2);
+
+			builder.Entity<OrderItem>()
+				.HasOne(p => p.Product)
+				.WithMany(p => p.OrderItems)
+				.HasForeignKey(p => p.ProductId)
+				.OnDelete(DeleteBehavior.SetNull);
+
 			builder.Entity<CartProduct>()
 				.HasKey(pk => new { pk.ShoppingCartId, pk.ProductId });
 
@@ -47,6 +61,10 @@ namespace RestaurantApp.Data
         public DbSet<Event> Events { get; set; } = null!;
 
 		public DbSet<GalleryImage> GalleryImages { get; set; } = null!;
+
+		public DbSet<Order> Orders { get; set; } = null!;
+
+		public DbSet<OrderItem> OrderItems { get; set; } = null!;
 
 	}
 }

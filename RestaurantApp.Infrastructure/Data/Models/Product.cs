@@ -29,5 +29,7 @@ namespace RestaurantApp.Infrastructure.Data.Models
 		public Category Category { get; set; } = null!;
 
 		public ICollection<CartProduct> CartProducts { get; set; } = new HashSet<CartProduct>();
+
+		public ICollection<OrderItem> OrderItems { get; set; } = new HashSet<OrderItem>();
     }
 }
