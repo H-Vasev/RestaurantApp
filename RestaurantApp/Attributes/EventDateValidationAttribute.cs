@@ -1,8 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
+﻿using Microsoft.AspNetCore.Mvc.Filters;
 using RestaurantApp.Core.Models.Event;
-using System;
 
 namespace RestaurantApp.Attributes
 {
