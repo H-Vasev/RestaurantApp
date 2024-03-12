@@ -1,16 +1,19 @@
-﻿using Microsoft.AspNetCore.Http.Extensions;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using RestaurantApp.Core.Contracts;
+using RestaurantApp.Core.Models.ShoppingCart;
 
 namespace RestaurantApp.Controllers
 {
 	public class ShoppingCartController : BaseController
     {
         private readonly IShoppingCartService shoppingCartService;
+		private readonly IOrderService orderService;
 
-        public ShoppingCartController(IShoppingCartService shoppingCartService)
+        public ShoppingCartController(IShoppingCartService shoppingCartService, IOrderService orderService)
         {
 			this.shoppingCartService = shoppingCartService;
+			this.orderService = orderService;
 		}
 
         public async Task<IActionResult> Index()
@@ -56,6 +59,30 @@ namespace RestaurantApp.Controllers
 			TempData["SuccessRemove"] = "Product removed from cart successfully!";
 			return RedirectToAction(nameof(Index));
 		}
+
+		[HttpPost]
+		public async Task<IActionResult> Checkout(CheckoutFormModel model)
+		{
+			if (!ModelState.IsValid)
+			{
+				return View(nameof(Index));
+			}
+
+			var userId = GetUserId();
+
+			try
+			{
+				await orderService.CheckoutAsync(model, userId);
+				await shoppingCartService.ClearCartAsync(userId);
+			}
+			catch (Exception)
+			{
+				return BadRequest();
+			}
+
+			return RedirectToAction(nameof(Index));
+		}
+
 
 		public async Task<IActionResult> GetCartItemsCount()
 		{

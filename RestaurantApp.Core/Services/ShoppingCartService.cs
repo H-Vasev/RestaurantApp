@@ -97,5 +97,20 @@ namespace RestaurantApp.Core.Services
 			
 			await dbContext.SaveChangesAsync();
 		}
+
+		public async Task ClearCartAsync(string userId)
+		{
+			var cartItems = await dbContext.CartProducts
+				.Where(c => c.ShoppingCart.ApplicationUser.Id == Guid.Parse(userId))
+				.ToArrayAsync();
+
+			if (cartItems == null)
+			{
+				throw new InvalidOperationException(nameof(cartItems));
+			}
+
+			dbContext.RemoveRange(cartItems);
+			await dbContext.SaveChangesAsync();
+		}
 	}
 }
