@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RestaurantApp.Core.Contracts;
-using RestaurantApp.Core.Services;
 
 namespace RestaurantApp.Controllers
 {
@@ -28,6 +27,7 @@ namespace RestaurantApp.Controllers
 
             ViewBag.Categories = await menuService.GetCategoriesAsync();
             ViewBag.CurrentCategory = category;
+			ViewBag.UserId = GetUserId();
 
 			return View(model);
 		}
