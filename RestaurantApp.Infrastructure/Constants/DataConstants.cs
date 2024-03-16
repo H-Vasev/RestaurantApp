@@ -16,8 +16,9 @@
 			public const int StreetMaxLenght = 100;
 			public const int StreetMinLenght = 2;
 
-			public const int PostalCodeMaxLenght = 50;
-			public const int PostalCodeMinLenght = 2;
+			//check here
+			public const int PostalCodeMaxLenght = 10;
+			public const int PostalCodeMinLenght = 4;
 		}
 
 		public static class Town
