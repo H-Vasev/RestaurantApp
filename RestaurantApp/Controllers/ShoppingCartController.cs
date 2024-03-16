@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using RestaurantApp.Core.Contracts;
 using RestaurantApp.Core.Models.ShoppingCart;
 
@@ -60,22 +59,31 @@ namespace RestaurantApp.Controllers
 			return RedirectToAction(nameof(Index));
 		}
 
+		public async Task<IActionResult> Checkout()
+		{
+			var userId = GetUserId();
+			var model = await orderService.GetDataForCheoutAsync(userId);
+
+			return View(model);
+		}
+
 		[HttpPost]
 		public async Task<IActionResult> Checkout(CheckoutFormModel model)
 		{
 			if (model.Items.Count() < 1)
 			{
-				ModelState.AddModelError("", "Yoru Shopping cart is empty!");
-			}
-			if (!ModelState.IsValid)
-			{
-				return RedirectToAction(nameof(Index));
+				ModelState.AddModelError("", "Your shopping cart is empty!");
 			}
 
-			var userId = GetUserId();
+			if (!ModelState.IsValid)
+			{
+				return View(model);
+			}
 
 			try
 			{
+				var userId = GetUserId();
+
 				await orderService.CheckoutAsync(model, userId);
 				await shoppingCartService.ClearCartAsync(userId);
 			}

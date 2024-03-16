@@ -10,10 +10,12 @@ namespace RestaurantApp.Core.Services
 	public class OrderService : IOrderService
 	{
 		private readonly ApplicationDbContext dbContext;
+		private readonly IShoppingCartService shoppingCartService;
 
-		public OrderService(ApplicationDbContext dbContext)
+		public OrderService(ApplicationDbContext dbContext, IShoppingCartService shoppingCartService)
 		{
 			this.dbContext = dbContext;
+			this.shoppingCartService = shoppingCartService;
 		}
 
 		public async Task CheckoutAsync(CheckoutFormModel model, string userId)
@@ -44,9 +46,34 @@ namespace RestaurantApp.Core.Services
 			await dbContext.SaveChangesAsync();
 		}
 
+		public async Task<CheckoutFormModel> GetDataForCheoutAsync(string userId)
+		{
+			var items = await shoppingCartService.GetAllItemsAsync(userId);
+			var userData = await dbContext.Users
+				.Where(u => u.Id == Guid.Parse(userId))
+				.Select(u => new CheckoutFormModel()
+				{
+					Name = u.FirsName,
+					Address = u.Address.Street,
+					PostalCode = u.Address.PostalCode,
+					Email = u.Email,
+					PhoneNumber = u.PhoneNumber,
+				}).FirstOrDefaultAsync();
+
+			if (userData == null)
+			{
+				throw new ArgumentException(nameof(userData));
+			}
+
+			userData.Items = items;
+			userData.TotalPrice = items.Sum(i => i.Price * i.Quantity);
+
+			return userData;
+		}
+
 		public async Task<IEnumerable<OrderViewModel>> GetOrdersAsync(string userId)
 		{
-			var orders = await  dbContext.Orders
+			var orders = await dbContext.Orders
 				.Where(o => o.UserId == Guid.Parse(userId))
 				.OrderByDescending(o => o.OrderDate)
 				.Take(3)
@@ -69,7 +96,7 @@ namespace RestaurantApp.Core.Services
 		{
 			var orderItems = await dbContext.OrderItems
 				.Where(oi => oi.OrderId == Guid.Parse(orderId))
-				.Select( o => new OrderItemsViewModel()
+				.Select(o => new OrderItemsViewModel()
 				{
 					Id = o.Id.ToString(),
 					OrderId = o.OrderId.ToString(),

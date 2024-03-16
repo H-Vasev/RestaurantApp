@@ -8,5 +8,7 @@ namespace RestaurantApp.Core.Contracts
 		Task CheckoutAsync(CheckoutFormModel model, string userId);
 
 		Task<IEnumerable<OrderViewModel>> GetOrdersAsync(string userId);
+
+		Task<CheckoutFormModel> GetDataForCheoutAsync(string userId);
 	}
 }
