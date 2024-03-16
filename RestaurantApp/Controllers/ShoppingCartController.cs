@@ -63,9 +63,13 @@ namespace RestaurantApp.Controllers
 		[HttpPost]
 		public async Task<IActionResult> Checkout(CheckoutFormModel model)
 		{
+			if (model.Items.Count() < 1)
+			{
+				ModelState.AddModelError("", "Yoru Shopping cart is empty!");
+			}
 			if (!ModelState.IsValid)
 			{
-				return View(nameof(Index));
+				return RedirectToAction(nameof(Index));
 			}
 
 			var userId = GetUserId();

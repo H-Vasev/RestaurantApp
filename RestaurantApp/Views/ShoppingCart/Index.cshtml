@@ -3,8 +3,9 @@
 @{
 	ViewData["Title"] = "Shopping Cart";
 
-	var totalItems = Model.Sum(p => p.Quantity);
 	var totalPrice = 0m;
+
+	var totalItems = Model.Sum(p => p.Quantity);
 }
 
 <div class="card align-items-center justify-content-center mt-5 pt-5">
@@ -26,6 +27,7 @@
 						<div class="col"><h4><b>Shopping Cart</b></h4></div>
 					</div>
 				</div>
+
 				@foreach (var item in Model)
 				{
 					var itemTotalPrice = item.Quantity * item.Price;
@@ -76,8 +78,6 @@
 					<option class="text-muted" value="5" selected>Standard-Delivery- &euro;5.00</option>
 					<option class="text-muted" value="7">Express-Delivery- &euro;7.00</option>
 				</select>
-				<p>GIVE CODE</p>
-				<input id="code" placeholder="Enter your code">
 
 				<div class="row" style="border-top: 1px solid rgba(0,0,0,.1); padding: 2vh 0;">
 					<div class="col">TOTAL PRICE</div>
@@ -85,7 +85,7 @@
 				</div>
 				<input type="hidden" name="totalPrice" value="@totalPrice" />
 				<input type="hidden" name="totalItems" value="@totalItems" />
-				<button type="submit">CHECKOUT</button>
+				<button type="submit" @(Model.Count() < 1 ? "disabled" : "")>CHECKOUT</button>
 			</div>
 		</div>
 	</form>
