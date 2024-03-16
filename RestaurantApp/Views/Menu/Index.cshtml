@@ -6,7 +6,6 @@
 	ViewData["Title"] = "Menu";
 
 	var userId = ViewBag.UserId;
-
 }
 
 <section id="menu" class="menu section-bg">
@@ -111,18 +110,7 @@
 			}
 		</div>
 
-		<div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
-			<div class="modal-dialog modal-lg">
-				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-					</div>
-					<div class="modal-body">
-					</div>
-				</div>
-			</div>
-		</div>
-
+		<partial name="_ImageModalPartial"/>
 	</div>
 </section>
 
