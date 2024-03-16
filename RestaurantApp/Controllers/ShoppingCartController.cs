@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using RestaurantApp.Core.Contracts;
 using RestaurantApp.Core.Models.ShoppingCart;
+using System.Linq;
 
 namespace RestaurantApp.Controllers
 {
@@ -86,13 +87,24 @@ namespace RestaurantApp.Controllers
 
 				await orderService.CheckoutAsync(model, userId);
 				await shoppingCartService.ClearCartAsync(userId);
+				TempData["OrderSuccess"] = true;
 			}
 			catch (Exception)
 			{
 				return BadRequest();
 			}
 
-			return RedirectToAction(nameof(Index));
+			return RedirectToAction(nameof(OrderSuccess));
+		}
+
+		public IActionResult OrderSuccess()
+		{
+			if (!TempData.ContainsKey("OrderSuccess"))
+			{
+                return RedirectToAction(nameof(Index));
+            }
+
+			return View();
 		}
 
 
