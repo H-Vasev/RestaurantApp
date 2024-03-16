@@ -1,0 +1,89 @@
+﻿@model CheckoutFormModel
+
+@{
+	ViewData["Title"] = "Checkout";
+}
+
+<div class="card align-items-center justify-content-center mt-5 pt-5">
+	<div class="row mt-5">
+		<div class="col-8 offset-2 mt-5">
+			<h1 class="text-center">@ViewData["Title"]</h1>
+			
+			<form asp-action="Checkout" asp-controller="ShoppingCart" method="post" >
+				<div class="form-group mb-2">
+					<label asp-for="Name"></label>
+					<input asp-for="Name" class="form-control" placeholder="Name...">
+					<span asp-validation-for="Name" class="small text-danger"></span>
+				</div>
+				<div class="form-group mb-2">
+					<label asp-for="PostalCode"></label>
+					<input asp-for="PostalCode" class="form-control" placeholder="PostalCode...">
+					<span asp-validation-for="PostalCode" class="small text-danger"></span>
+				</div>
+				<div class="form-group mb-2">
+					<label asp-for="Address"></label>
+					<input asp-for="Address" class="form-control" placeholder="YAddress...">
+					<span asp-validation-for="Address" class="small textdanger"></span>
+				</div>
+				<div class="form-group mb-2">
+					<label asp-for="Email"></label>
+					<input asp-for="Email" class="form-control">
+					<span asp-validation-for="Email" class="small textdanger"></span>
+				</div>
+				<div class="form-group">
+
+					@foreach (var item in Model.Items)
+					{
+
+						<div class="row border-top border-bottom mb-2">
+							<div class="row main align-items-center">
+								<div class="col-2">
+									<img class="img-fluid" src="~/@item.Image">
+								</div>
+								<div class="col">
+									<div class="row">@item.ProductName</div>
+								</div>
+								<div class="col">&euro; <span>@(item.Price * item.Quantity)</span></div>
+								<div class="col">Quantity: <span>@item.Quantity</span></div>
+							</div>
+						</div>
+					}
+					@for (int i = 0; i < Model.Items.Count(); i++)
+					{
+						<input type="hidden" name="Items[@i].ProductId" value="@Model.Items.ElementAt(i).ProductId" />
+						<input type="hidden" name="Items[@i].ProductName" value="@Model.Items.ElementAt(i).ProductName" />
+						<input type="hidden" name="Items[@i].Quantity" value="@Model.Items.ElementAt(i).Quantity" />
+						<input type="hidden" name="Items[@i].Price" value="@Model.Items.ElementAt(i).Price" />
+						<input type="hidden" name="Items[@i].Image" value="@Model.Items.ElementAt(i).Image" />
+					}
+
+					<p>SHIPPING</p>
+					<select id="deliveryOptions">
+						<option class="text-muted" value="5" selected>Standard-Delivery- &euro;5.00</option>
+						<option class="text-muted" value="7">Express-Delivery- &euro;7.00</option>
+					</select>
+
+					<div class="row" style="border-top: 1px solid rgba(0,0,0,.1); padding: 2vh 0;">
+						<div class="col">TOTAL PRICE</div>
+						<div id="totalPrice" class="col text-right">&euro; @Model.TotalPrice</div>
+						<input type="hidden" name="totalPrice" value="" />
+					</div>
+				</div>
+				<div class="text-center">
+					<input class="btn btn-primary mt-3" type="submit" value="Place yor order" />
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+
+@section Scripts {
+	<script>
+		let totalPrice = @Model.Items.Sum(p => p.Price * p.Quantity);
+	</script>
+
+	<script src="~/js/checkout.js"></script>
+
+	<partial name="_ValidationScriptsPartial" />
+}
