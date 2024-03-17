@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using RestaurantApp.Core.Contracts;
 using RestaurantApp.Core.Models.ShoppingCart;
-using System.Linq;
 
 namespace RestaurantApp.Controllers
 {
-	public class ShoppingCartController : BaseController
+    public class ShoppingCartController : BaseController
     {
         private readonly IShoppingCartService shoppingCartService;
 		private readonly IOrderService orderService;
@@ -87,12 +87,21 @@ namespace RestaurantApp.Controllers
 
 				await orderService.CheckoutAsync(model, userId);
 				await shoppingCartService.ClearCartAsync(userId);
-				TempData["OrderSuccess"] = true;
+				TempData["OrderSuccess"] = "You have successfully placed your order!";
 			}
 			catch (Exception)
 			{
 				return BadRequest();
 			}
+			var userDeliveryInfo = GetUserDeliveryInfo(model.Address,
+													   model.Name,
+													   model.TotalPrice,
+													   model.PostalCode,
+													   model.Email);
+
+
+			var json = JsonConvert.SerializeObject(userDeliveryInfo);
+			SetCookieForDeliveryInfo("UserDeliveryInfo", json);
 
 			return RedirectToAction(nameof(OrderSuccess));
 		}
@@ -104,7 +113,17 @@ namespace RestaurantApp.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-			return View();
+			var cookieDeliveryInfo = GetCookieValue("UserDeliveryInfo");
+			if (!string.IsNullOrEmpty(cookieDeliveryInfo))
+			{
+				var model = DeserializeDeliveryInfo(cookieDeliveryInfo);
+
+                return View(model);
+            }
+			else
+			{
+				return BadRequest();
+			}
 		}
 
 
@@ -122,6 +141,54 @@ namespace RestaurantApp.Controllers
 			{
 				return Json(new {Count = 0});
 			}
+		}
+
+		private string GetCookieValue(string key)
+		{
+            if (Request.Cookies.TryGetValue(key, out string? value))
+			{
+                return value;
+            }
+
+            return string.Empty;
+        }
+
+		private void SetCookieForDeliveryInfo(string key, string value, CookieOptions? options = null)
+		{
+             options ??= new CookieOptions
+			 {
+			     HttpOnly = true,
+			     Secure = true,
+			 	SameSite = SameSiteMode.Strict
+			 };
+
+            Response.Cookies.Append(key, value, options);
+        }
+
+        private object DeserializeDeliveryInfo(string userDeliveryInfoJson)
+        {
+            var deliveryInfo = JsonConvert.DeserializeObject<UserDeliveryInfo>(userDeliveryInfoJson);
+
+            return new UserDeliveryInfo()
+            {
+                Name = deliveryInfo.Name,
+                EmailAddress = deliveryInfo.EmailAddress,
+                Address = deliveryInfo.Address,
+                PostalCode = deliveryInfo.PostalCode,
+                Price = deliveryInfo.Price
+            };
+        }
+
+        private object GetUserDeliveryInfo(string address, string name, decimal totalPrice, string postalCode, string email)
+		{
+			return new UserDeliveryInfo
+			{
+                Address = address,
+                Name = name,
+                Price = totalPrice,
+                PostalCode = postalCode,
+                EmailAddress = email
+            };
 		}
     }
 }
