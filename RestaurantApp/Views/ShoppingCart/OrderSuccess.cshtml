@@ -1,13 +1,23 @@
-﻿@{
+﻿@model UserDeliveryInfo
+
+@{
     ViewData["Title"] = "Order Success";
 }
 
-<div class="container mt-5 pt-5 text-center">
-    <h1 class="mt-5">@ViewData["Title"]</h1>
-    <h3>Thank you for your order!</h3>
-    <p>Your order number is: </p>
-    <p>Your order will be with you soon!</p>
-    <div class="delivery-animation">
-        <img src="~/img/delivery.svg" alt="Delivery Truck" class="delivery-truck" />
+<div class="container mt-5 pt-5 mb-5 text-center">
+    <div class="alert alert-success customAlertMessage mt-5">@TempData["OrderSuccess"]</div>
+    <div class="mt-5">
+        <h2 class="pt-5">Thank you for your order!</h2>
+        <ul class="list-unstyled">
+            <li>Name: <span class="fw-bold">@Model.Name</span></li>
+            <li>Address: <span class="fw-bold">@Model.Address</span></li>
+            <li>Posral Code: <span class="fw-bold">@Model.PostalCode</span></li>
+            <li>Price: <span class="fw-bold">&euro; @Model.Price</span></li>
+            <li>Your order will be with you soon!</li>
+        </ul>
+        
+        <div class="delivery-animation">
+            <img src="~/img/delivery.svg" alt="Delivery Truck" class="delivery-truck" />
+        </div>
     </div>
 </div>
