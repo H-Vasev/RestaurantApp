@@ -5,13 +5,33 @@ using SendGrid.Helpers.Mail;
 
 namespace RestaurantApp.Core.Services
 {
-	public class EmailSender : IEmailSender
+    public class EmailSender : IEmailSender
 	{
 		private IConfiguration configuration;
 
 		public EmailSender(IConfiguration configuration)
 		{
 			this.configuration = configuration;
+		}
+
+		public async Task SendConfirmEmailAsync(string toEmail, string subject, string message)
+		{
+			var apiKey = configuration.GetSection("SendGrid:ApiKey").Value;
+			var client = new SendGridClient(apiKey);
+
+            var fromEmail = configuration.GetSection("EmailAddress:Key").Value;
+
+            var from = new EmailAddress(fromEmail, "RestaurantApp");
+			var to = new EmailAddress(toEmail);
+
+			var msg = MailHelper.CreateSingleEmail(from, to, subject, message, message);
+
+			var response = await client.SendEmailAsync(msg);
+
+			if (!response.IsSuccessStatusCode)
+			{
+				throw new InvalidOperationException("Failed to send email");
+			}
 		}
 
 		public async Task SendEmailAsync(string name, string fromEmail, string subject, string message)

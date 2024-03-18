@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using RestaurantApp.Core.Contracts;
 using RestaurantApp.Core.Models.Account;
 using RestaurantApp.Infrastructure.Data.Models;
+using System.Text.Encodings.Web;
 
 namespace RestaurantApp.Controllers
 {
@@ -11,6 +12,7 @@ namespace RestaurantApp.Controllers
     {
         private readonly SignInManager<ApplicationUser> signInManager;
         private readonly UserManager<ApplicationUser> userManager;
+        private readonly IEmailSender emailSender;
 
         private readonly ITownService townService;
 
@@ -18,11 +20,13 @@ namespace RestaurantApp.Controllers
         public AccountController(
             SignInManager<ApplicationUser> signInManager,
             UserManager<ApplicationUser> userManager,
-            ITownService townService)
+            ITownService townService,
+            IEmailSender emailSender)
         {
             this.signInManager = signInManager;
             this.userManager = userManager;
             this.townService = townService;
+            this.emailSender = emailSender;
         }
 
         [AllowAnonymous]
@@ -38,6 +42,13 @@ namespace RestaurantApp.Controllers
         [HttpPost]
         public async Task<IActionResult> Register(RegisterFormModel model)
         {
+            var userExist = await userManager.FindByEmailAsync(model.Email);
+
+            if (userExist != null)
+            {
+                ModelState.AddModelError(model.Email, "User with this email already exist.");
+            }
+
             if (!ModelState.IsValid)
             {
                 return View(model);
@@ -90,11 +101,50 @@ namespace RestaurantApp.Controllers
                 return View(model);
             }
 
-            await signInManager.SignInAsync(user, isPersistent: false);
+			var code = await userManager.GenerateEmailConfirmationTokenAsync(user);
+			var callbackUrl = Url.Action(nameof(ConfirmEmail), "Account", new { userId = user.Id, code = code }, protocol: HttpContext.Request.Scheme);
+
+            try
+            {
+				await emailSender.SendConfirmEmailAsync(model.Email, "Confirm your account",
+				$"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+			}
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+			
+		
+           // await signInManager.SignInAsync(user, isPersistent: false);
             return RedirectToAction("Index", "Home");
         }
 
+        [HttpGet]
         [AllowAnonymous]
+        public async Task<IActionResult> ConfirmEmail(string userId, string code)
+        {
+            if (userId == null || code == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            var user = await userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+				throw new InvalidOperationException($"Unable to load user with ID '{userId}'.");
+			}
+
+            var result = await userManager.ConfirmEmailAsync(user, code);
+            if (!result.Succeeded)
+            {
+                return BadRequest();
+            }
+
+            ViewBag.SuccessVerified = "Your account has been successfully verified.";
+            return View();
+        }
+
+		[AllowAnonymous]
         [HttpGet]
         public IActionResult Login()
         {
