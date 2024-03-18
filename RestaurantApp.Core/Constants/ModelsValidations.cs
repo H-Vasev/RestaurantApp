@@ -22,5 +22,20 @@ namespace RestaurantApp.Core.Constants
 			public const int EmailMaxLenght = 20;
 			public const int EmailMinLenght = 4;
 		}
+
+		public static class ContactFormModel
+		{
+			public const int NameMaxLenght = 50;
+			public const int NameMinLenght = 3;
+
+			public const int EmailMaxLenght = 50;
+			public const int EmailMinLenght = 4;
+
+			public const int SubjectMaxLenght = 50;
+			public const int SubjectMinLenght = 3;
+
+			public const int MessageMaxLenght = 500;
+			public const int MessageMinLenght = 5;
+		}
 	}
 }
