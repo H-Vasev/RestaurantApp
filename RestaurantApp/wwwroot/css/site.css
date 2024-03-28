@@ -55,6 +55,63 @@ h6 {
 }
 
 /*--------------------------------------------------------------
+# Chat
+--------------------------------------------------------------*/
+.chat-container {
+    margin-top: 20px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.message-input-container {
+    display: flex;
+    margin-top: 20px;
+}
+
+#messageInput {
+    flex-grow: 1;
+    margin-right: 10px;
+}
+
+#messagesList {
+    list-style-type: none;
+    padding: 0;
+    max-height: 300px;
+    overflow-y: auto;
+    padding: 5px;
+    margin-bottom: 20px;
+}
+
+.message {
+    padding: 10px 20px;
+    border-radius: 20px;
+    margin-bottom: 10px;
+    max-width: 80%;
+    word-wrap: break-word;
+}
+
+.sent {
+    background-color: #007bff;
+    color: white;
+    margin-left: auto;
+    text-align: right;
+}
+
+.received {
+    background-color: #023e8a;
+    margin-right: auto;
+    text-align: left;
+}
+
+.timestamp {
+    font-size: 0.8em;
+    color: #666;
+}
+
+/*--------------------------------------------------------------
 # Checkout Success
 --------------------------------------------------------------*/
 .delivery-animation {
