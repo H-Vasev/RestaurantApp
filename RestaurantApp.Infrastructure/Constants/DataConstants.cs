@@ -98,5 +98,20 @@
 			public const int CaptionMaxLenght = 50;
 			public const int CaptionMinLenght = 2;
 		}
+
+		public static class Chat
+		{
+			public const int UsernameMaxLenght = 30;
+			public const int UsernameMinLenght = 3;
+		}
+
+		public static class ChatMessage
+		{
+			public const int MessageMaxLenght = 500;
+			public const int MessageMinLenght = 1;
+
+			public const int SenderNameMaxLenght = 30;
+			public const int SenderNameMinLenght = 3;
+		}
     }
 }

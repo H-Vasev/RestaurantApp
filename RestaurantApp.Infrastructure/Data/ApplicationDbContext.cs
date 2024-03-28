@@ -41,6 +41,12 @@ namespace RestaurantApp.Data
 			builder.Entity<CartProduct>()
 				.HasKey(pk => new { pk.ShoppingCartId, pk.ProductId });
 
+			builder.Entity<Chat>()
+				.HasOne(p => p.ChatUser)
+				.WithMany()
+				.HasForeignKey(p => p.ChatUserId)
+				.OnDelete(DeleteBehavior.SetNull);
+
 			base.OnModelCreating(builder);
 		}
 
@@ -65,6 +71,10 @@ namespace RestaurantApp.Data
 		public DbSet<Order> Orders { get; set; } = null!;
 
 		public DbSet<OrderItem> OrderItems { get; set; } = null!;
+
+		public DbSet<Chat> Chats { get; set; } = null!;
+
+		public DbSet<ChatMessage> ChatMessages { get; set; } = null!;
 
 	}
 }
