@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using RestaurantApp.Data;
 using RestaurantApp.Extensions;
+using RestaurantApp.Hubs;
 using RestaurantApp.Infrastructure.Data.Models;
 
 namespace RestaurantApp
@@ -29,8 +30,8 @@ namespace RestaurantApp
 				.AddRoles<IdentityRole<Guid>>()
 				.AddEntityFrameworkStores<ApplicationDbContext>();
 			builder.Services.AddControllersWithViews();
-
 			builder.Services.AddApplicationServices();
+			builder.Services.AddSignalR();
 
 			builder.Services.ConfigureApplicationCookie(options =>
 			{
@@ -73,6 +74,8 @@ namespace RestaurantApp
 				config.MapControllerRoute(
 					name: "default",
 					pattern: "/{controller=Home}/{action=Index}/{id?}");
+
+				config.MapHub<ChatHub>("/chatHub");
 
 				app.MapRazorPages();
 			});
