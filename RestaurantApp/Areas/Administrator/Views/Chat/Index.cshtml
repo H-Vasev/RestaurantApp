@@ -1,0 +1,28 @@
+﻿@model IEnumerable<ChatViewModel>
+
+@{
+	ViewData["Title"] = "Chat Notifications";
+}
+
+<section class="mt-5 pt-5">
+	<div class="chat-container mt-5 pt-5">
+		<ul id="messagesList">
+			@if (Model.Count() > 0)
+			{
+				@foreach (var chat in Model)
+				{
+					<li class="message sent">
+						<a asp-area="Administrator" asp-controller="Chat" asp-action="LiveChat" asp-route-id="@chat.Id"><span class="text-success fw-bold">Chat with:</span> @chat.Username</a>
+					</li>
+				}
+			}
+			else
+			{
+				<li class="text-center mt-4">
+					<span class="text-muted">No New Messages</span>
+				</li>
+			}
+
+		</ul>
+	</div>
+</section>

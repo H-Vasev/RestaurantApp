@@ -1,0 +1,35 @@
+﻿@using System.Globalization
+@model ChatViewModel
+
+@{
+	ViewData["Title"] = "Chat Now";
+}
+
+<section class="mt-5 pt-5">
+	<div class="chat-container mt-5 pt-5">
+		<ul id="messagesList">
+			@foreach (var chat in Model.MessagesModels)
+			{
+				<li class="@(chat.Sender == "RestaurantService" ? "message sent" : "message received")">
+					<div>
+						@chat.CreatedAt.ToString("g", CultureInfo.InvariantCulture)
+					</div>
+					<div>
+						@($"{chat.Sender}: {chat.Message}")
+					</div>
+				</li>
+			}
+		</ul>
+
+		<div class="message-input-container">
+			<input type="text" id="userId" value="@Model.ChatUserId" hidden />
+			<input type="text" id="messageInput" placeholder="Type your message here..." />
+			<button id="sendButton">Send</button>
+		</div>
+	</div>
+</section>
+
+@section Scripts {
+	<script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
+	<script src="~/js/chat-administrator.js"></script>
+}
