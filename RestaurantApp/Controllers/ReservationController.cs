@@ -7,12 +7,10 @@ namespace RestaurantApp.Controllers
 	public class ReservationController : BaseController
 	{
 		private readonly IReservationService reservationService;
-		private readonly IEventService eventService;
 
-		public ReservationController(IReservationService reservationService, IEventService eventService)
+		public ReservationController(IReservationService reservationService)
 		{
 			this.reservationService = reservationService;
-			this.eventService = eventService;
 		}
 
 		public async Task<IActionResult> Index()
@@ -80,11 +78,6 @@ namespace RestaurantApp.Controllers
 		[HttpPost]
 		public async Task<IActionResult> Edit(ReservationFormModel model, string id)
 		{
-			if (DateTime.Parse(model.Date) < DateTime.Now)
-			{
-				ModelState.AddModelError(model.Date, "Date must be biger than today!");
-			}
-
 			if (!ModelState.IsValid)
 			{
 				return View(model);
@@ -94,8 +87,18 @@ namespace RestaurantApp.Controllers
 
 			try
 			{
-				await reservationService.EditReservationAsync(model, userId, id);
-			}
+				var result = await reservationService.EditReservationAsync(model, userId, id);
+
+				if (!string.IsNullOrEmpty(result))
+				{
+					TempData["Error"] = result;
+                    return View(model);
+				}
+				else
+				{
+                    TempData["SuccessfulyEdit"] = "Reservation is Edited successfuly!";
+                }
+            }
 			catch (Exception)
 			{
 				return BadRequest();

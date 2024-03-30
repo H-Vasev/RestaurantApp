@@ -14,6 +14,11 @@
 			<p>Book a Table</p>
 		</div>
 
+		@if (TempData["Error"] != null)
+		{
+			<div id="dateMessage" class="customAlertMessage alert alert-danger text-center mt-5">@TempData["Error"]</div>
+		}
+
 		@if (eventName != null)
 		{
 			<div class="d-flex justify-content-center mb-4">
@@ -69,3 +74,7 @@
 
 	</div>
 </section>
+
+@section Scripts {
+	<script src="~/js/show-notification.js"></script>
+}

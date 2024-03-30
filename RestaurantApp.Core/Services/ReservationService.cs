@@ -59,9 +59,14 @@ namespace RestaurantApp.Core.Services
 			return string.Empty;
 		}
 
-		public async Task EditReservationAsync(ReservationFormModel model, string userId, string id)
+		public async Task<string> EditReservationAsync(ReservationFormModel model, string userId, string id)
 		{
-			var reservation = await dbContext.Reservations
+			if (DateTime.Parse(model.Date) < DateTime.Now)
+			{
+                return "Date must be biger than today!";
+            }
+
+            var reservation = await dbContext.Reservations
 				.FirstOrDefaultAsync(r => r.ApplicationUserId == Guid.Parse(userId) && r.Id == Guid.Parse(id));
 
 			if (reservation == null)
@@ -78,6 +83,8 @@ namespace RestaurantApp.Core.Services
 			reservation.Description = model.Description;
 
 			await dbContext.SaveChangesAsync();
+
+			return string.Empty;
 		}
 
 		public async Task<IEnumerable<ReservationViewModel>> GetAllReservationAsync(string userId)
