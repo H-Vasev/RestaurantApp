@@ -10,6 +10,12 @@
             <h2>Events</h2>
             <p>Menage Your Reservations in our Restaurant</p>
         </div>
+
+        @if (TempData["Success"] != null)
+        {
+            <div id="dateMessage" class="customAlertMessage alert alert-success text-center mt-5">@TempData["Success"]</div>
+        }
+
         <div class="why-us" id="why-us">
             <div class="container aos-init aos-animate" data-aos="fade-up">
                 <div class="row">
@@ -37,9 +43,6 @@
 </section>
 
 @section Scripts {
-	<script>
-        function cancelReservation(date) {
-			return confirm('Are you sure you want to cancel the reservation for ' + date + '?');
-		}
-    </script>
+    <script src="~/js/cancel-notification.js"></script>
+    <script src="~/js/show-notification.js"></script>
 }

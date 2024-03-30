@@ -9,10 +9,6 @@
 
 <section id="book-a-table" class="book-a-table mt-5">
 	<div class="container aos-init aos-animate mt-5" data-aos="fade-up">
-		@if (TempData["Reserved"] != null)
-		{
-			<div id="dateMessage" class="customAlertMessage alert alert-danger text-center mt-5">@TempData["Reserved"]</div>
-		}
 		@if (TempData["Error"] != null)
 		{
 			<div id="dateMessage" class="customAlertMessage alert alert-danger text-center mt-5">@TempData["Error"]</div>
@@ -79,13 +75,5 @@
 </section>
 
 @section Scripts{
-	<script>
-		$(document).ready(function () {
-			setTimeout(function () {
-				$('#dateMessage').fadeOut('slow', function () {
-					$(this).remove();
-				})
-			}, 3000);
-		});
-	</script>
+	<script src="~/js/show-notification.js"></script>
 }
