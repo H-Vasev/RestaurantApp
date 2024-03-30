@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RestaurantApp.Data;
 using RestaurantApp.Extensions;
@@ -30,12 +29,7 @@ namespace RestaurantApp
             })
 				.AddRoles<IdentityRole<Guid>>()
 				.AddEntityFrameworkStores<ApplicationDbContext>();
-			builder.Services
-				.AddControllersWithViews()
-				.AddMvcOptions(otions =>
-				{
-					otions.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
-				});
+			builder.Services.AddControllersWithViews();
 			builder.Services.AddApplicationServices();
 			builder.Services.AddSignalR();
 

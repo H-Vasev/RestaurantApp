@@ -9,37 +9,14 @@ namespace RestaurantApp.Core.Services
 	public class ReservationService : IReservationService
 	{
 		private readonly ApplicationDbContext dbContext;
-		private readonly IEventService eventService;
 
-		public ReservationService(ApplicationDbContext dbContext, IEventService eventService)
+		public ReservationService(ApplicationDbContext dbContext)
 		{
 			this.dbContext = dbContext;
-			this.eventService = eventService;
 		}
 
-		public async Task<string> AddReservationAsync(ReservationFormModel model, string userId, int id)
+		public async Task AddReservationAsync(ReservationFormModel model, string userId)
 		{
-			if (DateTime.Parse(model.Date) < DateTime.Now)
-			{
-				return "Date must be biger than today!";
-			}
-
-			var ev = await eventService.GetEventByIdAsync(id);
-
-			if (ev != null)
-			{
-				model.EventId = ev.Id;
-				model.EventName = ev.Title;
-				model.Date = ev.StartEvent.ToString("g");
-			}
-			var date = DateTime.Parse(model.Date);
-			var isReserved = await IsReservedAsync(date, userId);
-
-			if (isReserved)
-			{
-				return "You have already made a reservation for this date please check yuor Reservation!";
-			}
-
 			var reservation = new Reservation()
 			{
 				FirstName = model.FirstName,
@@ -55,8 +32,6 @@ namespace RestaurantApp.Core.Services
 
 			await dbContext.Reservations.AddAsync(reservation);
 			await dbContext.SaveChangesAsync();
-
-			return string.Empty;
 		}
 
 		public async Task EditReservationAsync(ReservationFormModel model, string userId, string id)
@@ -81,11 +56,11 @@ namespace RestaurantApp.Core.Services
 		}
 
 		public async Task<IEnumerable<ReservationViewModel>> GetAllReservationAsync(string userId)
-		{
+        {
 			return await dbContext.Reservations
 				.AsNoTracking()
 				.OrderBy(r => r.Date)
-				.Where(u => u.ApplicationUserId == Guid.Parse(userId) && u.Date.Date >= DateTime.Now.Date)
+				.Where(u => u.ApplicationUserId == Guid.Parse(userId) && u.Date.Date > DateTime.Now.Date)
 				.Select(r => new ReservationViewModel()
 				{
 					Id = r.Id.ToString(),
@@ -99,24 +74,24 @@ namespace RestaurantApp.Core.Services
 					EventId = r.EventId,
 					Date = r.Date.ToString("g")
 				}).ToArrayAsync();
-		}
+        }
 
-		public async Task<ReservationFormModel> GetReservationByIdAsync(string userId, string id)
-		{
-			var reservation = await dbContext.Reservations
-				 .Where(r => r.ApplicationUserId == Guid.Parse(userId) && r.Id == Guid.Parse(id))
-				 .Select(r => new ReservationFormModel()
-				 {
-					 FirstName = r.FirstName,
-					 LastName = r.LastName,
-					 PhoneNumber = r.PhoneNumber,
-					 Email = r.Email,
-					 Description = r.Description,
-					 EventName = r.Event.Title,
-					 PeopleCount = r.PeopleCount,
-					 Date = r.Date.ToString("g"),
-				 })
-				 .FirstOrDefaultAsync();
+        public async Task<ReservationFormModel> GetReservationByIdAsync(string userId, string id)
+        {
+           var reservation = await dbContext.Reservations
+				.Where(r => r.ApplicationUserId == Guid.Parse(userId) && r.Id == Guid.Parse(id))
+				.Select(r => new ReservationFormModel()
+				{
+					FirstName = r.FirstName,
+					LastName = r.LastName,
+					PhoneNumber = r.PhoneNumber,
+					Email = r.Email,
+					Description = r.Description,
+					EventName = r.Event.Title,
+					PeopleCount = r.PeopleCount,
+					Date = r.Date.ToString("g"),
+				})
+				.FirstOrDefaultAsync();
 
 			if (reservation == null)
 			{
@@ -124,31 +99,16 @@ namespace RestaurantApp.Core.Services
 			}
 
 			return reservation;
-		}
+        }
 
-		public async Task<bool> IsReservedAsync(DateTime date, string userId)
+        public async Task<bool> IsReservedAsync(DateTime date, string userId)
 		{
 			return await dbContext.Reservations
 				.AnyAsync(r => r.Date.Date == date.Date && r.ApplicationUserId == Guid.Parse(userId));
 		}
 
-		public async Task<ReservationFormModel> PrepareReservationFormModelAsync(int id)
-		{
-			var ev = await eventService.GetEventByIdAsync(id);
-
-			var reservation = new ReservationFormModel();
-
-			if (ev != null)
-			{
-				reservation.EventName = ev.Title;
-				reservation.Date = ev.StartEvent.ToString("g");
-			}
-
-			return reservation;
-		}
-
 		public async Task RemoveReservationAsync(string userId, string id)
-		{
+        {
 			var reservationToRemove = await dbContext.Reservations
 				.FirstOrDefaultAsync(r => r.ApplicationUserId == Guid.Parse(userId) && r.Id == Guid.Parse(id));
 
@@ -159,6 +119,6 @@ namespace RestaurantApp.Core.Services
 
 			dbContext.Reservations.Remove(reservationToRemove);
 			await dbContext.SaveChangesAsync();
-		}
-	}
+        }
+    }
 }

@@ -34,7 +34,14 @@ namespace RestaurantApp.Controllers
 		[HttpGet]
 		public async Task<IActionResult> Add(int id)
 		{
-			var model = await reservationService.PrepareReservationFormModelAsync(id);
+            var ev = await eventService.GetEventByIdAsync(id);
+			var model = new ReservationFormModel();
+
+			if (ev != null)
+			{
+                model.EventName = ev.Title;
+				model.Date = ev.StartEvent.ToString("g");
+            }
 
 			return View(model);
 		}
@@ -42,53 +49,40 @@ namespace RestaurantApp.Controllers
 		[HttpPost]
 		public async Task<IActionResult> Add(ReservationFormModel model, int id)
 		{
-			//if (DateTime.Parse(model.Date) < DateTime.Now)
-			//{
-			//	ModelState.AddModelError(model.Date, "Date must be biger than today!");
-			//	TempData["Error"] = "Date must be biger than today!";
-			//}
-
-			//if (!ModelState.IsValid)
-			//{
-			//	return View(model);
-			//}
-
-			//var userId = GetUserId();
-
-			//var ev = await eventService.GetEventByIdAsync(id);
-
-			//if (ev != null)
-			//{
-			//	model.EventId = ev.Id;
-			//	model.EventName = ev.Title;
-			//	model.Date = ev.StartEvent.ToString("g");
-			//}
-			//var date = DateTime.Parse(model.Date);
-			//var isReserved = await reservationService.IsReservedAsync(date, userId);
-
-			//if (isReserved)
-			//{
-			//	TempData["Reserved"] = "You have already made a reservation for this date or check yuor Reservation!";
-			//	return View(model);
-			//}
+			if (DateTime.Parse(model.Date) < DateTime.Now)
+			{
+				ModelState.AddModelError(model.Date, "Date must be biger than today!");
+				TempData["Error"] = "Date must be biger than today!";
+			}
 
 			if (!ModelState.IsValid)
 			{
 				return View(model);
 			}
 
-			 var userId = GetUserId();
-			 var result = await reservationService.AddReservationAsync(model, userId, id);
+			var userId = GetUserId();
 
-			if (!string.IsNullOrEmpty(result))
+			var ev= await eventService.GetEventByIdAsync(id);
+
+			if (ev != null)
 			{
-				TempData["Error"] = result;
-				return View(model);
+				model.EventId = ev.Id;
+				model.EventName = ev.Title;
+				model.Date = ev.StartEvent.ToString("g");
 			}
+			var date = DateTime.Parse(model.Date);
+			var isReserved = await reservationService.IsReservedAsync(date, userId);
 
-			TempData["Success"] = "Reservation is successful!";
+            if (isReserved)
+            {
+				TempData["Reserved"] = "You have already made a reservation for this date or check yuor Reservation!";
+                return View(model);
+            }
 
-			return RedirectToAction(nameof(Index));
+            await reservationService.AddReservationAsync(model, userId);
+			
+
+			return RedirectToAction("Index", "Home");
 		}
 
 		[HttpGet]
@@ -134,7 +128,7 @@ namespace RestaurantApp.Controllers
 			return RedirectToAction(nameof(Index));
 		}
 
-
+	
 
 		public async Task<IActionResult> Cancel(string id)
 		{
@@ -142,9 +136,9 @@ namespace RestaurantApp.Controllers
 
 			try
 			{
-				await reservationService.RemoveReservationAsync(userId, id);
-			}
-			catch (Exception)
+                await reservationService.RemoveReservationAsync(userId, id);
+            }
+            catch (Exception)
 			{
 
 				return BadRequest();
@@ -153,5 +147,5 @@ namespace RestaurantApp.Controllers
 			return RedirectToAction(nameof(Index));
 		}
 
-	}
+    }
 }
