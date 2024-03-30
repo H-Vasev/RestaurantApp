@@ -42,36 +42,6 @@ namespace RestaurantApp.Controllers
 		[HttpPost]
 		public async Task<IActionResult> Add(ReservationFormModel model, int id)
 		{
-			//if (DateTime.Parse(model.Date) < DateTime.Now)
-			//{
-			//	ModelState.AddModelError(model.Date, "Date must be biger than today!");
-			//	TempData["Error"] = "Date must be biger than today!";
-			//}
-
-			//if (!ModelState.IsValid)
-			//{
-			//	return View(model);
-			//}
-
-			//var userId = GetUserId();
-
-			//var ev = await eventService.GetEventByIdAsync(id);
-
-			//if (ev != null)
-			//{
-			//	model.EventId = ev.Id;
-			//	model.EventName = ev.Title;
-			//	model.Date = ev.StartEvent.ToString("g");
-			//}
-			//var date = DateTime.Parse(model.Date);
-			//var isReserved = await reservationService.IsReservedAsync(date, userId);
-
-			//if (isReserved)
-			//{
-			//	TempData["Reserved"] = "You have already made a reservation for this date or check yuor Reservation!";
-			//	return View(model);
-			//}
-
 			if (!ModelState.IsValid)
 			{
 				return View(model);
