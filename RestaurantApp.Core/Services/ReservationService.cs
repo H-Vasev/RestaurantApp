@@ -21,8 +21,14 @@ namespace RestaurantApp.Core.Services
 		{
 			if (DateTime.Parse(model.Date) < DateTime.Now)
 			{
-				return "Date must be biger than today!";
+				return "Date must be bigger than today!";
 			}
+
+			if (model.PeopleCount < 1 || model.PeopleCount > 60)
+			{
+				return "The number of people must be between 1 and 60";
+
+            }
 
 			var ev = await eventService.GetEventByIdAsync(id);
 
@@ -37,7 +43,7 @@ namespace RestaurantApp.Core.Services
 
 			if (isReserved)
 			{
-				return "You have already made a reservation for this date please check yuor Reservation!";
+				return "You have already made a reservation for this date please check your Reservation!";
 			}
 
 			var reservation = new Reservation()
