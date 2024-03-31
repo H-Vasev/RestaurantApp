@@ -69,7 +69,7 @@ namespace RestaurantApp.Core.Services
 		{
 			if (DateTime.Parse(model.Date) < DateTime.Now)
 			{
-                return "Date must be biger than today!";
+                return "Date must be bigger than today!";
             }
 
             var reservation = await dbContext.Reservations

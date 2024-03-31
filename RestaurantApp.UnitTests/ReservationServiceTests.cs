@@ -705,6 +705,179 @@ namespace RestaurantApp.UnitTests
         }
 
 
+        //EditReservationAsync
+        [Test]
+        public async Task EditReservationAsync_ShouldUpdateReservation_WhenDataIsValid()
+        {
+            var userId = Guid.NewGuid().ToString();
+            var reservationId = Guid.NewGuid().ToString();
+            var tomorrow = DateTime.UtcNow.AddDays(1);
+
+            var reservation = new Reservation
+            {
+                Id = Guid.Parse(reservationId),
+                ApplicationUserId = Guid.Parse(userId),
+                Date = DateTime.UtcNow.AddDays(5),
+                FirstName = "FirstName",
+                LastName = "LastName",
+                PhoneNumber = "123456789",
+                Email = "test@example.com",
+                PeopleCount = 5,
+                Description = "New Year party reservation"
+            };
+
+            await dbContext.Reservations.AddAsync(reservation);
+            await dbContext.SaveChangesAsync();
+
+            var model = new ReservationFormModel
+            {
+                FirstName = "UpdatedFirstName",
+                LastName = "UpdatedLastName",
+                PhoneNumber = "987654321",
+                Email = "update@example.com",
+                Date = tomorrow.ToString(),
+                PeopleCount = 10,
+                Description = "Updated Description"
+            };
+
+            var result = await reservationService.EditReservationAsync(model, userId, reservationId);
+
+            Assert.That(result, Is.EqualTo(string.Empty));
+
+            var updatedReservation = await dbContext.Reservations.FirstOrDefaultAsync(r => r.Id == Guid.Parse(reservationId));
+            Assert.That(updatedReservation.FirstName, Is.EqualTo(model.FirstName));
+            Assert.That(updatedReservation.LastName, Is.EqualTo(model.LastName));
+            Assert.That(updatedReservation.PhoneNumber, Is.EqualTo(model.PhoneNumber));
+            Assert.That(updatedReservation.Email, Is.EqualTo(model.Email));
+            Assert.That(updatedReservation.PeopleCount, Is.EqualTo(model.PeopleCount));
+            Assert.That(updatedReservation.Description, Is.EqualTo(model.Description));
+        }
+
+        [Test]
+        public async Task EditReservationAsync_ShouldReturnErrorMessage_WhenDateIsBeforeToday()
+        {
+            var userId = Guid.NewGuid().ToString();
+            var reservationId = Guid.NewGuid().ToString();
+            var yesterday = DateTime.Now.AddDays(-1);
+
+            var reservation = new Reservation
+            {
+                Id = Guid.Parse(reservationId),
+                FirstName = "FirstName",
+                LastName = "LastName",
+                PhoneNumber = "123456789",
+                Email = "email@example.com",
+                Date = DateTime.Now,
+                PeopleCount = 5,
+                Description = "Description"
+            };
+
+            await dbContext.Reservations.AddAsync(reservation);
+            await dbContext.SaveChangesAsync();
+
+            var model = new ReservationFormModel
+            {
+                FirstName = "UpdatedFirstName",
+                LastName = "UpdatedLastName",
+                PhoneNumber = "987654321",
+                Email = "update@example.com",
+                Date = yesterday.ToString(),
+                PeopleCount = 10,
+                Description = "Updated Description"
+            };
+
+            var result = await reservationService.EditReservationAsync(model, userId, reservationId);
+
+            Assert.That(result, Is.EqualTo("Date must be bigger than today!"));
+        }
+
+        [Test]
+        public async Task EditReservationAsync_ShouldThrowExceptionWhenReservationNotExist()
+        {
+            var userId = Guid.NewGuid().ToString();
+            var reservationId = Guid.NewGuid().ToString();
+            var tomorow = DateTime.Now.AddDays(1);
+
+            var reservation = new Reservation
+            {
+                Id = Guid.Parse(reservationId),
+                FirstName = "FirstName",
+                LastName = "LastName",
+                PhoneNumber = "123456789",
+                Email = "email@example.com",
+                Date = DateTime.Now,
+                PeopleCount = 5,
+                Description = "Description",
+                ApplicationUserId = Guid.Parse(userId)
+                
+            };
+
+            await dbContext.Reservations.AddAsync(reservation);
+            await dbContext.SaveChangesAsync();
+
+            var model = new ReservationFormModel
+            {
+                FirstName = "UpdatedFirstName",
+                LastName = "UpdatedLastName",
+                PhoneNumber = "987654321",
+                Email = "update@example.com",
+                Date = tomorow.ToString(),
+                PeopleCount = 10,
+                Description = "Updated Description"
+            };
+
+
+                var ex = Assert.ThrowsAsync<ArgumentNullException>(async () =>
+                    await reservationService.EditReservationAsync(model, userId, Guid.NewGuid().ToString()));
+
+                Assert.That(ex, Is.Not.Null);
+                Assert.That(ex.ParamName, Is.EqualTo("reservation"));
+        }
+
+        [Test]
+        public async Task EditReservationAsync_ShouldThrowExceptionWhenUserNotExist()
+        {
+            var userId = Guid.NewGuid().ToString();
+            var reservationId = Guid.NewGuid().ToString();
+            var tomorow = DateTime.Now.AddDays(1);
+
+            var reservation = new Reservation
+            {
+                Id = Guid.Parse(reservationId),
+                FirstName = "FirstName",
+                LastName = "LastName",
+                PhoneNumber = "123456789",
+                Email = "email@example.com",
+                Date = DateTime.Now,
+                PeopleCount = 5,
+                Description = "Description",
+                ApplicationUserId = Guid.Parse(userId)
+
+            };
+
+            await dbContext.Reservations.AddAsync(reservation);
+            await dbContext.SaveChangesAsync();
+
+            var model = new ReservationFormModel
+            {
+                FirstName = "UpdatedFirstName",
+                LastName = "UpdatedLastName",
+                PhoneNumber = "987654321",
+                Email = "update@example.com",
+                Date = tomorow.ToString(),
+                PeopleCount = 10,
+                Description = "Updated Description"
+            };
+
+
+            var ex = Assert.ThrowsAsync<ArgumentNullException>(async () =>
+                await reservationService.EditReservationAsync(model, Guid.NewGuid().ToString(), reservationId));
+
+            Assert.That(ex, Is.Not.Null);
+            Assert.That(ex.ParamName, Is.EqualTo("reservation"));
+        }
+
+
         [TearDown]
         public void TearDown()
         {
