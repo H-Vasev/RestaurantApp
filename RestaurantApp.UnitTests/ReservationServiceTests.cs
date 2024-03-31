@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Moq;
 using NUnit.Framework;
 using RestaurantApp.Core.Contracts;
@@ -409,6 +410,87 @@ namespace RestaurantApp.UnitTests
             Assert.That("Third", Is.EqualTo(result.ElementAt(2).FirstName));
         }
 
+
+        //GetReservationByIdAsync
+        [Test]
+        public async Task GetReservationByIdAsync_ShouldReturnCorrectReservation()
+        {
+            var userId = Guid.NewGuid().ToString();
+            var reservationId = Guid.NewGuid();
+
+            var reservation = new Reservation
+            {
+                Id = reservationId,
+                ApplicationUserId = Guid.Parse(userId),
+                Date = DateTime.UtcNow.AddDays(5),
+                Event = new Event { Title = "Event 1" },
+                FirstName = "FirstName",
+                LastName = "LastName",
+                PhoneNumber = "123456789",
+                Email = "test@example.com",
+                PeopleCount = 5,
+                Description = "New Year party reservation"
+            };
+
+            await dbContext.Reservations.AddAsync(reservation);
+            await dbContext.SaveChangesAsync();
+
+            var result = await reservationService.GetReservationByIdAsync(userId, reservationId.ToString());
+
+            Assert.That(result, Is.Not.EqualTo(null));
+            Assert.That("FirstName", Is.EqualTo(result.FirstName));
+            Assert.That("LastName", Is.EqualTo(result.LastName));
+            Assert.That("123456789", Is.EqualTo(result.PhoneNumber));
+            Assert.That("test@example.com", Is.EqualTo(result.Email));
+            Assert.That(5, Is.EqualTo(result.PeopleCount));
+            Assert.That("Event 1", Is.EqualTo(result.EventName));
+            Assert.That("New Year party reservation", Is.EqualTo(result.Description));
+            Assert.That(reservation.Date.ToString("g"), Is.EqualTo(result.Date));
+        }
+
+        [Test]
+        public async Task GetReservationByIdAsync_ShouldReturnCorrectReservationWithNoEvent()
+        {
+            var userId = Guid.NewGuid().ToString();
+            var reservationId = Guid.NewGuid();
+
+            var reservation = new Reservation
+            {
+                Id = reservationId,
+                ApplicationUserId = Guid.Parse(userId),
+                Date = DateTime.UtcNow.AddDays(5),
+                FirstName = "FirstName",
+                LastName = "LastName",
+                PhoneNumber = "123456789",
+                Email = "test@example.com",
+                PeopleCount = 5,
+                Description = "New Year party reservation"
+            };
+
+            await dbContext.Reservations.AddAsync(reservation);
+            await dbContext.SaveChangesAsync();
+
+            var result = await reservationService.GetReservationByIdAsync(userId, reservationId.ToString());
+
+            Assert.That(result, Is.Not.EqualTo(null));
+            Assert.That("FirstName", Is.EqualTo(result.FirstName));
+            Assert.That("LastName", Is.EqualTo(result.LastName));
+            Assert.That("123456789", Is.EqualTo(result.PhoneNumber));
+            Assert.That("test@example.com", Is.EqualTo(result.Email));
+            Assert.That(5, Is.EqualTo(result.PeopleCount));
+            Assert.That("New Year party reservation", Is.EqualTo(result.Description));
+            Assert.That(reservation.Date.ToString("g"), Is.EqualTo(result.Date));
+        }
+
+        [Test]
+        public void GetReservationByIdAsync_ShouldThrowException_WhenReservationNotFound()
+        {
+            var userId = Guid.NewGuid().ToString();
+            var nonExistentReservationId = Guid.NewGuid().ToString();
+
+            var ex = Assert.ThrowsAsync<ArgumentNullException>(async () => await reservationService.GetReservationByIdAsync(userId, nonExistentReservationId));
+            Assert.That(ex.ParamName, Is.EqualTo("reservation"));
+        }
 
         [TearDown]
         public void TearDown()
