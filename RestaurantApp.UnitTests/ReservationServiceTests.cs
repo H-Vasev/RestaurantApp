@@ -492,6 +492,105 @@ namespace RestaurantApp.UnitTests
             Assert.That(ex.ParamName, Is.EqualTo("reservation"));
         }
 
+
+        //IsReservationExistsAsync
+        [Test]
+        public async Task IsReservedAsync_ShouldReturnTrue_WhenReservationExistsForUserOnDate()
+        {
+            var userId = Guid.NewGuid().ToString();
+            var testDate1 = DateTime.UtcNow.AddDays(5);
+            var testDate2 = DateTime.UtcNow.AddDays(5);
+
+            var reservation = new List<Reservation>()
+            {
+                 new Reservation()
+                 {
+                    ApplicationUserId = Guid.Parse(userId),
+                    Date = testDate1,
+                    Description = "Test reservation",
+                    PeopleCount = 5,
+                    Email = "test@test.com",
+                    FirstName = "FirstName",
+                    LastName = "LastName",
+                    PhoneNumber = "123456789",
+                 },
+                 new Reservation()
+                 {
+                    ApplicationUserId = Guid.Parse(userId),
+                    Date = testDate2,
+                    Description = "Test reservation",
+                    PeopleCount = 5,
+                    Email = "test@test.com",
+                    FirstName = "FirstName2",
+                    LastName = "LastName2",
+                    PhoneNumber = "123456784",
+                 }
+            };
+
+
+            await dbContext.Reservations.AddRangeAsync(reservation);
+            await dbContext.SaveChangesAsync();
+
+            var result = await reservationService.IsReservedAsync(testDate1, userId);
+            var result2 = await reservationService.IsReservedAsync(testDate2, userId);
+
+            Assert.That(result, Is.EqualTo(true));
+            Assert.That(result2, Is.EqualTo(true));
+        }
+
+        [Test]
+        public async Task IsReservedAsync_ShouldReturnFalse_WhenNoReservationExistsForUserOnDate()
+        {
+            var userId = Guid.NewGuid().ToString();
+            var testDate = DateTime.UtcNow.AddDays(5);
+
+            var reservation = new Reservation
+            {
+                ApplicationUserId = Guid.Parse(userId),
+                Date = testDate,
+                Description = "Test reservation",
+                PeopleCount = 5,
+                Email = "test@test.com",
+                FirstName = "FirstName",
+                LastName = "LastName",
+                PhoneNumber = "123456789",
+            };
+
+            await dbContext.Reservations.AddAsync(reservation);
+            await dbContext.SaveChangesAsync();
+
+            var result = await reservationService.IsReservedAsync(DateTime.Now.AddDays(1), userId);
+
+            Assert.That(result, Is.EqualTo(false));
+        }
+
+        [Test]
+        public async Task IsReservedAsync_ShouldReturnFalse_WhenNoReservationNotExistsForUser()
+        {
+            var userId = Guid.NewGuid().ToString();
+            var testDate = DateTime.UtcNow.AddDays(5);
+
+            var reservation = new Reservation
+            {
+                ApplicationUserId = Guid.Parse(userId),
+                Date = testDate,
+                Description = "Test reservation",
+                PeopleCount = 5,
+                Email = "test@test.com",
+                FirstName = "FirstName",
+                LastName = "LastName",
+                PhoneNumber = "123456789",
+            };
+
+            await dbContext.Reservations.AddAsync(reservation);
+            await dbContext.SaveChangesAsync();
+
+            var result = await reservationService.IsReservedAsync(testDate, Guid.NewGuid().ToString());
+
+            Assert.That(result, Is.EqualTo(false));
+        }
+
+
         [TearDown]
         public void TearDown()
         {
