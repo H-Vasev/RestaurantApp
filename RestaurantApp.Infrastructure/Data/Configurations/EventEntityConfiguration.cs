@@ -8,8 +8,11 @@ namespace RestaurantApp.Infrastructure.Data.Configurations
 	{
 		public void Configure(EntityTypeBuilder<Event> builder)
 		{
-			builder.HasData(GenerateEvents());
-		}
+			if (DatabaseSeedController.SeedEnabled)
+			{
+                builder.HasData(GenerateEvents());
+            }
+        }
 
 		private ICollection<Event> GenerateEvents()
 		{
