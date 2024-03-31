@@ -227,6 +227,189 @@ namespace RestaurantApp.UnitTests
             Assert.That(result, Is.EqualTo(string.Empty));
         }
 
+        //GetAllReservationAsync
+
+        [Test]
+        public async Task GetAllReservationAsync_ShouldReturnAllReservationsForUser()
+        {
+            var userId = Guid.NewGuid().ToString();
+            var reservations = new List<Reservation>()
+            {
+                new Reservation
+                {
+                    ApplicationUserId = Guid.Parse(userId),
+                    Date = DateTime.Now.AddDays(1),
+                    Event = new Event { Title = "Event 1" },
+                    FirstName = "FirstName1",
+                    LastName = "LastName1",
+                    PhoneNumber = "0987654323",
+                    Email = "test1@example.com",
+                    PeopleCount = 4,
+                    Description = "Description 1"
+                },
+                new Reservation
+                {
+                    ApplicationUserId = Guid.Parse(userId),
+                    Date = DateTime.Now.AddDays(2),
+                    Event = new Event { Title = "Event 2" },
+                     FirstName = "FirstName2",
+                    LastName = "LastName12",
+                    PhoneNumber = "0987654321",
+                    Email = "test2@example.com",
+                    PeopleCount = 2,
+                    Description = "Description 2"
+                }
+            };
+
+            dbContext.Reservations.AddRange(reservations);
+            await dbContext.SaveChangesAsync();
+
+            var result = await reservationService.GetAllReservationAsync(userId);
+
+            Assert.That(2, Is.EqualTo(result.Count()));
+            Assert.That("FirstName1", Is.EqualTo(result.First().FirstName));
+            Assert.That("Event 1", Is.EqualTo(result.First().EventName));
+            Assert.That("FirstName2", Is.EqualTo(result.Last().FirstName));
+            Assert.That("Event 2", Is.EqualTo(result.Last().EventName));
+        }
+
+        [Test]
+        public async Task GetAllReservationAsync_ShouldReturnZeroCount()
+        {
+            var userId = Guid.NewGuid().ToString();
+            var reservations = new Reservation
+            {
+                ApplicationUserId = Guid.Parse(userId),
+                Date = DateTime.Now.AddDays(1),
+                Event = new Event { Title = "Event 1" },
+                FirstName = "FirstName1",
+                LastName = "LastName1",
+                PhoneNumber = "0987654323",
+                Email = "test1@example.com",
+                PeopleCount = 4,
+                Description = "Description 1"
+            };
+
+            dbContext.Reservations.Add(reservations);
+            await dbContext.SaveChangesAsync();
+
+            var result = await reservationService.GetAllReservationAsync(Guid.NewGuid().ToString());
+
+            Assert.That(0, Is.EqualTo(result.Count()));
+        }
+
+        [Test]
+        public async Task GetAllReservationAsync_ShouldReturnZeroCountWhenDateIsExpire()
+        {
+            var userId = Guid.NewGuid().ToString();
+            var reservations = new Reservation
+            {
+                ApplicationUserId = Guid.Parse(userId),
+                Date = DateTime.Now.AddDays(-1),
+                Event = new Event { Title = "Event 1" },
+                FirstName = "FirstName1",
+                LastName = "LastName1",
+                PhoneNumber = "0987654323",
+                Email = "test1@example.com",
+                PeopleCount = 4,
+                Description = "Description 1"
+            };
+
+            dbContext.Reservations.Add(reservations);
+            await dbContext.SaveChangesAsync();
+
+            var result = await reservationService.GetAllReservationAsync(userId);
+
+            Assert.That(0, Is.EqualTo(result.Count()));
+        }
+
+        [Test]
+        public async Task GetAllReservationAsync_ShouldReturnAllReservationForUserWhenDateIsEqual()
+        {
+            var userId = Guid.NewGuid().ToString();
+            var reservations = new Reservation
+            {
+                ApplicationUserId = Guid.Parse(userId),
+                Date = DateTime.Now,
+                Event = new Event { Title = "Event 1" },
+                FirstName = "FirstName1",
+                LastName = "LastName1",
+                PhoneNumber = "0987654323",
+                Email = "test1@example.com",
+                PeopleCount = 4,
+                Description = "Description 1"
+            };
+
+            dbContext.Reservations.Add(reservations);
+            await dbContext.SaveChangesAsync();
+
+            var result = await reservationService.GetAllReservationAsync(userId);
+
+            Assert.That(1, Is.EqualTo(result.Count()));
+            Assert.That("FirstName1", Is.EqualTo(result.First().FirstName));
+            Assert.That("Event 1", Is.EqualTo(result.First().EventName));
+        }
+
+        [Test]
+        public async Task GetAllReservationAsync_ShouldReturnReservationsOrderedByDate()
+        {
+            var userId = Guid.NewGuid().ToString();
+            var firstDate = DateTime.UtcNow.AddDays(2);
+            var secondDate = DateTime.UtcNow.AddDays(1);
+            var thirdDate = DateTime.UtcNow.AddDays(3);
+
+            var reservations = new List<Reservation>()
+            {
+                 new Reservation
+                 {
+                     ApplicationUserId = Guid.Parse(userId),
+                     Date = thirdDate,
+                     Event = new Event { Title = "Event 3" },
+                     FirstName = "Third",
+                     LastName = "Reservation",
+                     PhoneNumber = "0987654323",
+                     Email = "third@example.com",
+                     PeopleCount = 3,
+                     Description = "Third reservation"
+                 },
+                 new Reservation
+                 {
+                     ApplicationUserId = Guid.Parse(userId),
+                     Date = firstDate,
+                     Event = new Event { Title = "Event 1" },
+                     FirstName = "First",
+                     LastName = "Reservation",
+                     PhoneNumber = "0987654321",
+                     Email = "first@example.com",
+                     PeopleCount = 1,
+                     Description = "First reservation"
+                 },
+                 new Reservation
+                 {
+                     ApplicationUserId = Guid.Parse(userId),
+                     Date = secondDate,
+                     Event = new Event { Title = "Event 2" },
+                     FirstName = "Second",
+                     LastName = "Reservation",
+                     PhoneNumber = "0987654322",
+                     Email = "second@example.com",
+                     PeopleCount = 2,
+                     Description = "Second reservation"
+                 },
+            };
+
+            await dbContext.Reservations.AddRangeAsync(reservations);
+            await dbContext.SaveChangesAsync();
+
+            var result = await reservationService.GetAllReservationAsync(userId);
+
+            Assert.That(3, Is.EqualTo(result.Count()));
+            Assert.That("Second", Is.EqualTo(result.ElementAt(0).FirstName));
+            Assert.That("First", Is.EqualTo(result.ElementAt(1).FirstName));
+            Assert.That("Third", Is.EqualTo(result.ElementAt(2).FirstName));
+        }
+
+
         [TearDown]
         public void TearDown()
         {
