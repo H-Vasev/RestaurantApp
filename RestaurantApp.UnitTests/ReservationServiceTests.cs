@@ -590,6 +590,31 @@ namespace RestaurantApp.UnitTests
             Assert.That(result, Is.EqualTo(false));
         }
 
+        //PrepareReservationFormModel
+        [Test]
+        public async Task PrepareReservationFormModelAsync_ShouldCorrectlyMapEventDetails_WhenEventExists()
+        {
+            var eventId = 1;
+            var reservationService = new ReservationService(null, mockEventService.Object);
+
+            var result = await reservationService.PrepareReservationFormModelAsync(eventId);
+
+            Assert.That(result, Is.Not.EqualTo(null));
+            Assert.That("Event 1", Is.EqualTo(result.EventName));
+            Assert.That(DateTime.UtcNow.AddDays(5).ToString("g"), Is.EqualTo(result.Date));
+        }
+
+        [Test]
+        public async Task PrepareReservationFormModelAsync_ShouldReturtModel()
+        {
+            var reservationService = new ReservationService(null, mockEventService.Object);
+
+            var result = await reservationService.PrepareReservationFormModelAsync(2);
+
+            Assert.That(result, Is.Not.EqualTo(null));
+            Assert.That(result, Is.InstanceOf<ReservationFormModel>());
+        }
+
 
         [TearDown]
         public void TearDown()
