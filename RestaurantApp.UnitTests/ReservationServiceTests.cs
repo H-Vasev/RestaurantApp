@@ -615,6 +615,95 @@ namespace RestaurantApp.UnitTests
             Assert.That(result, Is.InstanceOf<ReservationFormModel>());
         }
 
+        //RemoveReservationAsync
+        [Test]
+        public async Task RemoveReservationAsync_ShouldRemoveReservation_WhenReservationExists()
+        {
+            var userId = Guid.NewGuid().ToString();
+            var reservationId = Guid.NewGuid();
+
+            var reservation = new Reservation
+            {
+                Id = reservationId,
+                ApplicationUserId = Guid.Parse(userId),
+                Date = DateTime.UtcNow.AddDays(5),
+                FirstName = "FirstName",
+                LastName = "LastName",
+                PhoneNumber = "123456789",
+                Email = "test@example.com",
+                PeopleCount = 5,
+                Description = "New Year party reservation"
+            };
+
+            await dbContext.Reservations.AddAsync(reservation);
+            await dbContext.SaveChangesAsync();
+
+            using (var context = new ApplicationDbContext(dbContextOptions))
+            {
+                var reservationService = new ReservationService(context, null);
+
+                await reservationService.RemoveReservationAsync(userId, reservationId.ToString());
+
+                var removedReservation = await context.Reservations
+                    .FirstOrDefaultAsync(r => r.Id == reservationId);
+
+                Assert.That(removedReservation, Is.Null);
+            }
+        }
+
+        [Test]
+        public async Task RemoveReservationAsync_ShouldThrowException_WhenReservationIdDoNotExist()
+        {
+            var userId = Guid.NewGuid().ToString();
+            var reservationToRemove = Guid.NewGuid();
+
+            using (var context = new ApplicationDbContext(dbContextOptions))
+            {
+                var reservationService = new ReservationService(context, null);
+
+                var ex = Assert.ThrowsAsync<ArgumentNullException>(async () =>
+                    await reservationService.RemoveReservationAsync(userId, reservationToRemove.ToString()));
+
+                Assert.That(ex, Is.Not.Null);
+                Assert.That(ex.ParamName, Is.EqualTo("reservationToRemove"));
+            }
+        }
+
+        [Test]
+        public async Task RemoveReservationAsync_ShouldThrowException_WhenReservationDoesNotBelongToUser()
+        {
+            var ownerUserId = Guid.NewGuid().ToString(); 
+            var otherUserId = Guid.NewGuid().ToString(); 
+            var reservationId = Guid.NewGuid();
+
+            var reservationToRemove = new Reservation
+            {
+                Id = reservationId,
+                ApplicationUserId = Guid.Parse(ownerUserId),
+                Date = DateTime.UtcNow.AddDays(5),
+                FirstName = "Test",
+                LastName = "User",
+                PhoneNumber = "123456789",
+                Email = "test@example.com",
+                PeopleCount = 4,
+                Description = "Test"
+            };
+
+            await dbContext.Reservations.AddAsync(reservationToRemove);
+            await dbContext.SaveChangesAsync();
+
+            using (var context = new ApplicationDbContext(dbContextOptions))
+            {
+                var reservationService = new ReservationService(context, null);
+
+                var ex = Assert.ThrowsAsync<ArgumentNullException>(async () =>
+                    await reservationService.RemoveReservationAsync(otherUserId, reservationId.ToString()));
+
+                Assert.That(ex, Is.Not.Null);
+                Assert.That(ex.ParamName, Is.EqualTo("reservationToRemove"));
+            }
+        }
+
 
         [TearDown]
         public void TearDown()
