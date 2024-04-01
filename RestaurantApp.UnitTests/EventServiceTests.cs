@@ -3,6 +3,7 @@
 using Microsoft.EntityFrameworkCore;
 using NUnit.Framework;
 using RestaurantApp.Core.Contracts;
+using RestaurantApp.Core.Models.Event;
 using RestaurantApp.Core.Services;
 using RestaurantApp.Data;
 using RestaurantApp.Infrastructure.Data.Configurations;
@@ -457,6 +458,67 @@ namespace RestaurantApp.UnitTests
 
             Assert.That(0, Is.EqualTo(result.Count()));
         }
+
+        //AddEventAsync
+        [Test]
+        public async Task AddEventAsync_ShouldAddEventSuccessfully()
+        {
+            var model = new EventFormModel
+            {
+                Title = "Event 1",
+                Description = "Description 1",
+                StartEvent = DateTime.Now.AddDays(1),
+                EndEvent = DateTime.Now.AddDays(2)
+            };
+
+            await eventService.AddEventAsync(model);
+
+            var result = await dbContext.Events.FirstOrDefaultAsync();
+
+            Assert.That(1, Is.EqualTo(result.Id));
+            Assert.That("Event 1", Is.EqualTo(result.Title));
+        }
+
+        [Test]
+        public async Task AddEventAsync_ShouldAddEventSuccessfullyWhenDateIsEqual()
+        {
+            var model = new EventFormModel
+            {
+                Title = "Event 1",
+                Description = "Description 1",
+                StartEvent = DateTime.Now.AddDays(1),
+                EndEvent = DateTime.Now.AddDays(1)
+            };
+
+            await eventService.AddEventAsync(model);
+
+            var result = await dbContext.Events.FirstOrDefaultAsync();
+
+            Assert.That(1, Is.EqualTo(result.Id));
+            Assert.That("Event 1", Is.EqualTo(result.Title));
+        }
+
+        [Test]
+        public async Task AddEventAsync_ShouldThrowExceptionWhenEndDateIsBeforeStartDate()
+        {
+            var model = new EventFormModel
+            {
+                Title = "Event 1",
+                Description = "Description 1",
+                StartEvent = DateTime.Now.AddDays(2),
+                EndEvent = DateTime.Now.AddDays(1)
+            };
+
+            try
+            {
+                await eventService.AddEventAsync(model);
+            }
+            catch (Exception ex)
+            {
+                Assert.That("Start date must be bigger than end date!", Is.EqualTo(ex.Message));
+            }
+        }
+
 
         [TearDown]
         public void TearDown()
