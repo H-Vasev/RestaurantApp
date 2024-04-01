@@ -11,7 +11,7 @@ namespace RestaurantApp.Attributes
 
 			if (context.ActionArguments.TryGetValue("model", out var value) && value is EventFormModel model)
 			{
-				if (model.StartEvent < DateTime.Now)
+				if (model.StartEvent < DateTime.Now.AddHours(-1))
 				{
 					context.ModelState.AddModelError("", "Start date must be a future date!");
 					context.HttpContext.Items["ErrorDate"] = "Start date must be a future date!";

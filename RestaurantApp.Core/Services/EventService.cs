@@ -60,6 +60,11 @@ namespace RestaurantApp.Core.Services
 
 		public async Task AddEventAsync(EventFormModel model)
 		{
+			if (model.EndEvent.Date < model.StartEvent.Date)
+			{
+				throw new ArgumentException("Start date must be bigger than end date!");
+			}
+
 			var ev = new Event()
 			{
 				Title = model.Title,
