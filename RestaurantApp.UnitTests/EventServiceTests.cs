@@ -655,6 +655,54 @@ namespace RestaurantApp.UnitTests
 
         }
 
+        //RemoveEventAsync
+        [Test]
+        public async Task RemoveEventAsync_ShouldRemoveEventSuccessfully()
+        {
+            var model = new Event
+            {
+                Id = 1,
+                Title = "Event 1",
+                Description = "Description 1",
+                StartEvent = DateTime.Now.AddDays(1),
+                EndEvent = DateTime.Now.AddDays(2),
+            };  
+
+            await dbContext.Events.AddAsync(model);
+
+            var modelToRemove = await dbContext.Events.FindAsync(1);
+
+            await eventService.RemoveEventAsync(modelToRemove.Id);
+
+            var removedResult = await dbContext.Events.FindAsync(1);
+
+            Assert.That(removedResult, Is.Null);
+        }
+
+        [Test]
+        public async Task RemoveEventAsync_ShouldThrowExceptionWhenEventIsNull()
+        {
+            var model = new Event
+            {
+                Id = 1,
+                Title = "Event 1",
+                Description = "Description 1",
+                StartEvent = DateTime.Now.AddDays(1),
+                EndEvent = DateTime.Now.AddDays(2),
+            };
+
+            await dbContext.AddAsync(model);
+
+            try
+            {
+                await eventService.RemoveEventAsync(2);
+            }
+            catch (Exception ex)
+            {
+                Assert.That("Value cannot be null. (Parameter 'ev')", Is.EqualTo(ex.Message));
+            }
+        }
+
         [TearDown]
         public void TearDown()
         {
