@@ -295,6 +295,169 @@ namespace RestaurantApp.UnitTests
             Assert.That(result, Is.Null);
         }
 
+        //GetAllBoockedEventIdsAsync
+        [Test]
+        public async Task GetAllBoockedEventIdsAsync_ShouldReturnAllBookedEvents()
+        {
+            var userId = Guid.NewGuid();
+            var events = new List<Event>
+            {
+                new Event
+                {
+                    Id = 1,
+                    Title = "Event 1",
+                    Description = "Description 1",
+                    StartEvent = DateTime.Now.AddDays(1),
+                    Reservations = new List<Reservation>
+                    {
+                        new Reservation
+                        {
+                            ApplicationUserId = userId
+                        }
+                    }
+                },
+                new Event
+                {
+                    Id = 2,
+                    Title = "Event 2",
+                    Description = "Description 2",
+                    StartEvent = DateTime.Now.AddDays(2),
+                    Reservations = new List<Reservation>
+                    {
+                        new Reservation
+                        {
+                            ApplicationUserId = userId
+                        }
+                    }
+                },
+                new Event
+                {
+                    Id = 3,
+                    Title = "Event 3",
+                    Description = "Description 3",
+                    StartEvent = DateTime.Now.AddDays(3),
+                    Reservations = new List<Reservation>
+                    {
+                        new Reservation
+                        {
+                            ApplicationUserId = userId,
+                        }
+                    }
+                },
+            };
+
+            await dbContext.Events.AddRangeAsync(events);
+            await dbContext.SaveChangesAsync();
+
+            var result = await eventService.GetAllBoockedEventIdsAsync(userId.ToString());
+
+            Assert.That(3, Is.EqualTo(result.Count()));
+        }
+
+        [Test]
+        public async Task GetAllBoockedEventIdsAsync_ShouldReturnAllBookedEventsForUser()
+        {
+            var userId1 = Guid.NewGuid();
+            var userId2 = Guid.NewGuid();
+
+            var events = new List<Event>
+            {
+                new Event
+                {
+                    Id = 1,
+                    Title = "Event 1",
+                    Description = "Description 1",
+                    StartEvent = DateTime.Now.AddDays(1),
+                    Reservations = new List<Reservation>
+                    {
+                        new Reservation
+                        {
+                            ApplicationUserId = userId1
+                        }
+                    }
+                },
+                new Event
+                {
+                    Id = 2,
+                    Title = "Event 2",
+                    Description = "Description 2",
+                    StartEvent = DateTime.Now.AddDays(2),
+                    Reservations = new List<Reservation>
+                    {
+                        new Reservation
+                        {
+                            ApplicationUserId = userId2
+                        }
+                    }
+                },
+                new Event
+                {
+                    Id = 3,
+                    Title = "Event 3",
+                    Description = "Description 3",
+                    StartEvent = DateTime.Now.AddDays(3),
+                    Reservations = new List<Reservation>
+                    {
+                        new Reservation
+                        {
+                            ApplicationUserId = userId2
+                        }
+                    }
+                },
+            };
+
+            await dbContext.Events.AddRangeAsync(events);
+            await dbContext.SaveChangesAsync();
+
+            var result = await eventService.GetAllBoockedEventIdsAsync(userId2.ToString());
+
+            Assert.That(2, Is.EqualTo(result.Count()));
+        }
+
+        [Test]
+        public async Task GetAllBoockedEventIdsAsync_ShouldReturnZeroCount()
+        {
+            var userId = Guid.NewGuid();
+            var events = new List<Event>
+            {
+                new Event
+                {
+                    Id = 1,
+                    Title = "Event 1",
+                    Description = "Description 1",
+                    StartEvent = DateTime.Now.AddDays(1),
+                    Reservations = new List<Reservation>
+                    {
+                        new Reservation
+                        {
+                            ApplicationUserId = userId
+                        }
+                    }
+                },
+                new Event
+                {
+                    Id = 2,
+                    Title = "Event 2",
+                    Description = "Description 2",
+                    StartEvent = DateTime.Now.AddDays(2),
+                    Reservations = new List<Reservation>
+                    {
+                        new Reservation
+                        {
+                            ApplicationUserId = userId
+                        }
+                    }
+                },
+            };
+
+            await dbContext.Events.AddRangeAsync(events);
+            await dbContext.SaveChangesAsync();
+
+            var result = await eventService.GetAllBoockedEventIdsAsync(Guid.NewGuid().ToString());
+
+            Assert.That(0, Is.EqualTo(result.Count()));
+        }
+
         [TearDown]
         public void TearDown()
         {
