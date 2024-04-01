@@ -8,6 +8,7 @@ using RestaurantApp.Core.Services;
 using RestaurantApp.Data;
 using RestaurantApp.Infrastructure.Data.Configurations;
 using RestaurantApp.Infrastructure.Data.Models;
+using System.Reflection.Metadata;
 
 namespace RestaurantApp.UnitTests
 {
@@ -519,6 +520,140 @@ namespace RestaurantApp.UnitTests
             }
         }
 
+        //GetEventByIdForEditAsync
+        [Test]
+        public async Task GetEventByIdForEditAsync_ShouldReturnEventById()
+        {
+            var events = new List<Event>
+            {
+                new Event
+                {
+                    Id = 1,
+                    Title = "Event 1",
+                    Description = "Description 1",
+                    StartEvent = DateTime.Now.AddDays(1)
+                },
+                new Event
+                {
+                    Id = 2,
+                    Title = "Event 2",
+                    Description = "Description 2",
+                    StartEvent = DateTime.Now.AddDays(2)
+                },
+                new Event
+                {
+                    Id = 3,
+                    Title = "Event 3",
+                    Description = "Description 3",
+                    StartEvent = DateTime.Now.AddDays(3)
+                },
+            };
+
+            await dbContext.Events.AddRangeAsync(events);
+            await dbContext.SaveChangesAsync();
+
+            var result = await eventService.GetEventByIdForEditAsync(2);
+
+            Assert.That("Event 2", Is.EqualTo(result.Title));
+            Assert.That("Description 2", Is.EqualTo(result.Description));
+        }
+
+        [Test]
+        public async Task GetEventByIdForEditAsync_ShouldThrowExceptionWhenEventIsNull()
+        {
+            var events = new List<Event>
+            {
+                new Event
+                {
+                    Id = 1,
+                    Title = "Event 1",
+                    Description = "Description 1",
+                    StartEvent = DateTime.Now.AddDays(1)
+                },
+                new Event
+                {
+                    Id = 2,
+                    Title = "Event 2",
+                    Description = "Description 2",
+                    StartEvent = DateTime.Now.AddDays(2)
+                },
+            };
+
+            await dbContext.Events.AddRangeAsync(events);
+            await dbContext.SaveChangesAsync();
+
+            try
+            {
+                await eventService.GetEventByIdForEditAsync(4);
+            }
+            catch (Exception ex)
+            {
+                Assert.That("Value cannot be null. (Parameter 'ev')", Is.EqualTo(ex.Message));
+            }
+        }
+
+        //EditEventAsync
+        [Test]
+        public async Task EditEventAsync_ShouldEditEventSuccessfully()
+        {
+            var model = new Event
+            {
+                Id = 1,
+                Title = "Event 1",
+                Description = "Description 1",
+                StartEvent = DateTime.Now.AddDays(1),
+                EndEvent = DateTime.Now.AddDays(2),
+            };
+
+            await dbContext.AddAsync(model);
+
+            var result = await dbContext.Events.FindAsync(1);
+
+            Assert.That(1, Is.EqualTo(result.Id));
+            Assert.That("Event 1", Is.EqualTo(result.Title));
+            Assert.That("Description 1", Is.EqualTo(result.Description));
+
+
+            var editModel = new EventFormModel
+            {
+                Title = "Event 2",
+                Description = "Description 2",
+                StartEvent = DateTime.Now.AddDays(2),
+                EndEvent = DateTime.Now.AddDays(3)
+            };
+
+            await eventService.EditEventAsync(editModel, 1);
+
+            var editedResult = await dbContext.Events.FirstOrDefaultAsync();
+
+            Assert.That(1, Is.EqualTo(editedResult.Id));
+            Assert.That("Event 2", Is.EqualTo(editedResult.Title));
+            Assert.That("Description 2", Is.EqualTo(editedResult.Description));
+        }
+
+        [Test]
+        public async Task EditEventAsync_ShouldThrowExceptionWhenEventIsNull()
+        {
+            var model = new EventFormModel
+            {
+                Title = "Event 1",
+                Description = "Description 1",
+                StartEvent = DateTime.Now.AddDays(1),
+                EndEvent = DateTime.Now.AddDays(2)
+            };
+
+            await eventService.AddEventAsync(model);
+
+            try
+            {
+                await eventService.EditEventAsync(model, 2);
+            }
+            catch (Exception ex)
+            {
+                Assert.That("Value cannot be null. (Parameter 'ev')", Is.EqualTo(ex.Message));
+            }
+
+        }
 
         [TearDown]
         public void TearDown()
