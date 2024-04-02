@@ -12,7 +12,10 @@ namespace RestaurantApp.Infrastructure.Data.Configurations
                 .Property(p => p.Price)
                 .HasPrecision(18, 2);
 
-            builder.HasData(GenerateProducts());
+            if (DatabaseSeedController.SeedEnabled)
+            {
+                builder.HasData(GenerateProducts());
+            }
         }
 
         private Product[] GenerateProducts()

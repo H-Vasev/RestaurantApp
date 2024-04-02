@@ -8,8 +8,11 @@ namespace RestaurantApp.Infrastructure.Data.Configurations
 	{
 		public void Configure(EntityTypeBuilder<Category> builder)
 		{
-			builder.HasData(GenerateCategories());
-		}
+			if (DatabaseSeedController.SeedEnabled)
+			{
+                builder.HasData(GenerateCategories());
+            }
+        }
 
 		private Category[] GenerateCategories()
 		{
