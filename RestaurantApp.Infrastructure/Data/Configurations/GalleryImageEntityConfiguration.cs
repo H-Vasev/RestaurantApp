@@ -8,7 +8,10 @@ namespace RestaurantApp.Infrastructure.Data.Configurations
     {
         public void Configure(EntityTypeBuilder<GalleryImage> builder)
         {
-            builder.HasData(GenerateGalleryImages());
+            if (DatabaseSeedController.SeedEnabled)
+            {
+                builder.HasData(GenerateGalleryImages());
+            }
         }
 
         private GalleryImage[] GenerateGalleryImages()
