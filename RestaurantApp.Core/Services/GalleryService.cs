@@ -2,11 +2,10 @@
 using RestaurantApp.Core.Contracts;
 using RestaurantApp.Core.Models.Gallery;
 using RestaurantApp.Data;
-using RestaurantApp.Infrastructure.Data.Models;
 
 namespace RestaurantApp.Core.Services
 {
-	public class GalleryService : IGalleryService
+    public class GalleryService : IGalleryService
     {
         private readonly ApplicationDbContext dbContext;
 
@@ -32,14 +31,14 @@ namespace RestaurantApp.Core.Services
                 }).ToArrayAsync();
         }
 
-        public async Task<int> IncrementImageViewsCountAsync(int id, bool isIdExist)
+        public async Task<int> IncrementImageViewsCountAsync(int id, bool isSeenByUser)
         {
             var image = dbContext.GalleryImages.Find(id);
             if (image == null)
             {
                 throw new ArgumentNullException(nameof(image));
             }
-            if (!isIdExist)
+            if (!isSeenByUser)
             {
 				image.ViewsCount += 1;
 				await dbContext.SaveChangesAsync();

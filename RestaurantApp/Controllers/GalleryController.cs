@@ -43,7 +43,7 @@ namespace RestaurantApp.Controllers
         {
             var cookieName = "IncrementedImages";
             var incrementedImages = new List<int>();
-            var isIdExist = true;
+            var isSeenByUser = true;
 
             if (Request.Cookies.ContainsKey(cookieName))
             {
@@ -60,12 +60,12 @@ namespace RestaurantApp.Controllers
                     HttpOnly = true 
                 };
 				Response.Cookies.Append(cookieName, string.Join(',', incrementedImages), cookieOptions);
-                isIdExist = false;
+                isSeenByUser = false;
 			}
 
             try
             {
-				var imageCount = await galleryService.IncrementImageViewsCountAsync(id, isIdExist);
+				var imageCount = await galleryService.IncrementImageViewsCountAsync(id, isSeenByUser);
 				return Json(new { viewCount = imageCount });
 			}
 			catch (Exception)
