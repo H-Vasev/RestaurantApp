@@ -46,7 +46,7 @@ namespace RestaurantApp.Core.Services
 			await dbContext.SaveChangesAsync();
 		}
 
-		public async Task<CheckoutFormModel> GetDataForCheoutAsync(string userId)
+		public async Task<CheckoutFormModel> GetDataForCheckoutAsync(string userId)
 		{
 			var items = await shoppingCartService.GetAllItemsAsync(userId);
 			var userData = await dbContext.Users

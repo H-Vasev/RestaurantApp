@@ -63,7 +63,7 @@ namespace RestaurantApp.Controllers
 		public async Task<IActionResult> Checkout()
 		{
 			var userId = GetUserId();
-			var model = await orderService.GetDataForCheoutAsync(userId);
+			var model = await orderService.GetDataForCheckoutAsync(userId);
 
 			return View(model);
 		}

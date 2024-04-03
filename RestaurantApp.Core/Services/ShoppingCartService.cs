@@ -104,7 +104,7 @@ namespace RestaurantApp.Core.Services
 				.Where(c => c.ShoppingCart.ApplicationUser.Id == Guid.Parse(userId))
 				.ToArrayAsync();
 
-			if (cartItems == null)
+			if (cartItems.Count() <= 0)
 			{
 				throw new InvalidOperationException(nameof(cartItems));
 			}
