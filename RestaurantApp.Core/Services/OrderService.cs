@@ -20,6 +20,11 @@ namespace RestaurantApp.Core.Services
 
 		public async Task CheckoutAsync(CheckoutFormModel model, string userId)
 		{
+			if (model.Items.Count() < 1)
+			{
+				throw new ArgumentException(nameof(model.Items));
+			}
+
 			var orderItems = new List<OrderItem>();
 
 			var order = new Order()
@@ -48,7 +53,6 @@ namespace RestaurantApp.Core.Services
 
 		public async Task<CheckoutFormModel> GetDataForCheckoutAsync(string userId)
 		{
-			var items = await shoppingCartService.GetAllItemsAsync(userId);
 			var userData = await dbContext.Users
 				.Where(u => u.Id == Guid.Parse(userId))
 				.Select(u => new CheckoutFormModel()
@@ -65,7 +69,9 @@ namespace RestaurantApp.Core.Services
 				throw new ArgumentException(nameof(userData));
 			}
 
-			userData.Items = items;
+            var items = await shoppingCartService.GetAllItemsAsync(userId);
+
+            userData.Items = items;
 			userData.TotalPrice = items.Sum(i => i.Price * i.Quantity);
 
 			return userData;
