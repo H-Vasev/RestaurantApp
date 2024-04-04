@@ -17,17 +17,26 @@ namespace RestaurantApp.Core.Services
 
         public async Task AddProductAsync(ProductFormModel model)
         {
-            var product = new Product()
+            try
             {
-                Name = model.Title,
-                Description = model.Description,
-                Price = model.Price,
-                Image = model.ImagePath,
-                CategoryId = model.CategoryId,
-            };
+                var product = new Product()
+                {
+                    Name = model.Title,
+                    Description = model.Description,
+                    Price = model.Price,
+                    Image = model.ImagePath,
+                    CategoryId = model.CategoryId,
+                };
 
-            await dbContext.Products.AddAsync(product);
-            await dbContext.SaveChangesAsync();
+                await dbContext.Products.AddAsync(product);
+                await dbContext.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                throw new ArgumentNullException();
+            }
+
+
         }
 
         public async Task EditProductAsync(ProductFormModel model, int id)
@@ -49,8 +58,8 @@ namespace RestaurantApp.Core.Services
         }
 
         public async Task<ProductFormModel> GetProductByIdForEditAsync(int id)
-		{
-			var product = await dbContext.Products
+        {
+            var product = await dbContext.Products
                 .Where(p => p.Id == id)
                 .Select(p => new ProductFormModel()
                 {
@@ -68,11 +77,11 @@ namespace RestaurantApp.Core.Services
             }
 
             return product;
-		}
+        }
 
-		public async Task<string> GetProductImagePathAsync(int id)
-		{
-			var product = await dbContext.Products
+        public async Task<string> GetProductImagePathAsync(int id)
+        {
+            var product = await dbContext.Products
                 .FindAsync(id);
 
             if (product == null)
@@ -81,9 +90,9 @@ namespace RestaurantApp.Core.Services
             }
 
             return product.Image ?? "";
-		}
+        }
 
-		public async Task RemoveProductAsync(int id)
+        public async Task RemoveProductAsync(int id)
         {
             var product = await dbContext.Products
                   .FindAsync(id);

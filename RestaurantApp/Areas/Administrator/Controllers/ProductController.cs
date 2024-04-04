@@ -56,7 +56,15 @@ namespace RestaurantApp.Areas.Administrator.Controllers
 				model.ImagePath = "img/menu/" + fileName;
 			}
 
-			await productService.AddProductAsync(model);
+			try
+			{
+                await productService.AddProductAsync(model);
+            }
+            catch (Exception)
+			{
+
+				return BadRequest();
+			}
 
             return RedirectToAction(nameof(Index));
         }
