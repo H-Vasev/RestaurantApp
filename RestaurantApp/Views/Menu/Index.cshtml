@@ -1,11 +1,10 @@
-﻿@inject IOrderService orderService
-
-@model IEnumerable<ProductViewModel>
+﻿@model IEnumerable<ProductViewModel>
 
 @{
 	ViewData["Title"] = "Menu";
 
 	var userId = ViewBag.UserId;
+	OrderViewModel[] lastOrders = ViewBag.LastOrders;
 }
 
 <section id="menu" class="menu section-bg">
@@ -37,15 +36,14 @@
 
 		@if (userId != null)
 		{
-			IEnumerable<OrderViewModel> lastThreeOrders = await orderService.GetOrdersAsync(userId);
-			@if (lastThreeOrders.Count() > 0)
+			@if (lastOrders.Count() > 0)
 			{
 				<div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
 					<div class="carousel-inner d-flex">
 						@{
 							bool isFirst = true;
 						}
-						@foreach (var order in lastThreeOrders)
+						@foreach (var order in lastOrders)
 						{
 							<div class="carousel-item @(isFirst ? "active" : "")">
 

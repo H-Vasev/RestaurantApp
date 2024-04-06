@@ -8,11 +8,13 @@ namespace RestaurantApp.Controllers
 	{
 		private readonly IMenuService menuService;
 		private readonly IShoppingCartService shoppingCartService;
+		private readonly IOrderService orderService;
 
-        public MenuController(IMenuService menuService, IShoppingCartService shoppingCartService)
+        public MenuController(IMenuService menuService, IShoppingCartService shoppingCartService, IOrderService orderService)
 		{
 			this.menuService = menuService;
             this.shoppingCartService = shoppingCartService;
+			this.orderService = orderService;
 		}
 
 		[AllowAnonymous]
@@ -28,6 +30,10 @@ namespace RestaurantApp.Controllers
             ViewBag.Categories = await menuService.GetCategoriesAsync();
             ViewBag.CurrentCategory = category;
 			ViewBag.UserId = GetUserId();
+			if (ViewBag.UserId != null)
+			{
+				ViewBag.LastOrders = await orderService.GetOrdersAsync(ViewBag.UserId);
+			}
 
 			return View(model);
 		}
