@@ -49,7 +49,7 @@
 					}
 					else
 					{
-						<input type="datetime-local" asp-for="@date" class="form-control">
+						<input type="datetime-local" asp-for="@date" min="@DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm")" class="form-control">
 					}
 					<span asp-validation-for="@Model.Date"></span>
 				</div>

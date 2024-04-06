@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace RestaurantApp.Core.Models.Reservation
+﻿namespace RestaurantApp.Core.Models.Reservation
 {
-    public class ReservationViewModel
+	public class ReservationViewModel
     {
         public string Id { get; set; } = string.Empty;
 
