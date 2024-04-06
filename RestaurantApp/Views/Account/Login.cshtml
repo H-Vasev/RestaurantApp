@@ -9,7 +9,7 @@
     <div class="col-md-4">
         <section>
             <h1 class="text-center">@ViewData["Title"]</h1>
-            <form id="account" method="post">
+            <form id="account" method="post" asp-controller="Account" asp-action="Login" asp-route-returnUrl="@ViewData["ReturnUrl"]">
                 <hr />
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="text-center mb-3">

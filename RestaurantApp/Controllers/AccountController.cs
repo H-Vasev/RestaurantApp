@@ -146,8 +146,9 @@ namespace RestaurantApp.Controllers
 
 		[AllowAnonymous]
         [HttpGet]
-        public IActionResult Login()
+        public IActionResult Login(string? returnUrl = null)
         {
+            ViewData["ReturnUrl"] = returnUrl;
             var model = new LoginFormModel();
 
             return View(model);
@@ -155,7 +156,7 @@ namespace RestaurantApp.Controllers
 
         [AllowAnonymous]
         [HttpPost]
-        public async Task<IActionResult> Login(LoginFormModel model)
+        public async Task<IActionResult> Login(LoginFormModel model, string? returnUrl)
         {
             if (!ModelState.IsValid)
             {
@@ -169,6 +170,11 @@ namespace RestaurantApp.Controllers
                 ModelState.AddModelError(string.Empty, "Invalid login attempt.");
 
                 return View(model);
+            }
+
+            if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+            {
+                return Redirect(returnUrl);
             }
 
             return RedirectToAction("Index", "Home");
