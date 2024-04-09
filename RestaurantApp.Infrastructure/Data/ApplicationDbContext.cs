@@ -47,6 +47,13 @@ namespace RestaurantApp.Data
 				.HasForeignKey(p => p.ChatUserId)
 				.OnDelete(DeleteBehavior.SetNull);
 
+			builder.Entity<Reservation>()
+				.HasOne(p => p.CapacitySlot)
+				.WithMany(p => p.Reservations)
+				.HasForeignKey(p => p.CapacitySlotId)
+				.OnDelete(DeleteBehavior.SetNull);
+				
+
 			base.OnModelCreating(builder);
 		}
 
@@ -75,6 +82,8 @@ namespace RestaurantApp.Data
 		public DbSet<Chat> Chats { get; set; } = null!;
 
 		public DbSet<ChatMessage> ChatMessages { get; set; } = null!;
+
+		public DbSet<CapacitySlot> CapacitySlots { get; set; } = null!;
 
 	}
 }

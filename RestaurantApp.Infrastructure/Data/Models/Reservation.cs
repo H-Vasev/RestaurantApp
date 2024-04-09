@@ -42,5 +42,11 @@ namespace RestaurantApp.Infrastructure.Data.Models
 
 		[ForeignKey(nameof(EventId))]
 		public Event? Event { get; set; }
+
+
+		public int? CapacitySlotId { get; set; }
+
+		[ForeignKey(nameof(CapacitySlotId))]
+		public CapacitySlot? CapacitySlot { get; set; }
 	}
 }
