@@ -10,25 +10,27 @@ namespace RestaurantApp.Core.Services
 	{
 		private readonly ApplicationDbContext dbContext;
 		private readonly IEventService eventService;
+		private readonly ICapacitySlotService capacitySlot;
 
-		public ReservationService(ApplicationDbContext dbContext, IEventService eventService)
+		public ReservationService(ApplicationDbContext dbContext, IEventService eventService, ICapacitySlotService capacitySlot)
 		{
 			this.dbContext = dbContext;
 			this.eventService = eventService;
+			this.capacitySlot = capacitySlot;
 		}
 
 		public async Task<string> AddReservationAsync(ReservationFormModel model, string userId, int id)
 		{
-			if (DateTime.Parse(model.Date) < DateTime.Now)
+			if (DateTime.Parse(model.Date).Date < DateTime.Now.Date)
 			{
-				return "Date must be bigger than today!";
+				return "You have enter invalid date!";
 			}
 
 			if (model.PeopleCount < 1 || model.PeopleCount > 60)
 			{
-				return "The number of people must be between 1 and 60";
+				return "The number of persons must be between 1 and 60";
 
-            }
+			}
 
 			var ev = await eventService.GetEventByIdAsync(id);
 
@@ -46,6 +48,13 @@ namespace RestaurantApp.Core.Services
 				return "You have already made a reservation for this date please check your Reservation!";
 			}
 
+			var capacityModel = await capacitySlot.CheckCapacityAsync(model.Date, model.PeopleCount);
+
+			if (!capacityModel.IsSuccess)
+			{
+				return $"We have {capacityModel.PeopleCountLeft} spaces left.";
+			}
+
 			var reservation = new Reservation()
 			{
 				FirstName = model.FirstName,
@@ -56,7 +65,8 @@ namespace RestaurantApp.Core.Services
 				PeopleCount = model.PeopleCount,
 				Description = model.Description,
 				ApplicationUserId = Guid.Parse(userId),
-				EventId = model.EventId
+				EventId = model.EventId,
+				CapacitySlotId = capacityModel.CapacityId
 			};
 
 			await dbContext.Reservations.AddAsync(reservation);
@@ -69,10 +79,10 @@ namespace RestaurantApp.Core.Services
 		{
 			if (DateTime.Parse(model.Date) < DateTime.Now)
 			{
-                return "Date must be bigger than today!";
-            }
+				return "Date must be bigger than today!";
+			}
 
-            var reservation = await dbContext.Reservations
+			var reservation = await dbContext.Reservations
 				.FirstOrDefaultAsync(r => r.ApplicationUserId == Guid.Parse(userId) && r.Id == Guid.Parse(id));
 
 			if (reservation == null)

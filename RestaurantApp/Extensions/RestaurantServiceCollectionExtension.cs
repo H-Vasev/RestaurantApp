@@ -17,6 +17,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddScoped<IOrderService, OrderService>();
             services.AddTransient<IEmailSender, EmailSender>();
             services.AddScoped<IChatService, ChatService>();
+            services.AddScoped<ICapacitySlotService, CapacitySlotService>();
 
 			return services;
         }
