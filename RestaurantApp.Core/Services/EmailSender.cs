@@ -34,17 +34,18 @@ namespace RestaurantApp.Core.Services
 			}
 		}
 
-		public async Task SendEmailAsync(string name, string fromEmail, string subject, string message)
+		public async Task SendEmailAsync(string name, string toEmail, string subject, string message)
 		{
 			var apiKey = configuration.GetSection("SendGrid:ApiKey").Value;
 			var client = new SendGridClient(apiKey);
 
-			//Need real email addresses. Already tested with real email addresses and work.
-			var from = new EmailAddress("fromYourEmail@gmail.com", "RestaurantApp");
-			var to = new EmailAddress("toYourEmail@gmail.com");
+			var fromEmail = configuration.GetSection("EmailAddress:Key").Value;
 
-			var plainTextContent = $"Message from {name} ({fromEmail}): {message}";
-			var htmlContent = $"<strong>Message from {name} ({fromEmail}):</strong><p>{message}</p>";
+			var from = new EmailAddress(fromEmail, "RestaurantApp");
+			var to = new EmailAddress(toEmail);
+
+            var plainTextContent = $"Your message {message} was succesfully send to our Restaurant.";
+			var htmlContent = $"<span>Your message </span><strong>('{message}'):</strong><p>Was succesfully send to our Restaurant.</p>";
 
 			var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
 
