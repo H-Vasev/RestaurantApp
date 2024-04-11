@@ -4,22 +4,61 @@ using RestaurantApp.Core.Models.Reservation;
 using RestaurantApp.Data;
 using RestaurantApp.Infrastructure.Data.Models;
 
+using static RestaurantApp.Infrastructure.Constants.DataConstants.Reservation;
+
 namespace RestaurantApp.Core.Services
 {
 	public class ReservationService : IReservationService
 	{
 		private readonly ApplicationDbContext dbContext;
 		private readonly IEventService eventService;
-		private readonly ICapacitySlotService capacitySlot;
 
-		public ReservationService(ApplicationDbContext dbContext, IEventService eventService, ICapacitySlotService capacitySlot)
+		public ReservationService(ApplicationDbContext dbContext, IEventService eventService)
 		{
 			this.dbContext = dbContext;
 			this.eventService = eventService;
-			this.capacitySlot = capacitySlot;
 		}
 
 		public async Task<string> AddReservationAsync(ReservationFormModel model, string userId, int id)
+		{
+			if (DateTime.Parse(model.Date).Date < DateTime.Now.Date)
+			{
+				return "You have enter invalid date!";
+			}
+
+			if (model.PeopleCount < PeopleCountMin || model.PeopleCount > PeopleCountMax)
+			{
+				return $"The number of persons must be between {PeopleCountMin} and {PeopleCountMax}.";
+
+			}
+
+			var date = DateTime.Parse(model.Date);
+			var isReserved = await IsReservedAsync(date, userId);
+			if (isReserved)
+			{
+				return "You have already made a reservation for this date please check your Reservation!";
+			}
+
+			var ev = await eventService.GetEventByIdAsync(id);
+			if (ev != null)
+			{
+				model.EventId = ev.Id;
+				model.EventName = ev.Title;
+				model.Date = ev.StartEvent.ToString("g");
+			}
+
+			var updatedReservation = await TryUpdateReservationByDateAsync(model, userId);
+			if (!string.IsNullOrEmpty(updatedReservation))
+			{
+				return updatedReservation;
+			}
+
+			await dbContext.SaveChangesAsync();
+
+			return string.Empty;
+		}
+	
+		public async Task<string> EditReservationAsync(ReservationFormModel model, string userId, string id)
 		{
 			if (DateTime.Parse(model.Date).Date < DateTime.Now.Date)
 			{
@@ -32,30 +71,96 @@ namespace RestaurantApp.Core.Services
 
 			}
 
-			var ev = await eventService.GetEventByIdAsync(id);
+			var currentReservation = await dbContext.Reservations
+				.FirstOrDefaultAsync(r => r.ApplicationUserId == Guid.Parse(userId) && r.Id == Guid.Parse(id));
 
-			if (ev != null)
+			if (currentReservation == null)
 			{
-				model.EventId = ev.Id;
-				model.EventName = ev.Title;
-				model.Date = ev.StartEvent.ToString("g");
-			}
-			var date = DateTime.Parse(model.Date);
-			var isReserved = await IsReservedAsync(date, userId);
-
-			if (isReserved)
-			{
-				return "You have already made a reservation for this date please check your Reservation!";
+				throw new ArgumentNullException(nameof(currentReservation));
 			}
 
-			var capacityModel = await capacitySlot.CheckCapacityAsync(model.Date, model.PeopleCount);
-
-			if (!capacityModel.IsSuccess)
+			if (DateTime.Parse(model.Date).Date != currentReservation.Date.Date)
 			{
-				return $"We have {capacityModel.PeopleCountLeft} spaces left.";
+
+				var updatedReservation = await TryUpdateReservationByDateAsync(model, userId);
+				if (!string.IsNullOrEmpty(updatedReservation))
+				{
+					return updatedReservation;
+				}
+
+				var updateCapacity = await UpdateCapacityWhenAddReservationAsync(currentReservation.CapacitySlotId, currentReservation.PeopleCount, userId, currentReservation.Id.ToString().ToLower());
+				if (!string.IsNullOrEmpty(updateCapacity))
+				{
+					return updateCapacity;
+				}
+			}
+			else if (currentReservation.PeopleCount != model.PeopleCount)
+			{
+				var capacitySlot = await dbContext.CapacitySlots
+				.FindAsync(currentReservation.CapacitySlotId);
+
+				if (capacitySlot == null)
+				{
+					throw new ArgumentNullException("Capacity slot not found");
+				}
+
+				var count = Math.Abs(currentReservation.PeopleCount - model.PeopleCount);
+				if (currentReservation.PeopleCount > model.PeopleCount && capacitySlot.CurrentCapacity + count <= capacitySlot.TotalCapacity)
+				{
+					capacitySlot.CurrentCapacity += count;
+				}
+				else if (currentReservation.PeopleCount < model.PeopleCount && capacitySlot.CurrentCapacity - count >= 0)
+				{
+					capacitySlot.CurrentCapacity -= count;
+				}
+				else
+				{
+					return $"We have {capacitySlot.CurrentCapacity} spaces left.";
+				}
+
+				currentReservation.FirstName = model.FirstName;
+				currentReservation.LastName = model.LastName;
+				currentReservation.PhoneNumber = model.PhoneNumber;
+				currentReservation.Email = model.Email;
+				currentReservation.Date = DateTime.Parse(model.Date);
+				currentReservation.PeopleCount = model.PeopleCount;
+				currentReservation.Description = model.Description;
+				currentReservation.CapacitySlotId = currentReservation.CapacitySlotId;
 			}
 
-			var reservation = new Reservation()
+			await dbContext.SaveChangesAsync();
+
+			return string.Empty;
+		}
+
+		public async Task<string> TryUpdateReservationByDateAsync(ReservationFormModel model, string userId)
+		{
+			var capacitySlot = await dbContext.CapacitySlots
+					.Where(c => c.SlotDate.Date == DateTime.Parse(model.Date).Date)
+					.FirstOrDefaultAsync();
+
+			if (capacitySlot == null)
+			{
+				capacitySlot = new CapacitySlot()
+				{
+					SlotDate = DateTime.Parse(model.Date),
+					CurrentCapacity = 100,
+					Reservations = new List<Reservation>()
+				};
+
+				await dbContext.CapacitySlots.AddAsync(capacitySlot);
+			}
+
+			if (capacitySlot.CurrentCapacity >= model.PeopleCount)
+			{
+				capacitySlot.CurrentCapacity -= model.PeopleCount;
+			}
+			else
+			{
+				return $"We have {capacitySlot.CurrentCapacity} spaces left.";
+			}
+
+			capacitySlot.Reservations.Add(new Reservation()
 			{
 				FirstName = model.FirstName,
 				LastName = model.LastName,
@@ -66,39 +171,28 @@ namespace RestaurantApp.Core.Services
 				Description = model.Description,
 				ApplicationUserId = Guid.Parse(userId),
 				EventId = model.EventId,
-				CapacitySlotId = capacityModel.CapacityId
-			};
-
-			await dbContext.Reservations.AddAsync(reservation);
-			await dbContext.SaveChangesAsync();
+				CapacitySlotId = capacitySlot.Id
+			});
 
 			return string.Empty;
 		}
 
-		public async Task<string> EditReservationAsync(ReservationFormModel model, string userId, string id)
+		public async Task<string?> UpdateCapacityWhenAddReservationAsync(int? capacitySlotId, int peopleCount, string userId, string? currentReservationId)
 		{
-			if (DateTime.Parse(model.Date) < DateTime.Now)
+			var capacityToUpdate = await dbContext.Reservations
+					.Include(c => c.CapacitySlot)
+					.FirstOrDefaultAsync(c => c.ApplicationUserId == Guid.Parse(userId) && c.CapacitySlotId == capacitySlotId);
+
+			if (capacityToUpdate != null && capacityToUpdate.CapacitySlot!.CurrentCapacity + peopleCount <= capacityToUpdate.CapacitySlot.TotalCapacity)
 			{
-				return "Date must be bigger than today!";
+				capacityToUpdate.CapacitySlot.CurrentCapacity += peopleCount;
+			}
+			else
+			{
+				return $"No auvalible spaces for this date please chuse anouther one.";
 			}
 
-			var reservation = await dbContext.Reservations
-				.FirstOrDefaultAsync(r => r.ApplicationUserId == Guid.Parse(userId) && r.Id == Guid.Parse(id));
-
-			if (reservation == null)
-			{
-				throw new ArgumentNullException(nameof(reservation));
-			}
-
-			reservation.FirstName = model.FirstName;
-			reservation.LastName = model.LastName;
-			reservation.PhoneNumber = model.PhoneNumber;
-			reservation.Email = model.Email;
-			reservation.Date = DateTime.Parse(model.Date);
-			reservation.PeopleCount = model.PeopleCount;
-			reservation.Description = model.Description;
-
-			await dbContext.SaveChangesAsync();
+			dbContext.Reservations.Remove(capacityToUpdate);
 
 			return string.Empty;
 		}
@@ -173,11 +267,21 @@ namespace RestaurantApp.Core.Services
 		public async Task RemoveReservationAsync(string userId, string id)
 		{
 			var reservationToRemove = await dbContext.Reservations
+				.Include(r => r.CapacitySlot)
 				.FirstOrDefaultAsync(r => r.ApplicationUserId == Guid.Parse(userId) && r.Id == Guid.Parse(id));
 
 			if (reservationToRemove == null)
 			{
 				throw new ArgumentNullException(nameof(reservationToRemove));
+			}
+
+			if (reservationToRemove.CapacitySlot!.CurrentCapacity + reservationToRemove.PeopleCount <= 100)
+			{
+				reservationToRemove.CapacitySlot.CurrentCapacity += reservationToRemove.PeopleCount;
+			}
+			else
+			{
+				throw new InvalidOperationException("Invalid capacity slot");
 			}
 
 			dbContext.Reservations.Remove(reservationToRemove);

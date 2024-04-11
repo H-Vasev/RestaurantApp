@@ -35,7 +35,7 @@ namespace RestaurantApp.Core.Models.Reservation
 
 		[Required]
         [Display(Name = "Number of peaople")]
-        [Range(1, 60, ErrorMessage = FieldLength)]
+        [Range(PeopleCountMin, PeopleCountMax, ErrorMessage = FieldLength)]
         public int PeopleCount { get; set; } = 1;
 
         [StringLength(DescriptionMaxLenght, MinimumLength = DescriptionMinLenght)]

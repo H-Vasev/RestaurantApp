@@ -96,7 +96,7 @@ namespace RestaurantApp.Controllers
 				}
 				else
 				{
-                    TempData["SuccessfulyEdit"] = "Reservation is Edited successfuly!";
+                    TempData["Success"] = "Reservation is Edited successfuly!";
                 }
             }
 			catch (Exception)
@@ -122,6 +122,8 @@ namespace RestaurantApp.Controllers
 
 				return BadRequest();
 			}
+
+			TempData["Success"] = "Your reservation is canceled successfully!";
 
 			return RedirectToAction(nameof(Index));
 		}

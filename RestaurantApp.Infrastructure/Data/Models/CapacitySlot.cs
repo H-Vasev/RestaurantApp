@@ -16,6 +16,6 @@ namespace RestaurantApp.Infrastructure.Data.Models
 		[Required]
 		public int CurrentCapacity { get; set; }
 
-		public IEnumerable<Reservation> Reservations { get; set; } = new HashSet<Reservation>();
+		public ICollection<Reservation> Reservations { get; set; } = new HashSet<Reservation>();
 	}
 }

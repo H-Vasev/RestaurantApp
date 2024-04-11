@@ -82,6 +82,9 @@
 
 			public const int DescriptionMaxLenght = 200;
 			public const int DescriptionMinLenght = 5;
+
+			public const int PeopleCountMax = 60;
+			public const int PeopleCountMin = 1;
 		}
 
 		public static class Event
