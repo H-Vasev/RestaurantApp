@@ -13,6 +13,8 @@ namespace RestaurantApp.Core.Contracts
 
 		Task<string> EditReservationAsync(ReservationFormModel model, string userId, string id);
 
+		Task<string[]> GetAllFullyBookedReservationAsync();
+
 		Task<IEnumerable<ReservationViewModel>> GetAllReservationAsync(string userId);
 
         Task<ReservationFormModel> GetReservationByIdAsync(string userId, string id);

@@ -107,6 +107,12 @@ namespace RestaurantApp.Controllers
 			return RedirectToAction(nameof(Index));
 		}
 
+		public async Task<IActionResult> AllFullyBookedReservation()
+		{
+			var allFullyBookedReservations = await reservationService.GetAllFullyBookedReservationAsync();
+
+			return Json(allFullyBookedReservations);
+		}
 
 
 		public async Task<IActionResult> Cancel(string id)

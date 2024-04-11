@@ -287,5 +287,15 @@ namespace RestaurantApp.Core.Services
 			dbContext.Reservations.Remove(reservationToRemove);
 			await dbContext.SaveChangesAsync();
 		}
+
+		public async Task<string[]> GetAllFullyBookedReservationAsync()
+		{
+			var result = await dbContext.CapacitySlots
+				.Where(c => c.CurrentCapacity == 0)
+				.Select(c => c.SlotDate.ToString("yyyy/MM/dd"))
+				.ToArrayAsync();
+
+			return result;
+		}
 	}
 }
