@@ -1,10 +1,13 @@
-﻿@model ReservationFormModel
+﻿<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css">
+
+@model ReservationFormModel
 
 @{
 	ViewData["Title"] = "Book a reservation";
 
 	var eventName = Model.EventName;
-	var date = DateTime.Parse(DateTime.Now.ToString("g"));
+
+	var date = DateTime.Parse(DateTime.Now.ToString("dd/MM/yyyy 19:00"));
 }
 
 <section id="book-a-table" class="book-a-table mt-5">
@@ -49,12 +52,12 @@
 					}
 					else
 					{
-						<input type="datetime-local" asp-for="@date" min="@DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm")" class="form-control">
+						<input readonly id="datetimepicker" type="text" asp-for="@date" class="form-control">
 					}
 					<span asp-validation-for="@Model.Date"></span>
 				</div>
 				<div class="col-lg-4 col-md-6 form-group mt-3">
-					<input type="number" class="form-control" asp-for="PeopleCount" id="people" placeholder="Number of people" value="@Model.PeopleCount">
+					<input type="number" class="form-control" asp-for="PeopleCount" id="people" data-rule="minlen:1" placeholder="Number of people" value="@Model.PeopleCount">
 					<span asp-validation-for="PeopleCount"></span>
 				</div>
 				<div class="col-lg-4 col-md-6 form-group mt-3 ">
@@ -74,6 +77,10 @@
 	</div>
 </section>
 
-@section Scripts{
+@section Scripts {
+	<partial name="_ValidationScriptsPartial" />
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js"></script>
+
 	<script src="~/js/show-notification.js"></script>
+	<script src="~/js/reservation-datetimepicker.js"></script>
 }
