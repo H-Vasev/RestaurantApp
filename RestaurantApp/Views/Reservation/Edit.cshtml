@@ -1,4 +1,6 @@
-﻿@model ReservationFormModel
+﻿<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css">
+
+@model ReservationFormModel
 
 @{
 	ViewData["Title"] = "Edit a reservation";
@@ -50,12 +52,12 @@
 					}
 					else
 					{
-						<input type="datetime-local" asp-for="@date" class="form-control">
+						<input type="text" id="datetimepicker" asp-for="@Model.Date" class="form-control">
 					}
 					<span asp-validation-for="@Model.Date"></span>
 				</div>
 				<div class="col-lg-4 col-md-6 form-group mt-3">
-					<input type="number" class="form-control" asp-for="PeopleCount" id="people" placeholder="Number of people" value="@Model.PeopleCount">
+					<input type="number" class="form-control" asp-for="PeopleCount" id="people" min="1" step="1" placeholder="Number of people" value="@Model.PeopleCount">
 					<span asp-validation-for="PeopleCount"></span>
 				</div>
 				<div class="col-lg-4 col-md-6 form-group mt-3 ">
@@ -76,5 +78,10 @@
 </section>
 
 @section Scripts {
+	<partial name="_ValidationScriptsPartial" />
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js"></script>
+
 	<script src="~/js/show-notification.js"></script>
+	<script src="~/js/reservation-datetimepicker.js"></script>
+
 }

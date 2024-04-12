@@ -21,6 +21,7 @@ function initializeDateTimePicker(disabledDates) {
 		minDate: 0,
 		minTime: '19:00',
 		maxTime: '22:00',
+		defaultTime: '19:00',
 		beforeShowDay: function (date) {
 			var dateString = date.toISOString().slice(0, 10);
 			if (disabledDates.includes(dateString)) {
