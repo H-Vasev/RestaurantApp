@@ -127,6 +127,15 @@ namespace RestaurantApp.Core.Services
 				currentReservation.Description = model.Description;
 				currentReservation.CapacitySlotId = currentReservation.CapacitySlotId;
 			}
+			else
+			{
+				currentReservation.FirstName = model.FirstName;
+				currentReservation.LastName = model.LastName;
+				currentReservation.PhoneNumber = model.PhoneNumber;
+				currentReservation.Email = model.Email;
+				currentReservation.Date = DateTime.Parse(model.Date);
+				currentReservation.Description = model.Description;
+			}
 
 			await dbContext.SaveChangesAsync();
 
