@@ -24,5 +24,10 @@ namespace RestaurantApp.Core.Contracts
 		Task<ReservationFormModel> PrepareReservationFormModelAsync(int id);
 
 		Task RemoveReservationAsync(string userId, string id);
-    }
+
+		Task<string> TryUpdateReservationByDateAsync(ReservationFormModel model, string userId);
+
+		Task<string?> UpdateCapacityWhenAddReservationAsync(int? capacitySlotId, int peopleCount, string userId);
+
+	}
 }

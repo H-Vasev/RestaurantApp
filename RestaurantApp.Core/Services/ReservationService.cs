@@ -88,7 +88,7 @@ namespace RestaurantApp.Core.Services
 					return updatedReservation;
 				}
 
-				var updateCapacity = await UpdateCapacityWhenAddReservationAsync(currentReservation.CapacitySlotId, currentReservation.PeopleCount, userId, currentReservation.Id.ToString().ToLower());
+				var updateCapacity = await UpdateCapacityWhenAddReservationAsync(currentReservation.CapacitySlotId, currentReservation.PeopleCount, userId);
 				if (!string.IsNullOrEmpty(updateCapacity))
 				{
 					return updateCapacity;
@@ -186,7 +186,7 @@ namespace RestaurantApp.Core.Services
 			return string.Empty;
 		}
 
-		public async Task<string?> UpdateCapacityWhenAddReservationAsync(int? capacitySlotId, int peopleCount, string userId, string? currentReservationId)
+		public async Task<string?> UpdateCapacityWhenAddReservationAsync(int? capacitySlotId, int peopleCount, string userId)
 		{
 			var capacityToUpdate = await dbContext.Reservations
 					.Include(c => c.CapacitySlot)
