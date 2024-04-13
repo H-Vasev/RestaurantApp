@@ -11,7 +11,7 @@
 		<div class="col-sm-12 offset-lg-2 col-lg-8 offset-xl-3 col-xl-6 mt-5 p-5">
 			@if (TempData["ErrorDate"] != null)
 			{
-				<div id="errorDate" class="customAlertMessage alert alert-danger mt-5">@TempData["ErrorDate"]</div>
+				<div id="dateMessage" class="customAlertMessage alert alert-danger mt-5">@TempData["ErrorDate"]</div>
 			}
 			<form method="post">
 				<div class="form-group">
@@ -44,4 +44,5 @@
 
 @section Scripts {
 	<partial name="_ValidationScriptsPartial" />
+	<script src="~/js/show-notification.js"></script>
 }

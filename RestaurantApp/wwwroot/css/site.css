@@ -57,6 +57,38 @@ h6 {
 /*--------------------------------------------------------------
 # Chat
 --------------------------------------------------------------*/
+.message-icon {
+    width: 2rem;
+    height: 2rem;
+    fill: currentColor;
+}
+
+.blink-animation {
+    width: 2rem;
+    height: 2rem;
+    animation: blink-animation 1s infinite;
+}
+
+@keyframes blink-animation {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+        fill: currentColor;
+    }
+
+    50% {
+        transform: scale(1.2);
+        opacity: 0.5;
+        fill: yellow;
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+        fill: currentColor;
+    }
+}
+
 .chat-container {
     margin-top: 20px;
     padding: 20px;

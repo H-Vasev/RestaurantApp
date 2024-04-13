@@ -6,7 +6,6 @@
     <title>@ViewData["Title"] - RestaurantApp</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    @* <link rel="stylesheet" href="~/RestaurantApp.styles.css" asp-append-version="true" /> *@
 </head>
 <body>
     <header id="header" class="fixed-top d-flex align-items-cente">
@@ -21,7 +20,7 @@
                     <li><a class="nav-link scrollto" asp-area="" asp-controller="Menu" asp-action="Index">Menu</a></li>
                     <li><a class="nav-link scrollto" href="#events">Events</a></li>
                     <li><a class="nav-link scrollto" href="#gallery">Gallery</a></li>
-                    <li><a class="nav-link scrollto" asp-area="Administrator" asp-controller="Chat" asp-action="Index">Live Chat</a></li>
+                    <partial name="_MessageNotificationPartial"/>
                 </ul>
                 <i class="bi bi-list mobile-nav-toggle"></i>
             </nav>
