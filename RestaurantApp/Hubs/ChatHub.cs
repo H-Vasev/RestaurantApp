@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using RestaurantApp.Core.Contracts;
 using System.Globalization;
+using static RestaurantApp.Core.Constants.AdministratorConstants;
 
 namespace RestaurantApp.Hubs
 {
@@ -18,7 +19,7 @@ namespace RestaurantApp.Hubs
 			var userId = Context.UserIdentifier;
 			var userName = Context.User!.Identity!.Name;
 
-			var adminId = "47ADC156-068F-4BC1-9D2F-F63C3586DA7F".ToLower();
+			var adminId = AdministratorId.ToLower();
 			var date = DateTime.UtcNow.ToString("g", CultureInfo.InvariantCulture);
 
 			await Clients.User(adminId).SendAsync("ReceiveMessage", userName, message, date);
