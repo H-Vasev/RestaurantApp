@@ -38,7 +38,7 @@ namespace RestaurantApp.Hubs
 
 		public override async Task OnConnectedAsync()
 		{
-			if (!Context.User.IsInRole("Administrator") && await chatService.IsAnyChatAsync(Context.UserIdentifier))
+			if (!Context.User.IsInRole("Administrator") && await chatService.IsAnyUserChatAsync(Context.UserIdentifier))
 			{
 
 				await chatService.MarkAsUnReadAsync(Context.UserIdentifier);

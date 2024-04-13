@@ -93,7 +93,7 @@ namespace RestaurantApp.Core.Services
 			return chat;
 		}
 
-		public async Task<bool> IsAnyChatAsync(string userId)
+		public async Task<bool> IsAnyUserChatAsync(string userId)
 		{
 			return await dbContext.Chats
 				.AsNoTracking()
@@ -129,6 +129,13 @@ namespace RestaurantApp.Core.Services
 			chat.IsRead = false;
 
 			await dbContext.SaveChangesAsync();
+		}
+
+		public async Task<bool> IsAnyUnReadableChatAsync()
+		{
+			return await dbContext.Chats
+				.AsNoTracking()
+				.AnyAsync(c => c.IsRead == false);
 		}
 	}
 }

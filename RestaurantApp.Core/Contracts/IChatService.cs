@@ -11,8 +11,10 @@ namespace RestaurantApp.Core.Contracts
 
 		Task<ChatViewModel> GetUserChatAsync(string id);
 
-		Task<bool> IsAnyChatAsync(string userId);
+		Task<bool> IsAnyUserChatAsync(string userId);
 
 		Task MarkAsUnReadAsync(string? userIdentifier);
+
+		Task<bool> IsAnyUnReadableChatAsync();
 	}
 }
