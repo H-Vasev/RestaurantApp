@@ -70,7 +70,7 @@
 						<td>@reservation.Email</td>
 						<td>
 							<form method="post" asp-area="Administrator" asp-controller="Reservation" asp-action="Remove" asp-route-id="@reservation.Id" asp-route-userId="@reservation.UserId">
-								<button class="btn btn-sm btn-danger">Cancel</button>
+								<button class="btn btn-sm btn-danger" onclick="return cancelReservation('@reservation.Name')">Cancel</button>
 							</form>
 						</td>
 					</tr>
@@ -101,4 +101,5 @@
 
 @section Scripts {
 	<script src="~/js/show-notification.js"></script>
+	<script src="~/js/cancel-notification.js"></script>
 }
