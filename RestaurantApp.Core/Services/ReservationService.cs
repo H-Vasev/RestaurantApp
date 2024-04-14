@@ -323,6 +323,7 @@ namespace RestaurantApp.Core.Services
 
 			var query = dbContext.Reservations
 				.AsNoTracking()
+				.Where(r => r.ApplicationUserId != null)
 				.AsQueryable();
 
 			if (!string.IsNullOrWhiteSpace(name))

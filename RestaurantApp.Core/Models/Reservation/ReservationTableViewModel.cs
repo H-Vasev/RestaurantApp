@@ -12,7 +12,7 @@
 
 		public string Date { get; set; } = string.Empty;
 
-		public string UserId { get; set; } = string.Empty;
+		public string? UserId { get; set; }
 
 		public int PeopleCount { get; set; }
 	}

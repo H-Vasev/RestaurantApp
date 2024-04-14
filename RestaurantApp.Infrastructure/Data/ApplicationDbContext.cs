@@ -52,8 +52,13 @@ namespace RestaurantApp.Data
 				.WithMany(p => p.Reservations)
 				.HasForeignKey(p => p.CapacitySlotId)
 				.OnDelete(DeleteBehavior.SetNull);
-				
 
+			builder.Entity<Reservation>()
+                .HasOne(p => p.ApplicationUser)
+				.WithMany()
+				.HasForeignKey(p => p.ApplicationUserId)
+				.OnDelete(DeleteBehavior.SetNull);
+				
 			base.OnModelCreating(builder);
 		}
 
