@@ -32,7 +32,8 @@ namespace RestaurantApp.Controllers
 		[HttpGet]
 		public async Task<IActionResult> Add(int id)
 		{
-			var model = await reservationService.PrepareReservationFormModelAsync(id);
+			var email = GetUserEmailAddress();
+			var model = await reservationService.PrepareReservationFormModelAsync(id, email);
 
 			return View(model);
 		}
@@ -45,8 +46,8 @@ namespace RestaurantApp.Controllers
 				return View(model);
 			}
 
-			 var userId = GetUserId();
-			 var result = await reservationService.AddReservationAsync(model, userId, id);
+			var userId = GetUserId();
+			var result = await reservationService.AddReservationAsync(model, userId, id);
 
 			if (!string.IsNullOrEmpty(result))
 			{
@@ -92,13 +93,13 @@ namespace RestaurantApp.Controllers
 				if (!string.IsNullOrEmpty(result))
 				{
 					TempData["Error"] = result;
-                    return View(model);
+					return View(model);
 				}
 				else
 				{
-                    TempData["Success"] = "Reservation is Edited successfuly!";
-                }
-            }
+					TempData["Success"] = "Reservation is Edited successfuly!";
+				}
+			}
 			catch (Exception)
 			{
 				return BadRequest();

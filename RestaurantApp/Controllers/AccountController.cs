@@ -46,7 +46,7 @@ namespace RestaurantApp.Controllers
 
             if (userExist != null)
             {
-                ModelState.AddModelError(model.Email, "User with this email already exist.");
+                ModelState.AddModelError("Email", "This email is already registered. Please use a different email or log in.");
             }
 
             if (!ModelState.IsValid)
@@ -113,7 +113,6 @@ namespace RestaurantApp.Controllers
             {
                 return BadRequest();
             }
-			
 		
            // await signInManager.SignInAsync(user, isPersistent: false);
             return RedirectToAction("Index", "Home");

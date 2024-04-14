@@ -11,5 +11,10 @@ namespace RestaurantApp.Controllers
         {
 			return User.FindFirstValue(ClaimTypes.NameIdentifier);
 		}
+
+        protected string GetUserEmailAddress()
+        {
+            return User.FindFirstValue(ClaimTypes.Email);
+        }
     }
 }
