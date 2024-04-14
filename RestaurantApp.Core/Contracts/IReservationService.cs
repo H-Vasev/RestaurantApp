@@ -1,13 +1,8 @@
 ﻿using RestaurantApp.Core.Models.Reservation;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RestaurantApp.Core.Contracts
 {
-	public interface IReservationService
+    public interface IReservationService
 	{
 		Task<string> AddReservationAsync(ReservationFormModel model, string userId, int id);
 
@@ -21,7 +16,7 @@ namespace RestaurantApp.Core.Contracts
 
         Task<bool> IsReservedAsync(DateTime date, string userId);
 
-		Task<ReservationFormModel> PrepareReservationFormModelAsync(int id);
+		Task<ReservationFormModel> PrepareReservationFormModelAsync(int id, string email);
 
 		Task RemoveMineReservationAsync(string userId, string id);
 

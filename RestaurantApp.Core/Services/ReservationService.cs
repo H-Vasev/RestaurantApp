@@ -258,8 +258,8 @@ namespace RestaurantApp.Core.Services
 				.AnyAsync(r => r.Date.Date == date.Date && r.ApplicationUserId == Guid.Parse(userId));
 		}
 
-		public async Task<ReservationFormModel> PrepareReservationFormModelAsync(int id)
-		{
+		public async Task<ReservationFormModel> PrepareReservationFormModelAsync(int id, string email)
+		{		
 			var ev = await eventService.GetEventByIdAsync(id);
 
 			var reservation = new ReservationFormModel();
@@ -269,6 +269,8 @@ namespace RestaurantApp.Core.Services
 				reservation.EventName = ev.Title;
 				reservation.Date = ev.StartEvent.ToString("g");
 			}
+
+			reservation.Email = email;
 
 			return reservation;
 		}
