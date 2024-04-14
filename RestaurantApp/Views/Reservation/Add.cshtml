@@ -6,7 +6,6 @@
 	ViewData["Title"] = "Book a reservation";
 
 	var eventName = Model.EventName;
-	var dateTime = DateTime.Now;
 }
 
 <section id="book-a-table" class="book-a-table mt-5">
@@ -42,17 +41,7 @@
 					<span asp-validation-for="PhoneNumber"></span>
 				</div>
 				<div class="col-lg-4 col-md-6 form-group mt-3 tableColor">
-					@if (eventName != null)
-					{
-						{
-							 dateTime = DateTime.Parse(Model.Date);
-						}
-						<input readonly type="datetime-local" asp-for="@dateTime" class="form-control">
-					}
-					else
-					{
-						<input readonly id="datetimepicker" type="text" asp-for="@Model.Date" placeholder="Choose a date" class="form-control">
-					}
+					<input readonly id=@(eventName == null ? "datetimepicker" : "") type="text" asp-for="@Model.Date" placeholder="Choose a date" class="form-control">
 					<span asp-validation-for="@Model.Date"></span>
 				</div>
 				<div class="col-lg-4 col-md-6 form-group mt-3">
