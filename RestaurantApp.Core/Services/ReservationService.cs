@@ -57,7 +57,7 @@ namespace RestaurantApp.Core.Services
 
 			return string.Empty;
 		}
-	
+
 		public async Task<string> EditReservationAsync(ReservationFormModel model, string userId, string id)
 		{
 			if (DateTime.Parse(model.Date).Date < DateTime.Now.Date)
@@ -206,7 +206,7 @@ namespace RestaurantApp.Core.Services
 			return string.Empty;
 		}
 
-		public async Task<IEnumerable<ReservationViewModel>> GetAllReservationAsync(string userId)
+		public async Task<IEnumerable<ReservationViewModel>> GetAllMineReservationAsync(string userId)
 		{
 			return await dbContext.Reservations
 				.AsNoTracking()
@@ -273,7 +273,7 @@ namespace RestaurantApp.Core.Services
 			return reservation;
 		}
 
-		public async Task RemoveReservationAsync(string userId, string id)
+		public async Task RemoveMineReservationAsync(string userId, string id)
 		{
 			var reservationToRemove = await dbContext.Reservations
 				.Include(r => r.CapacitySlot)
@@ -305,6 +305,58 @@ namespace RestaurantApp.Core.Services
 				.ToArrayAsync();
 
 			return result;
+		}
+
+		public async Task<ReservationQuaryModel?> GetAllReservationsAsync(int? pageNumber, DateTime? startDate, DateTime? endDate, string? name)
+		{
+			if (startDate != null && endDate != null && startDate.Value.Date > endDate.Value.Date)
+			{
+				return null;
+			}
+
+			var reservationModel = new ReservationQuaryModel();
+
+			var currentPageNumber = pageNumber ?? 1;
+			var pageSize = 10;
+
+			var query = dbContext.Reservations
+				.AsNoTracking()
+				.AsQueryable();
+
+			if (!string.IsNullOrWhiteSpace(name))
+			{
+				query = query
+					.Where(r => r.FirstName.Contains(name) || r.LastName.Contains(name));
+			}
+
+			if (startDate != null || endDate != null)
+			{
+				query = query
+					.Where(r => (startDate == null || r.Date.Date >= startDate.Value.Date))
+					.Where(r => (endDate == null || r.Date.Date <= endDate.Value.Date));
+			}
+
+			query = query.OrderBy(r => r.Date);
+
+			reservationModel.TotalPageRecords = query.Count();
+
+			var reservations = await query
+				.Skip((currentPageNumber - 1) * pageSize)
+				.Take(pageSize)
+				.Select(r => new ReservationTableViewModel()
+				{
+					Id = r.Id.ToString(),
+					UserId = r.ApplicationUserId.ToString()!,
+					Name = $"{r.FirstName} {r.LastName}",
+					PhoneNumber = r.PhoneNumber,
+					Email = r.Email,
+					PeopleCount = r.PeopleCount,
+					Date = r.Date.ToString("g")
+				}).ToArrayAsync();
+
+			reservationModel.Reservations = reservations;
+
+			return reservationModel;
 		}
 	}
 }

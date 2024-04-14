@@ -15,15 +15,15 @@ namespace RestaurantApp.Core.Contracts
 
 		Task<string[]> GetAllFullyBookedReservationAsync();
 
-		Task<IEnumerable<ReservationViewModel>> GetAllReservationAsync(string userId);
-
-        Task<ReservationFormModel> GetReservationByIdAsync(string userId, string id);
+		Task<IEnumerable<ReservationViewModel>> GetAllMineReservationAsync(string userId);
+		Task<ReservationQuaryModel?> GetAllReservationsAsync(int? pageNumber, DateTime? startDate, DateTime? endDate, string? name);
+		Task<ReservationFormModel> GetReservationByIdAsync(string userId, string id);
 
         Task<bool> IsReservedAsync(DateTime date, string userId);
 
 		Task<ReservationFormModel> PrepareReservationFormModelAsync(int id);
 
-		Task RemoveReservationAsync(string userId, string id);
+		Task RemoveMineReservationAsync(string userId, string id);
 
 		Task<string> TryUpdateReservationByDateAsync(ReservationFormModel model, string userId);
 

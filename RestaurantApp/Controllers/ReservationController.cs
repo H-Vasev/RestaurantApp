@@ -19,7 +19,7 @@ namespace RestaurantApp.Controllers
 
 			try
 			{
-				var model = await reservationService.GetAllReservationAsync(userId);
+				var model = await reservationService.GetAllMineReservationAsync(userId);
 				return View(model);
 			}
 			catch (Exception)
@@ -121,7 +121,7 @@ namespace RestaurantApp.Controllers
 
 			try
 			{
-				await reservationService.RemoveReservationAsync(userId, id);
+				await reservationService.RemoveMineReservationAsync(userId, id);
 			}
 			catch (Exception)
 			{
