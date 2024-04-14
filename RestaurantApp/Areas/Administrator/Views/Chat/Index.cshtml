@@ -12,7 +12,7 @@
 				@foreach (var chat in Model)
 				{
 					<li class="message sent">
-						<a asp-area="Administrator" asp-controller="Chat" asp-action="LiveChat" asp-route-id="@chat.Id"><span class="text-success fw-bold">Chat with:</span> @chat.Username</a>
+						<a asp-area="Administrator" asp-controller="Chat" asp-action="LiveChat" asp-route-id="@chat.Id"><span class="text-white fw-bold">Start chat with:</span> @chat.Username</a>
 					</li>
 				}
 			}
