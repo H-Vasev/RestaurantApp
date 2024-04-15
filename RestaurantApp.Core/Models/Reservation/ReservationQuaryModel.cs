@@ -6,6 +6,8 @@
 
 		public int CurrentPage { get; set; }
 
+		public int RecordsPerPage { get; set; } = 10;
+
 		public IEnumerable<ReservationTableViewModel> Reservations { get; set; } = new HashSet<ReservationTableViewModel>();
     }
 }

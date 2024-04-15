@@ -319,7 +319,7 @@ namespace RestaurantApp.Core.Services
 			var reservationModel = new ReservationQuaryModel();
 
 			var currentPageNumber = pageNumber ?? 1;
-			var pageSize = 10;
+			var recordsPerPAge = reservationModel.RecordsPerPage;
 
 			var query = dbContext.Reservations
 				.AsNoTracking()
@@ -344,8 +344,8 @@ namespace RestaurantApp.Core.Services
 			reservationModel.TotalPageRecords = query.Count();
 
 			var reservations = await query
-				.Skip((currentPageNumber - 1) * pageSize)
-				.Take(pageSize)
+				.Skip((currentPageNumber - 1) * recordsPerPAge)
+				.Take(recordsPerPAge)
 				.Select(r => new ReservationTableViewModel()
 				{
 					Id = r.Id.ToString(),
