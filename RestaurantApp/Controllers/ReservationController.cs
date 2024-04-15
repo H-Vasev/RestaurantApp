@@ -110,7 +110,7 @@ namespace RestaurantApp.Controllers
 
 		public async Task<IActionResult> AllFullyBookedReservation()
 		{
-			var allFullyBookedReservations = await reservationService.GetAllFullyBookedReservationAsync();
+			var allFullyBookedReservations = await reservationService.GetAllFullyBookedDatesInReservationAsync();
 
 			return Json(allFullyBookedReservations);
 		}

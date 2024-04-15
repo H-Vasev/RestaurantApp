@@ -28,7 +28,7 @@ namespace RestaurantApp.Core.Services
 
 			if (model.PeopleCount < PeopleCountMin || model.PeopleCount > PeopleCountMax)
 			{
-				return $"The number of persons must be between {PeopleCountMin} and {PeopleCountMax}.";
+				return $"The number of guests must be between {PeopleCountMin} and {PeopleCountMax}.";
 
 			}
 
@@ -36,7 +36,7 @@ namespace RestaurantApp.Core.Services
 			var isReserved = await IsReservedAsync(date, userId);
 			if (isReserved)
 			{
-				return "You have already made a reservation for this date please check your Reservation!";
+				return "You already have a reservation on this date. Please review your booking details!";
 			}
 
 			var ev = await eventService.GetEventByIdAsync(id);
@@ -67,7 +67,7 @@ namespace RestaurantApp.Core.Services
 
 			if (model.PeopleCount < 1 || model.PeopleCount > 60)
 			{
-				return "The number of persons must be between 1 and 60";
+				return "The number of guests must be between 1 and 60.";
 
 			}
 
@@ -115,7 +115,7 @@ namespace RestaurantApp.Core.Services
 				}
 				else
 				{
-					return $"We have {capacitySlot.CurrentCapacity} spaces left.";
+					return $"There are {capacitySlot.CurrentCapacity + currentReservation.PeopleCount} spaces available for booking.";
 				}
 
 				currentReservation.FirstName = model.FirstName;
@@ -198,7 +198,7 @@ namespace RestaurantApp.Core.Services
 			}
 			else
 			{
-				return $"No auvalible spaces for this date please chuse anouther one.";
+				return $"No available spaces for this date. Please choose another one.";
 			}
 
 			dbContext.Reservations.Remove(capacityToUpdate);
@@ -299,7 +299,7 @@ namespace RestaurantApp.Core.Services
 			await dbContext.SaveChangesAsync();
 		}
 
-		public async Task<string[]> GetAllFullyBookedReservationAsync()
+		public async Task<string[]> GetAllFullyBookedDatesInReservationAsync()
 		{
 			var result = await dbContext.CapacitySlots
 				.Where(c => c.CurrentCapacity == 0)

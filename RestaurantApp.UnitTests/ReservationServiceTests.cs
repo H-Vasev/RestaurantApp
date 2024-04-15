@@ -121,7 +121,7 @@ namespace RestaurantApp.UnitTests
 
 			var result = await reservationService.AddReservationAsync(model, userId, 1);
 
-			Assert.That("You have already made a reservation for this date please check your Reservation!", Is.EqualTo(result));
+			Assert.That("You already have a reservation on this date. Please review your booking details!", Is.EqualTo(result));
 		}
 
 		[Test]
@@ -168,7 +168,7 @@ namespace RestaurantApp.UnitTests
 
 			var result = await reservationService.AddReservationAsync(model, Guid.NewGuid().ToString(), 1);
 
-			Assert.That("The number of persons must be between 1 and 60.", Is.EqualTo(result));
+			Assert.That("The number of guests must be between 1 and 60.", Is.EqualTo(result));
 		}
 
 		[Test]
@@ -187,7 +187,7 @@ namespace RestaurantApp.UnitTests
 
 			var result = await reservationService.AddReservationAsync(model, Guid.NewGuid().ToString(), 1);
 
-			Assert.That("The number of persons must be between 1 and 60.", Is.EqualTo(result));
+			Assert.That("The number of guests must be between 1 and 60.", Is.EqualTo(result));
 		}
 
 		[Test]
@@ -443,7 +443,7 @@ namespace RestaurantApp.UnitTests
 			var result = await reservationService.UpdateCapacityWhenAddReservationAsync(capacitiId, 41, userId);
 			var capacity = await dbContext.CapacitySlots.FirstOrDefaultAsync();
 
-			Assert.That(result, Is.EqualTo("No auvalible spaces for this date please chuse anouther one."));
+			Assert.That(result, Is.EqualTo("No available spaces for this date. Please choose another one."));
 			Assert.That(1, Is.EqualTo(capacity.Reservations.Count));
 		}
 
@@ -455,7 +455,7 @@ namespace RestaurantApp.UnitTests
 
 			var result = await reservationService.UpdateCapacityWhenAddReservationAsync(capacitiId, 41, userId);
 
-			Assert.That(result, Is.EqualTo("No auvalible spaces for this date please chuse anouther one."));
+			Assert.That(result, Is.EqualTo("No available spaces for this date. Please choose another one."));
 		}
 
 		//GetAllReservationAsync
@@ -494,7 +494,7 @@ namespace RestaurantApp.UnitTests
 			dbContext.Reservations.AddRange(reservations);
 			await dbContext.SaveChangesAsync();
 
-			var result = await reservationService.GetAllReservationAsync(userId);
+			var result = await reservationService.GetAllMineReservationAsync(userId);
 
 			Assert.That(2, Is.EqualTo(result.Count()));
 			Assert.That("FirstName1", Is.EqualTo(result.First().FirstName));
@@ -523,7 +523,7 @@ namespace RestaurantApp.UnitTests
 			dbContext.Reservations.Add(reservations);
 			await dbContext.SaveChangesAsync();
 
-			var result = await reservationService.GetAllReservationAsync(Guid.NewGuid().ToString());
+			var result = await reservationService.GetAllMineReservationAsync(Guid.NewGuid().ToString());
 
 			Assert.That(0, Is.EqualTo(result.Count()));
 		}
@@ -548,7 +548,7 @@ namespace RestaurantApp.UnitTests
 			dbContext.Reservations.Add(reservations);
 			await dbContext.SaveChangesAsync();
 
-			var result = await reservationService.GetAllReservationAsync(userId);
+			var result = await reservationService.GetAllMineReservationAsync(userId);
 
 			Assert.That(0, Is.EqualTo(result.Count()));
 		}
@@ -573,7 +573,7 @@ namespace RestaurantApp.UnitTests
 			dbContext.Reservations.Add(reservations);
 			await dbContext.SaveChangesAsync();
 
-			var result = await reservationService.GetAllReservationAsync(userId);
+			var result = await reservationService.GetAllMineReservationAsync(userId);
 
 			Assert.That(1, Is.EqualTo(result.Count()));
 			Assert.That("FirstName1", Is.EqualTo(result.First().FirstName));
@@ -631,7 +631,7 @@ namespace RestaurantApp.UnitTests
 			await dbContext.Reservations.AddRangeAsync(reservations);
 			await dbContext.SaveChangesAsync();
 
-			var result = await reservationService.GetAllReservationAsync(userId);
+			var result = await reservationService.GetAllMineReservationAsync(userId);
 
 			Assert.That(3, Is.EqualTo(result.Count()));
 			Assert.That("Second", Is.EqualTo(result.ElementAt(0).FirstName));
@@ -826,10 +826,11 @@ namespace RestaurantApp.UnitTests
 			var eventId = 1;
 			var reservationService = new ReservationService(null, mockEventService.Object);
 
-			var result = await reservationService.PrepareReservationFormModelAsync(eventId);
+			var result = await reservationService.PrepareReservationFormModelAsync(eventId, "test@gmail.com");
 
 			Assert.That(result, Is.Not.EqualTo(null));
 			Assert.That("Event 1", Is.EqualTo(result.EventName));
+			Assert.That("test@gmail.com", Is.EqualTo(result.Email));
 			Assert.That(DateTime.UtcNow.AddDays(5).ToString("g"), Is.EqualTo(result.Date));
 		}
 
@@ -838,7 +839,7 @@ namespace RestaurantApp.UnitTests
 		{
 			var reservationService = new ReservationService(null, mockEventService.Object);
 
-			var result = await reservationService.PrepareReservationFormModelAsync(2);
+			var result = await reservationService.PrepareReservationFormModelAsync(2, "test@gmail.com");
 
 			Assert.That(result, Is.Not.EqualTo(null));
 			Assert.That(result, Is.InstanceOf<ReservationFormModel>());
@@ -875,7 +876,7 @@ namespace RestaurantApp.UnitTests
 			await dbContext.SaveChangesAsync();
 
 
-			await reservationService.RemoveReservationAsync(userId, reservationId.ToString());
+			await reservationService.RemoveMineReservationAsync(userId, reservationId.ToString());
 
 			var removedReservation = await dbContext.Reservations
 				.FirstOrDefaultAsync(r => r.Id == reservationId);
@@ -914,7 +915,7 @@ namespace RestaurantApp.UnitTests
 			await dbContext.SaveChangesAsync();
 
 			var ex = Assert.ThrowsAsync<InvalidOperationException>(async () =>
-							await reservationService.RemoveReservationAsync(userId, reservationId.ToString()));
+							await reservationService.RemoveMineReservationAsync(userId, reservationId.ToString()));
 
 			Assert.That(ex, Is.Not.Null);
 			Assert.That(ex.Message, Is.EqualTo("Invalid capacity slot"));
@@ -928,7 +929,7 @@ namespace RestaurantApp.UnitTests
 			var reservationToRemove = Guid.NewGuid();
 
 			var ex = Assert.ThrowsAsync<ArgumentNullException>(async () =>
-				await reservationService.RemoveReservationAsync(userId, reservationToRemove.ToString()));
+				await reservationService.RemoveMineReservationAsync(userId, reservationToRemove.ToString()));
 
 			Assert.That(ex, Is.Not.Null);
 			Assert.That(ex.ParamName, Is.EqualTo("reservationToRemove"));
@@ -959,7 +960,7 @@ namespace RestaurantApp.UnitTests
 			await dbContext.SaveChangesAsync();
 
 			var ex = Assert.ThrowsAsync<ArgumentNullException>(async () =>
-				await reservationService.RemoveReservationAsync(otherUserId, reservationId.ToString()));
+				await reservationService.RemoveMineReservationAsync(otherUserId, reservationId.ToString()));
 
 			Assert.That(ex, Is.Not.Null);
 			Assert.That(ex.ParamName, Is.EqualTo("reservationToRemove"));
@@ -1160,7 +1161,7 @@ namespace RestaurantApp.UnitTests
 
 			var updatedReservation = await dbContext.Reservations.FirstOrDefaultAsync(r => r.Id == Guid.Parse(reservationId));
 			Assert.That(updatedReservation!.PeopleCount, Is.EqualTo(2));
-			Assert.That(result, Is.EqualTo("We have 20 spaces left."));
+			Assert.That(result, Is.EqualTo("There are 22 spaces available for booking."));
 		}
 
 		[Test]
@@ -1250,7 +1251,7 @@ namespace RestaurantApp.UnitTests
 
 			var result = await reservationService.EditReservationAsync(model, userId, reservationId);
 
-			Assert.That(result, Is.EqualTo("The number of persons must be between 1 and 60"));
+			Assert.That(result, Is.EqualTo("The number of guests must be between 1 and 60."));
 		}
 
 		[Test]
@@ -1295,7 +1296,7 @@ namespace RestaurantApp.UnitTests
 
 			var result = await reservationService.EditReservationAsync(model, userId, reservationId);
 
-			Assert.That(result, Is.EqualTo("The number of persons must be between 1 and 60"));
+			Assert.That(result, Is.EqualTo("The number of guests must be between 1 and 60."));
 		}
 
 		[Test]
@@ -1392,6 +1393,280 @@ namespace RestaurantApp.UnitTests
 			Assert.That(ex.ParamName, Is.EqualTo("currentReservation"));
 		}
 
+		//GetAllFullyBookedDatesReservationAsync
+		[Test]
+		public async Task GetAllFullyBookedDatesReservationAsync_ShouldReturnAllDates()
+		{
+			var date = DateTime.UtcNow.AddDays(5);
+
+			await dbContext.CapacitySlots.AddAsync(
+				new CapacitySlot()
+				{
+					CurrentCapacity = 0,
+					SlotDate = date,
+				});
+
+			await dbContext.SaveChangesAsync();
+
+			var result = await reservationService.GetAllFullyBookedDatesInReservationAsync();
+
+			Assert.That(result, Is.Not.Null);
+			Assert.That(1, Is.EqualTo(result.Count()));
+		}
+
+		[Test]
+		public async Task GetAllFullyBookedDatesReservationAsync_ShouldReturnZeroCount()
+		{
+			var date = DateTime.UtcNow.AddDays(5);
+
+			await dbContext.CapacitySlots.AddAsync(
+				new CapacitySlot()
+				{
+					CurrentCapacity = 5,
+					SlotDate = date,
+				});
+
+			await dbContext.SaveChangesAsync();
+
+			var result = await reservationService.GetAllFullyBookedDatesInReservationAsync();
+
+			Assert.That(result, Is.Not.Null);
+			Assert.That(0, Is.EqualTo(result.Count()));
+		}
+
+		//GetAllReservationsAsync
+		[Test]
+		public async Task GetAllReservationsAsync_ShouldReturnAllReservationsWithoutAnyFilters()
+		{
+			var userId = Guid.NewGuid();
+
+			await dbContext.Reservations.AddRangeAsync(new List<Reservation>()
+			{
+				new Reservation
+				{
+					Date = DateTime.Now.AddDays(1),
+					FirstName = "FirstName1",
+					LastName = "LastName1",
+					PhoneNumber = "0987654323",
+					Email = "test@gmail.com",
+					ApplicationUserId = userId,
+					PeopleCount = 4,
+					Description = "Description 1",
+					CapacitySlotId = 1
+				},
+				new Reservation
+				{
+					Date = DateTime.Now.AddDays(1),
+					FirstName = "FirstName2",
+					LastName = "LastName2",
+					PhoneNumber = "0987654323",
+					Email = "test@gmail.com",
+					ApplicationUserId = userId,
+					PeopleCount = 5,
+					Description = "Description 1",
+					CapacitySlotId = 1
+				},
+				new Reservation
+				{
+					Date = DateTime.Now.AddDays(3),
+					FirstName = "FirstName3",
+					LastName = "LastName3",
+					PhoneNumber = "0987654323",
+					Email = "test@gmail.com",
+					ApplicationUserId = userId,
+					PeopleCount = 6,
+					Description = "Description 1",
+					CapacitySlotId = 1
+				}
+			});
+
+			await dbContext.SaveChangesAsync();
+
+			var result = await reservationService.GetAllReservationsAsync(null, null, null, null);
+
+			Assert.That(result, Is.Not.Null);
+			Assert.That(3, Is.EqualTo(result.Reservations.Count()));
+		}
+
+		[Test]
+		public async Task GetAllReservationsAsync_ShouldReturnAllReservationsByFiteredCorectDates()
+		{
+			var userId = Guid.NewGuid();
+			int? pageNumber = 1;
+			DateTime? startDate = DateTime.Now.AddDays(1);
+			DateTime? endDate = DateTime.Now.AddDays(2);
+			string? name = null;
+
+			await dbContext.Reservations.AddRangeAsync(new List<Reservation>()
+			{
+				new Reservation
+				{
+					Date = DateTime.Now.AddDays(1),
+					FirstName = "FirstName1",
+					LastName = "LastName1",
+					PhoneNumber = "0987654323",
+					Email = "test@gmail.com",
+					ApplicationUserId = userId,
+					PeopleCount = 4,
+					Description = "Description 1",
+					CapacitySlotId = 1
+				},
+				new Reservation
+				{
+					Date = DateTime.Now.AddDays(1),
+					FirstName = "FirstName2",
+					LastName = "LastName2",
+					PhoneNumber = "0987654323",
+					Email = "test@gmail.com",
+					ApplicationUserId = userId,
+					PeopleCount = 5,
+					Description = "Description 1",
+					CapacitySlotId = 1
+				},
+				new Reservation
+				{
+					Date = DateTime.Now.AddDays(3),
+					FirstName = "FirstName3",
+					LastName = "LastName3",
+					PhoneNumber = "0987654323",
+					Email = "test@gmail.com",
+					ApplicationUserId = userId,
+					PeopleCount = 6,
+					Description = "Description 1",
+					CapacitySlotId = 1
+				}
+			});
+
+			await dbContext.SaveChangesAsync();
+
+			var result = await reservationService.GetAllReservationsAsync(pageNumber, startDate, endDate, name);
+
+			Assert.That(result, Is.Not.Null);
+			Assert.That(2, Is.EqualTo(result.Reservations.Count()));
+		}
+
+		[Test]
+		public async Task GetAllReservationsAsync_ShouldReturnAllReservationsByName()
+		{
+			var userId = Guid.NewGuid();
+			int? pageNumber = 1;
+			string? name = "FirstName1";
+
+			await dbContext.Reservations.AddRangeAsync(new List<Reservation>()
+			{
+				new Reservation
+				{
+					Date = DateTime.Now.AddDays(1),
+					FirstName = "FirstName1",
+					LastName = "LastName1",
+					PhoneNumber = "0987654323",
+					Email = "test@gmail.com",
+					ApplicationUserId = userId,
+					PeopleCount = 4,
+					Description = "Description 1",
+					CapacitySlotId = 1
+				},
+				new Reservation
+				{
+					Date = DateTime.Now.AddDays(1),
+					FirstName = "FirstName2",
+					LastName = "LastName2",
+					PhoneNumber = "0987654323",
+					Email = "test@gmail.com",
+					ApplicationUserId = userId,
+					PeopleCount = 5,
+					Description = "Description 1",
+					CapacitySlotId = 1
+				},
+				new Reservation
+				{
+					Date = DateTime.Now.AddDays(3),
+					FirstName = "FirstName3",
+					LastName = "LastName3",
+					PhoneNumber = "0987654323",
+					Email = "test@gmail.com",
+					ApplicationUserId = userId,
+					PeopleCount = 6,
+					Description = "Description 1",
+					CapacitySlotId = 1
+				}
+			});
+
+			await dbContext.SaveChangesAsync();
+
+			var result = await reservationService.GetAllReservationsAsync(pageNumber, null, null, name);
+
+			Assert.That(result, Is.Not.Null);
+			Assert.That(1, Is.EqualTo(result.Reservations.Count()));
+			Assert.That("FirstName1 LastName1", Is.EqualTo(result.Reservations.First().Name));
+		}
+
+		[Test]
+		public async Task GetAllReservationsAsync_ShouldReturnAllReservationsOrderedByDateAscending()
+		{
+			var userId = Guid.NewGuid();
+			int? pageNumber = 1;
+
+			await dbContext.Reservations.AddRangeAsync(new List<Reservation>()
+			{
+				new Reservation
+				{
+					Date = DateTime.Now.AddDays(3),
+					FirstName = "FirstName3",
+					LastName = "LastName3",
+					PhoneNumber = "0987654323",
+					Email = "test@gmail.com",
+					ApplicationUserId = userId,
+					PeopleCount = 4,
+					Description = "Description 1",
+					CapacitySlotId = 1
+				},
+				new Reservation
+				{
+					Date = DateTime.Now.AddDays(1),
+					FirstName = "FirstName1",
+					LastName = "LastName1",
+					PhoneNumber = "0987654323",
+					Email = "test@gmail.com",
+					ApplicationUserId = userId,
+					PeopleCount = 5,
+					Description = "Description 1",
+					CapacitySlotId = 1
+				},
+				new Reservation
+				{
+					Date = DateTime.Now.AddDays(2),
+					FirstName = "FirstName2",
+					LastName = "LastName2",
+					PhoneNumber = "0987654323",
+					Email = "test@gmail.com",
+					ApplicationUserId = userId,
+					PeopleCount = 6,
+					Description = "Description 1",
+					CapacitySlotId = 1
+				}
+			});
+
+			await dbContext.SaveChangesAsync();
+
+			var result = await reservationService.GetAllReservationsAsync(pageNumber, null, null, null);
+
+			Assert.That(result, Is.Not.Null);
+			Assert.That(3, Is.EqualTo(result.Reservations.Count()));
+			Assert.That("FirstName1 LastName1", Is.EqualTo(result.Reservations.First().Name));
+			Assert.That("FirstName3 LastName3", Is.EqualTo(result.Reservations.Last().Name));
+		}
+
+		[Test]
+		public async Task GetAllReservationsAsync_ShouldReturnNullWhenStartDateIsAfterEndDate()
+		{
+			DateTime? startDate = DateTime.Now.AddDays(2);
+			DateTime? endDate = DateTime.Now.AddDays(1);
+
+			var result = await reservationService.GetAllReservationsAsync(null, startDate, endDate, null);
+
+			Assert.That(result, Is.Null);
+		}
 
 		[TearDown]
 		public void TearDown()
