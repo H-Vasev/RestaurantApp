@@ -40,6 +40,7 @@ namespace RestaurantApp.Controllers
                 return BadRequest();
             }
 
+            TempData["Success"] = "Your message has been sent successfully!";
             return RedirectToAction(nameof(Index));
 		}
     }

@@ -13,6 +13,11 @@
 		</div>
 	</div>
 
+	@if (TempData["Success"] != null)
+	{
+		<div id="message" class="customAlertMessage alert alert-success text-center mt-5">@TempData["Success"]</div>
+	}
+
 	<div class="container aos-init" data-aos="fade-up">
 
 		<div class="row mt-5">
@@ -20,19 +25,18 @@
 			<div class="col-lg-4">
 				<div class="info">
 
-
 					<div class="address">
 						<i class="bi bi-geo-alt"></i>
 						<h4>Location:</h4>
-						<p>A108 Adam Street, New York, NY 535022</p>
+						<p>99 Canary Wharf, London, E14 4QZ</p>
 					</div>
 
 					<div class="open-hours">
 						<i class="bi bi-clock"></i>
 						<h4>Open Hours:</h4>
 						<p>
-							Monday-Saturday:<br>
-							11:00 AM - 2300 PM
+							Monday-Sunday:<br>
+							11:00 AM - 23:00 PM
 						</p>
 					</div>
 
@@ -45,13 +49,13 @@
 					<div class="phone">
 						<i class="bi bi-phone"></i>
 						<h4>Call:</h4>
-						<p>+1 5589 55488 55s</p>
+						<p>+44 5589 55488 55s</p>
 					</div>
 
 					<a asp-area="" asp-controller="Chat" asp-action="Index">
 						<div class="chatWithUs">
 							<i class="bi bi-geo-alt"></i>
-							<h4>Chat with Us</h4>
+							<h4>Need Help? Chat Now!</h4>
 						</div>
 					</a>
 
@@ -97,4 +101,5 @@
 
 @section Scripts {
 	<partial name="_ValidationScriptsPartial" />
+	<script src="~/js/show-notification.js"></script>
 }
