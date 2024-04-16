@@ -1,4 +1,11 @@
-﻿// Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
-
-// Write your JavaScript code.
+﻿document.addEventListener('DOMContentLoaded', function () {
+	var navToggle = document.querySelector('.mobile-nav-toggle');
+	var navMenu = document.querySelector('.navbar ul');
+	navToggle.addEventListener('click', function () {
+		if (navMenu.style.display === 'block') {
+			navMenu.style.display = 'none';
+		} else {
+			navMenu.style.display = 'block';
+		}
+	});
+});
