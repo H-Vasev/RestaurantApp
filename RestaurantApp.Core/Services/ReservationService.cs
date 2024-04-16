@@ -3,7 +3,7 @@ using RestaurantApp.Core.Contracts;
 using RestaurantApp.Core.Models.Reservation;
 using RestaurantApp.Data;
 using RestaurantApp.Infrastructure.Data.Models;
-
+using System.Text;
 using static RestaurantApp.Infrastructure.Constants.DataConstants.Reservation;
 
 namespace RestaurantApp.Core.Services
@@ -313,7 +313,7 @@ namespace RestaurantApp.Core.Services
 		{
 			if (startDate != null && endDate != null && startDate.Value.Date > endDate.Value.Date)
 			{
-				return null;
+				throw new InvalidOperationException("Invalid date range");
 			}
 
 			var reservationModel = new ReservationQuaryModel();
@@ -363,6 +363,52 @@ namespace RestaurantApp.Core.Services
 			reservationModel.Reservations = reservations;
 
 			return reservationModel;
+		}
+
+		public async Task<StringBuilder?> DownloadAllFilteredReservationsAsync(string? name, DateTime? startDate, DateTime? endDate)
+		{
+			if (startDate != null && endDate != null && startDate.Value.Date > endDate.Value.Date)
+			{
+				return null;
+			}
+
+			var query = dbContext.Reservations
+				.AsNoTracking()
+				.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(name))
+            {
+				query = query
+					.Where(r => r.FirstName.Contains(name) || r.LastName.Contains(name));
+			}
+
+			if (startDate != null || endDate != null)
+			{
+				query = query
+					.Where(r => (startDate == null || r.Date.Date >= startDate.Value.Date))
+					.Where(r => (endDate == null || r.Date.Date <= endDate.Value.Date));
+			}
+
+			var reservations = await query
+				.OrderBy(r => r.Date)
+				.Select(r => new ReservationTableViewModel()
+				{
+					Name = $"{r.FirstName} {r.LastName}",
+					PhoneNumber = r.PhoneNumber,
+					Email = r.Email,
+					PeopleCount = r.PeopleCount,
+					Date = r.Date.ToString("g")
+				}).ToArrayAsync();
+
+			var sb = new StringBuilder();
+			sb.AppendLine("Name, Date, Guests, Phone Number, Email");
+
+			foreach (var reservation in reservations)
+			{
+				sb.AppendLine($"{reservation.Name}, {reservation.Date}, {reservation.PeopleCount}, \"{reservation.PhoneNumber}\", {reservation.Email}");
+			}
+
+			return sb;
 		}
 	}
 }

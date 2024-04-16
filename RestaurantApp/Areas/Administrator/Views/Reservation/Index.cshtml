@@ -50,6 +50,15 @@
 		</form>
 	</div>
 
+	<div>
+		<a asp-area="Administrator" asp-controller="Reservation"
+		   asp-action="DownloadReservations"
+		   asp-route-name="@Model.Name"
+		   asp-route-startdate="@Model.StartDate?.ToString("yyyy-MM-dd")"
+		   asp-route-enddate="@Model.EndDate?.ToString("yyyy-MM-dd")"
+		   class="btn btn-primary">Download Reservations</a>
+	</div>
+
 	<table class="table table-striped reservation-table">
 		<thead>
 			<tr>
