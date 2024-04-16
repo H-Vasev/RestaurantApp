@@ -33,15 +33,17 @@
 
 	<div class="mb-4">
 		<form method="get" asp-area="Administrator" asp-controller="Reservation" asp-action="Index">
-			<div class="row">
+			<div class="row align-items-end">
 				<div class="col-sm-2">
 					<input type="text" class="form-control-sm" name="name" placeholder="Find by selected Name" value="@(Model.Name ?? "")">
 				</div>
 				<div class="col-sm-2">
-					<input type="date" class="form-control-sm" name="startDate" placeholder="Start Date" value="@Model.StartDate?.ToString("yyyy-MM-dd")">
+					<label for="startDate" class="form-label">Start Date:</label>
+					<input type="date" id="startDate" class="form-control p-1" name="startDate" placeholder="Start Date" value="@Model.StartDate?.ToString("yyyy-MM-dd")">
 				</div>
 				<div class="col-sm-2">
-					<input type="date" class="form-control-sm" name="endDate" placeholder="End Date" value="@Model.EndDate?.ToString("yyyy-MM-dd")">
+					<label for="endDate" class="form-label">End Date:</label>
+					<input type="date" id="endDate" class="form-control p-1" name="endDate" placeholder="End Date" value="@Model.EndDate?.ToString("yyyy-MM-dd")">
 				</div>
 				<div class="col-sm-2">
 					<button type="submit" class="btn btn-sm btn-primary">Filter</button>
