@@ -35,13 +35,13 @@
 		<form method="get" asp-area="Administrator" asp-controller="Reservation" asp-action="Index">
 			<div class="row">
 				<div class="col-sm-2">
-					<input type="text" class="form-control-sm" name="name" placeholder="Find by selected Name">
+					<input type="text" class="form-control-sm" name="name" placeholder="Find by selected Name" value="@(Model.Name ?? "")">
 				</div>
 				<div class="col-sm-2">
-					<input type="date" class="form-control-sm" name="startDate" placeholder="Start Date">
+					<input type="date" class="form-control-sm" name="startDate" placeholder="Start Date" value="@Model.StartDate?.ToString("yyyy-MM-dd")">
 				</div>
 				<div class="col-sm-2">
-					<input type="date" class="form-control-sm" name="endDate" placeholder="End Date">
+					<input type="date" class="form-control-sm" name="endDate" placeholder="End Date" value="@Model.EndDate?.ToString("yyyy-MM-dd")">
 				</div>
 				<div class="col-sm-2">
 					<button type="submit" class="btn btn-sm btn-primary">Filter</button>
@@ -89,13 +89,25 @@
 		<nav aria-label="Page navigation">
 			<ul class="pagination justify-content-center">
 				<li class="page-item @(currentPage == 1 ? "disabled" : "")">
-					<a class="page-link" asp-area="Administrator" asp-controller="Reservation" asp-action="Index" asp-route-pageNumber="@(currentPage - 1)">Previous</a>
+					<a class="page-link" asp-area="Administrator"
+					   asp-controller="Reservation"
+					   asp-action="Index"
+					   asp-route-name="@Model.Name"
+					   asp-route-startdate="@Model.StartDate?.ToString("yyyy-MM-dd")"
+					   asp-route-enddate="@Model.EndDate?.ToString("yyyy-MM-dd")"
+					   asp-route-pageNumber="@(currentPage - 1)">Previous</a>
 				</li>
 
 				@if (startPage > 1)
 				{
 					<li class="page-item">
-						<a class="page-link" asp-area="Administrator" asp-controller="Reservation" asp-action="Index" asp-route-pageNumber="1">1</a>
+						<a class="page-link" asp-area="Administrator"
+						   asp-controller="Reservation"
+						   asp-action="Index"
+						   asp-route-name="@Model.Name"
+						   asp-route-startdate="@Model.StartDate?.ToString("yyyy-MM-dd")"
+						   asp-route-enddate="@Model.EndDate?.ToString("yyyy-MM-dd")"
+						   asp-route-pageNumber="1">1</a>
 					</li>
 					<li class="page-item disabled">
 						<span class="page-link">...</span>
@@ -105,7 +117,13 @@
 				@for (int i = 1; i <= totalPages; i++)
 				{
 					<li class="page-item @(currentPage == i ? "active" : "")">
-						<a class="page-link" asp-area="Administrator" asp-controller="Reservation" asp-action="Index" asp-route-pageNumber="@i">@i</a>
+						<a class="page-link" asp-area="Administrator"
+						   asp-controller="Reservation"
+						   asp-action="Index"
+						   asp-route-startdate="@Model.StartDate?.ToString("yyyy-MM-dd")"
+						   asp-route-enddate="@Model.EndDate?.ToString("yyyy-MM-dd")"
+						   asp-route-pageNumber="@i"
+						   asp-route-name="@Model.Name">@i</a>
 					</li>
 				}
 
@@ -115,12 +133,23 @@
 						<span class="page-link">...</span>
 					</li>
 					<li class="page-item">
-						<a class="page-link" asp-area="Administrator" asp-controller="Reservation" asp-action="Index" asp-route-pageNumber="@totalPages">@totalPages</a>
+						<a class="page-link" asp-area="Administrator"
+						   asp-controller="Reservation"
+						   asp-action="Index"
+						   asp-route-startdate="@Model.StartDate?.ToString("yyyy-MM-dd")"
+						   asp-route-enddate="@Model.EndDate?.ToString("yyyy-MM-dd")"
+						   asp-route-pageNumber="@totalPages">@totalPages</a>
 					</li>
 				}
 
 				<li class="page-item @(currentPage == totalPages ? "disabled" : "")">
-					<a class="page-link" asp-area="Administrator" asp-controller="Reservation" asp-action="Index" asp-route-pageNumber="@(currentPage + 1)">Next</a>
+					<a class="page-link" asp-area="Administrator"
+					   asp-controller="Reservation"
+					   asp-action="Index"
+					   asp-route-startdate="@Model.StartDate?.ToString("yyyy-MM-dd")"
+					   asp-route-enddate="@Model.EndDate?.ToString("yyyy-MM-dd")"
+					   asp-route-pageNumber="@(currentPage + 1)"
+					   asp-route-name="@Model.Name">Next</a>
 				</li>
 			</ul>
 		</nav>

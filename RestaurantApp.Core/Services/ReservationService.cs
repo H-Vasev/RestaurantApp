@@ -342,6 +342,9 @@ namespace RestaurantApp.Core.Services
 			query = query.OrderBy(r => r.Date);
 
 			reservationModel.TotalPageRecords = query.Count();
+			reservationModel.Name = name;
+			reservationModel.StartDate = startDate;
+			reservationModel.EndDate = endDate;
 
 			var reservations = await query
 				.Skip((currentPageNumber - 1) * recordsPerPAge)

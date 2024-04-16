@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using RestaurantApp.Core.Contracts;
+using System.Globalization;
 
 namespace RestaurantApp.Areas.Administrator.Controllers
 {
@@ -12,11 +13,22 @@ namespace RestaurantApp.Areas.Administrator.Controllers
 			this.reservationService = reservationService;
 		}
 
-        public async Task<IActionResult> Index(int? pageNumber, DateTime? startDate, DateTime? endDate, string? name)
+        public async Task<IActionResult> Index(int? pageNumber, string? startDate, string? endDate, string? name)
         {
+			DateTime? start = null;
+			DateTime? end = null;
             try
             {
-				var reservations = await reservationService.GetAllReservationsAsync(pageNumber, startDate, endDate, name);
+				if (!string.IsNullOrWhiteSpace(startDate))
+				{
+					start = DateTime.ParseExact(startDate, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+				}
+				else if (endDate != null)
+				{
+					end = DateTime.ParseExact(endDate, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+				}
+
+				var reservations = await reservationService.GetAllReservationsAsync(pageNumber, start, end, name);
 				if (reservations == null)
 				{
 					TempData["Error"] = "The end date you entered is invalid. Please enter a valid End date.";
