@@ -1,11 +1,14 @@
-﻿using RestaurantApp.Core.Contracts;
+﻿using Google.Apis.Auth.OAuth2;
+using Google.Cloud.Storage.V1;
+using NuGet.Protocol;
+using RestaurantApp.Core.Contracts;
 using RestaurantApp.Core.Services;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
     public static class RestaurantServiceCollectionExtension
     {
-        public static IServiceCollection AddApplicationServices(this IServiceCollection services)
+        public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddScoped<ITownService, TownService>();
             services.AddScoped<IMenuService, MenuService>();
@@ -18,7 +21,13 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddTransient<IEmailSender, EmailSender>();
             services.AddScoped<IChatService, ChatService>();
 
-			return services;
+            var googleCredentials = configuration;
+            var filePath = @"C:\Users\44770\AppData\Roaming\Microsoft\UserSecrets\google-storage-key\restaurantapp-420520-df296ef87671.json";
+            var text = File.ReadAllText(filePath);
+            var credentials = GoogleCredential.FromFile(filePath);
+            services.AddSingleton(s => StorageClient.Create(credentials));
+
+            return services;
         }
     }
 }

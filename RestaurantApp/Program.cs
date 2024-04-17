@@ -35,7 +35,7 @@ namespace RestaurantApp
 				{
 					otions.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
 				});
-			builder.Services.AddApplicationServices();
+			builder.Services.AddApplicationServices(builder.Configuration);
 			builder.Services.AddSignalR();
 
 			builder.Services.ConfigureApplicationCookie(options =>
