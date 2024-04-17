@@ -25,7 +25,7 @@ namespace RestaurantApp.Areas.Administrator.Controllers
 					start = DateTime.ParseExact(startDate, "yyyy-MM-dd", CultureInfo.InvariantCulture);
 				}
 
-				if (!string.IsNullOrWhiteSpace(startDate))
+				if (!string.IsNullOrWhiteSpace(endDate))
 				{
 					end = DateTime.ParseExact(endDate, "yyyy-MM-dd", CultureInfo.InvariantCulture);
 				}
