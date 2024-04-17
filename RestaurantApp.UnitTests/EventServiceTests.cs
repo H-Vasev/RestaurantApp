@@ -1,6 +1,8 @@
 ﻿
 
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
+using Moq;
 using NUnit.Framework;
 using RestaurantApp.Core.Contracts;
 using RestaurantApp.Core.Models.Event;
@@ -8,15 +10,17 @@ using RestaurantApp.Core.Services;
 using RestaurantApp.Data;
 using RestaurantApp.Infrastructure.Data.Configurations;
 using RestaurantApp.Infrastructure.Data.Models;
-using System.Reflection.Metadata;
 
 namespace RestaurantApp.UnitTests
 {
-    public class EventServiceTests
+	public class EventServiceTests
     {
         private DbContextOptions<ApplicationDbContext> dbContextOptions;
         private ApplicationDbContext dbContext;
         private IEventService eventService;
+
+        private Mock<IMemoryCache> memoryCache;
+        private Dictionary<object, object> cacheDictionary = new Dictionary<object, object>();
 
         [SetUp]
         public void Setup()
@@ -32,7 +36,15 @@ namespace RestaurantApp.UnitTests
             dbContext.Database.EnsureDeleted();
             dbContext.Database.EnsureCreated();
 
-            eventService = new EventService(dbContext);
+            memoryCache = new Mock<IMemoryCache>();
+            memoryCache.Setup(m => m.CreateEntry(It.IsAny<object>())).Returns((object key) =>
+            {
+				var mockEntry = new Mock<ICacheEntry>();
+				mockEntry.SetupSet(m => m.Value = It.IsAny<object>()).Callback<object>(value => cacheDictionary[key] = value);
+				return mockEntry.Object;
+			});
+
+            eventService = new EventService(dbContext, memoryCache.Object);
         }
 
         //GetAllEventsAsync
