@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 using NUnit.Framework;
@@ -1658,15 +1659,16 @@ namespace RestaurantApp.UnitTests
 		}
 
 		[Test]
-		public async Task GetAllReservationsAsync_ShouldReturnNullWhenStartDateIsAfterEndDate()
+		public async Task GetAllReservationsAsync_ShouldReturnInvalidOperationExceptionWhenStartDateIsAfterEndDate()
 		{
 			DateTime? startDate = DateTime.Now.AddDays(2);
 			DateTime? endDate = DateTime.Now.AddDays(1);
 
-			var result = await reservationService.GetAllReservationsAsync(null, startDate, endDate, null);
+            var ex = Assert.ThrowsAsync<InvalidOperationException>(async () =>
+               await reservationService.GetAllReservationsAsync(null, startDate, endDate, null));
 
-			Assert.That(result, Is.Null);
-		}
+            Assert.That(ex.Message, Is.EqualTo("Invalid date range"));
+        }
 
 		[TearDown]
 		public void TearDown()
