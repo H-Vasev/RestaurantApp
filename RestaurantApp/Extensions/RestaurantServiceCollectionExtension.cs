@@ -8,7 +8,7 @@ namespace Microsoft.Extensions.DependencyInjection
 {
     public static class RestaurantServiceCollectionExtension
     {
-        public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
             services.AddScoped<ITownService, TownService>();
             services.AddScoped<IMenuService, MenuService>();
@@ -21,10 +21,8 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddTransient<IEmailSender, EmailSender>();
             services.AddScoped<IChatService, ChatService>();
 
-            var googleCredentials = configuration;
-            var filePath = @"C:\Users\44770\AppData\Roaming\Microsoft\UserSecrets\google-storage-key\restaurantapp-420520-df296ef87671.json";
-            var text = File.ReadAllText(filePath);
-            var credentials = GoogleCredential.FromFile(filePath);
+            var googleCredentialsPath = Environment.GetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS");
+            var credentials = GoogleCredential.FromFile(googleCredentialsPath);
             services.AddSingleton(s => StorageClient.Create(credentials));
 
             return services;
