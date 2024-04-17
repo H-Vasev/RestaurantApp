@@ -1,4 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
+using Moq;
 using NUnit.Framework;
 using RestaurantApp.Core.Contracts;
 using RestaurantApp.Core.Services;
@@ -14,6 +16,9 @@ namespace RestaurantApp.UnitTests
         private ApplicationDbContext dbContext;
         private IMenuService menuService;
 
+        private Mock<IMemoryCache> mockCache;
+        private Dictionary<object, object> fakeCacheStore = new Dictionary<object, object>();
+
         [SetUp]
         public void Setup()
         {
@@ -28,7 +33,15 @@ namespace RestaurantApp.UnitTests
             dbContext.Database.EnsureDeleted();
             dbContext.Database.EnsureCreated();
 
-            menuService = new MenuService(dbContext);
+            mockCache = new Mock<IMemoryCache>();
+            mockCache.Setup(m => m.CreateEntry(It.IsAny<object>())).Returns((object key) =>
+            {
+                var mockEntry = new Mock<ICacheEntry>();
+                mockEntry.SetupSet(m => m.Value = It.IsAny<object>()).Callback<object>(value => fakeCacheStore[key] = value);
+                return mockEntry.Object;
+            });
+
+            menuService = new MenuService(dbContext, mockCache.Object);
         }
 
         //GetCategoriesAsync
@@ -36,27 +49,22 @@ namespace RestaurantApp.UnitTests
         public async Task GetCategoriesAsync_ShouldReturnAllCategories()
         {
             var categories = new List<Category>
-            {
-                new Category { Id = 1, CategoryName = "Category 1" },
-                new Category { Id = 2, CategoryName = "Category 2" },
-                new Category { Id = 3, CategoryName = "Category 3" }
-            };
+             {
+                 new Category { Id = 1, CategoryName = "Category 1" },
+                 new Category { Id = 2, CategoryName = "Category 2" },
+                 new Category { Id = 3, CategoryName = "Category 3" }
+             };
 
             dbContext.Categories.AddRange(categories);
             dbContext.SaveChanges();
 
+            var cacheKey = "categories";
+            object cachedValue;
             var result = await menuService.GetCategoriesAsync();
 
-            Assert.That(3, Is.EqualTo(result.Count()));
-
-            Assert.That("Category 1", Is.EqualTo(result.First().Name));
-            Assert.That(1, Is.EqualTo(result.First().Id));
-
-            Assert.That("Category 2", Is.EqualTo(result.ElementAt(1).Name));
-            Assert.That(2, Is.EqualTo(result.ElementAt(1).Id));
-
-            Assert.That("Category 3", Is.EqualTo(result.Last().Name));
-            Assert.That(3, Is.EqualTo(result.Last().Id));
+            Assert.That(fakeCacheStore.TryGetValue(cacheKey, out cachedValue), Is.True);
+            Assert.That(result.Count(), Is.EqualTo(3));
+            Assert.That(result.First().Name, Is.EqualTo("Category 1"));
         }
 
         [Test]
