@@ -34,14 +34,18 @@ namespace RestaurantApp
             })
 				.AddRoles<IdentityRole<Guid>>()
 				.AddEntityFrameworkStores<ApplicationDbContext>();
+
 			builder.Services
 				.AddControllersWithViews()
 				.AddMvcOptions(otions =>
 				{
 					otions.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
 				});
+
 			builder.Services.AddApplicationServices();
 			builder.Services.AddSignalR();
+
+			builder.Services.AddMemoryCache();
 
 			builder.Services.ConfigureApplicationCookie(options =>
 			{
