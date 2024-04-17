@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using RestaurantApp.Core.Contracts;
 using RestaurantApp.Core.Models.Event;
 using RestaurantApp.Data;
@@ -9,26 +10,39 @@ namespace RestaurantApp.Core.Services
 	public class EventService : IEventService
 	{
 		private readonly ApplicationDbContext dbContext;
+		private IMemoryCache memoryCache;
 
-		public EventService(ApplicationDbContext dbContext)
+		public EventService(ApplicationDbContext dbContext, IMemoryCache memoryCache)
 		{
 			this.dbContext = dbContext;
+			this.memoryCache = memoryCache;
 		}
 
 		public async Task<IEnumerable<EventViewModel>> GetAllEventsAsync()
 		{
-			return await dbContext.Events
-				.AsNoTracking()
-				.Where(e => e.StartEvent.Date >= DateTime.Now.Date)
-				.OrderBy(e => e.StartEvent)
-				.Select(e => new EventViewModel
-				{
-					Id = e.Id,
-					Title = e.Title,
-					Description = e.Description,
-					StartEvent = e.StartEvent
-				})
-				.ToArrayAsync();
+			var cacheKey = "events";
+			if (!memoryCache.TryGetValue(cacheKey, out IEnumerable<EventViewModel> cachedEvents))
+			{
+				cachedEvents = await dbContext.Events
+					.AsNoTracking()
+					.Where(e => e.StartEvent.Date >= DateTime.Now.Date)
+					.OrderBy(e => e.StartEvent)
+					.Select(e => new EventViewModel
+					{
+						Id = e.Id,
+						Title = e.Title,
+						Description = e.Description,
+						StartEvent = e.StartEvent
+					})
+					.ToArrayAsync();
+
+				var cacheEntryOptions = new MemoryCacheEntryOptions()
+					.SetAbsoluteExpiration(TimeSpan.FromMinutes(1));
+
+				memoryCache.Set(cacheKey, cachedEvents, cacheEntryOptions);
+			}
+
+			return cachedEvents;
 		}
 
         public async Task<EventViewModel?> GetEventByIdAsync(int id)
