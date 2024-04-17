@@ -61,7 +61,7 @@
 											{
 												<form method="post" class="col-lg-12 menu-item">
 													@Html.AntiForgeryToken()
-													<img src="~/@item.ImagePath" class="menu-img" alt="">
+													<img src="@Url.Content(item.ImagePath.StartsWith("https") ? item.ImagePath : $"~/{item.ImagePath}")" class="menu-img" alt="">
 													<div class="menu-content">
 														<span>@item.ProductName</span>
 														<span>$@item.Price</span>
@@ -95,7 +95,7 @@
 			{
 				<form method="post" class="col-lg-6 menu-item">
 					@Html.AntiForgeryToken()
-					<img src="~/@item.Image" class="menu-img" alt="">
+					<img src="@Url.Content(item.Image.StartsWith("https") ? item.Image : $"~/{item.Image}")" class="menu-img" alt="">
 					<div class="menu-content">
 						<a href="#" class="product-image" data-bs-toggle="modal" data-bs-target="#imageModal" data-id="@item.Id" data-img-url="@Url.Content($"~/{item.Image}")">@item.Name</a>
 						<span>$@item.Price</span>

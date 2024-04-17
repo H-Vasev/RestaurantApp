@@ -7,7 +7,7 @@
 	var totalItems = Model.Sum(p => p.Quantity);
 }
 
-<div class="card align-items-center justify-content-center mt-5 pt-5">
+<div class="cart align-items-center justify-content-center mt-5 pt-5">
 	@if (TempData["SuccessRemove"] != null)
 	{
 		<div id="message" class="customAlertMessage alert alert-success text-center mt-5">@TempData["SuccessRemove"]</div>
@@ -17,56 +17,59 @@
 		<div id="message" class="customAlertMessage alert alert-success text-center mt-5">@TempData["SuccessAdd"]</div>
 	}
 
-	<div class="row mt-5 pt-5">
-		<div class="col-md-6 cart">
-			<div class="title">
-				<div class="row">
-					<div class="col"><h4><b>Shopping Cart</b></h4></div>
-				</div>
-			</div>
+	<div class="row mt-5 pt-5 cart">
+		<div class="d-flex justify-content-center">
+			<div class="col-md-6 cart">
 
-			@foreach (var item in Model)
-			{
-				var itemTotalPrice = item.Quantity * item.Price;
-				totalPrice += itemTotalPrice;
-
-				<div class="row border-top border-bottom mb-2">
-					<div class="row main align-items-center">
-						<div class="col-2">
-							<img class="img-fluid" src="~/@item.Image">
-						</div>
-						<div class="col">
-							<div class="row">@item.ProductName</div>
-						</div>
-						<div class="col">
-							<a asp-controller="ShoppingCart" asp-action="RemoveFromCart" asp-route-id="@item.ProductId">-</a>
-							<a class="border m-1">@item.Quantity</a>
-							<a asp-controller="ShoppingCart" asp-action="AddToCart" asp-route-id="@item.ProductId">+</a>
-						</div>
-						<div class="col">&euro; @itemTotalPrice</div>
+				<div class="title">
+					<div class="row">
+						<div class="col"><h4><b>Shopping Cart</b></h4></div>
 					</div>
 				</div>
-			}
 
-			<div class="back-to-shop">
-				<a asp-area="" asp-controller="Menu" asp-action="Index">&leftarrow;</a>
-				<span class="text-muted">Back to shop</span>
-			</div>
-		</div>
-		<div class="col-md-4 summary ms-5">
-			<div><h5><b>Summary</b></h5></div>
-			<hr>
-			<div class="row">
-				<div class="col">ITEMS  @totalItems</div>
-			</div>
+				@foreach (var item in Model)
+				{
+					var itemTotalPrice = item.Quantity * item.Price;
+					totalPrice += itemTotalPrice;
 
-			<div class="row" style="border-top: 1px solid rgba(0,0,0,.1); padding: 2vh 0;">
-				<div class="col">TOTAL PRICE</div>
-				<div class="col text-right">&euro; @totalPrice</div>
+					<div class="row border-top border-bottom mb-2">
+						<div class="row main align-items-center">
+							<div class="col-2">
+								<img class="img-fluid" src="@Url.Content(item.Image.StartsWith("https") ? item.Image : $"~/{item.Image}")">
+							</div>
+							<div class="col">
+								<div class="row">@item.ProductName</div>
+							</div>
+							<div class="col">
+								<a asp-controller="ShoppingCart" asp-action="RemoveFromCart" asp-route-id="@item.ProductId">-</a>
+								<a class="border m-1">@item.Quantity</a>
+								<a asp-controller="ShoppingCart" asp-action="AddToCart" asp-route-id="@item.ProductId">+</a>
+							</div>
+							<div class="col">&euro; @itemTotalPrice</div>
+						</div>
+					</div>
+				}
+
+				<div class="back-to-shop">
+					<a asp-area="" asp-controller="Menu" asp-action="Index">&leftarrow;</a>
+					<span class="text-muted">Back to shop</span>
+				</div>
 			</div>
-			<form asp-controller="ShoppingCart" asp-action="Checkout" method="get">
-				<button type="submit" class="btn btn-primary" @(Model.Count() < 1 ? "disabled" : "")>Checkout</button>
-			</form>
+			<div class="col-md-4 summary ms-5">
+				<div><h5><b>Summary</b></h5></div>
+				<hr>
+				<div class="row">
+					<div class="col">ITEMS  @totalItems</div>
+				</div>
+
+				<div class="row" style="border-top: 1px solid rgba(0,0,0,.1); padding: 2vh 0;">
+					<div class="col">TOTAL PRICE</div>
+					<div class="col text-right">&euro; @totalPrice</div>
+				</div>
+				<form asp-controller="ShoppingCart" asp-action="Checkout" method="get">
+					<button type="submit" class="btn btn-primary" @(Model.Count() < 1 ? "disabled" : "")>Checkout</button>
+				</form>
+			</div>
 		</div>
 	</div>
 </div>

@@ -4,7 +4,7 @@
 	ViewData["Title"] = "Checkout";
 }
 
-<div class="card align-items-center justify-content-center mt-5 pt-5">
+<div class="checkout align-items-center justify-content-center mt-5 pt-5">
 	<div class="row mt-5">
 		<div class="col-8 offset-2 mt-5">
 			<h1 class="text-center">@ViewData["Title"]</h1>
@@ -38,7 +38,7 @@
 						<div class="row border-top border-bottom mb-2">
 							<div class="row main align-items-center">
 								<div class="col-2">
-									<img class="img-fluid" src="~/@item.Image">
+									<img class="img-fluid" src="@Url.Content(item.Image.StartsWith("https") ? item.Image : $"~/{item.Image}")">
 								</div>
 								<div class="col">
 									<div class="row">@item.ProductName</div>

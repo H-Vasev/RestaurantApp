@@ -11,6 +11,11 @@
 			<p>Check Our Tasty Menu</p>
 		</div>
 
+		@if (TempData["Error"] != null)
+		{
+			<div id="message" class="customAlertMessage alert alert-danger text-center mt-5">@TempData["Error"]</div>
+		}
+
 		<div class="col-lg-12 d-flex justify-content-center">
 			<ul id="menu-flters">
 				<li>
@@ -34,7 +39,7 @@
 			@foreach (var item in Model)
 			{
 				<div class="col-lg-6 menu-item">
-					<img src="~/@item.Image" class="menu-img" alt="">
+					<img src="@Url.Content(item.Image.StartsWith("https") ? item.Image : $"~/{item.Image}")" class="menu-img" alt="">
 					<div class="menu-content">
 						<a href="#">@item.Name</a>
 						<span>$@item.Price</span>
