@@ -178,6 +178,11 @@ h6 {
     z-index: 100;
 }
 
+.checkout {
+    max-width: 50rem;
+    margin: 0 auto;
+}
+
 .delivery-animation {
     position: relative;
     width: 100%;
@@ -205,10 +210,13 @@ h6 {
 /*--------------------------------------------------------------
 # ShoppingCart
 --------------------------------------------------------------*/
-.card {
+.cart {
     background-color: #14213d;
     min-height: 80vh;
+    max-width: 80rem;
+    margin: 0 auto;
 }
+
 
 .shopping-cart {
     position: relative;
