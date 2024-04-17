@@ -49,6 +49,24 @@ namespace RestaurantApp.Controllers
                 ModelState.AddModelError("Email", "This email is already registered. Please use a different email or log in.");
             }
 
+            var passwordErrors = new List<IdentityError>();
+            foreach (var validator in userManager.PasswordValidators)
+            {
+                var validatorresult = await validator.ValidateAsync(userManager, null, model.Password);
+                if (!validatorresult.Succeeded)
+                {
+                    passwordErrors.AddRange(validatorresult.Errors);
+                }
+            }
+
+            if (passwordErrors.Any())
+            {
+                foreach (var error in passwordErrors)
+                {
+                    ModelState.AddModelError("Password", error.Description);
+                }
+            }
+
             if (!ModelState.IsValid)
             {
                 return View(model);
