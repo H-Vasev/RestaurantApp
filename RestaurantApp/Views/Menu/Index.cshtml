@@ -63,13 +63,16 @@
 													@Html.AntiForgeryToken()
 													<img src="@Url.Content(item.ImagePath.StartsWith("https") ? item.ImagePath : $"~/{item.ImagePath}")" class="menu-img" alt="">
 													<div class="menu-content">
-														<span>@item.ProductName</span>
+														<span>@(string.IsNullOrEmpty(item.ProductName) ? "Sorry, this item is no longer available." : item.ProductName)</span>
 														<span>$@item.Price</span>
 													</div>
 													<div class="menu-ingredients">
 														@item.ProductDescription
 													</div>
-													<a href="#" class="add-to-cart offset-sm-8" data-id="@item.ProductId">Order Again</a>
+													@if (!string.IsNullOrEmpty(item.ProductName))
+													{
+														<a href="#" class="add-to-cart offset-sm-8" data-id="@item.ProductId">Order Again</a>
+													}
 												</form>
 											}
 										</div>
@@ -108,7 +111,7 @@
 			}
 		</div>
 
-		<partial name="_ImageModalPartial"/>
+		<partial name="_ImageModalPartial" />
 	</div>
 </section>
 
