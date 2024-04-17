@@ -45,7 +45,7 @@
         public static class Register
         {
 			public const int UsernameMaxLengh = 30;
-			public const int UsernameMinLengh = 5;
+			public const int UsernameMinLengh = 4;
 
             public const int FirstnameMaxLenght = 50;
 			public const int FirstnameMinLenght = 2;
