@@ -3,13 +3,7 @@ using NUnit.Framework;
 using RestaurantApp.Core.Contracts;
 using RestaurantApp.Core.Services;
 using RestaurantApp.Data;
-using RestaurantApp.Infrastructure.Data.Configurations;
 using RestaurantApp.Infrastructure.Data.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RestaurantApp.UnitTests
 {
