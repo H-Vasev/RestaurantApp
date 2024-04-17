@@ -15,6 +15,8 @@ namespace RestaurantApp.Core.Contracts
 
 		Task MarkAsUnReadAsync(string? userIdentifier);
 
-		Task<bool> IsAnyUnReadableChatAsync();
+		Task MarkAsReadAsync(string id);
+
+        Task<bool> IsAnyUnReadableChatAsync();
 	}
 }
