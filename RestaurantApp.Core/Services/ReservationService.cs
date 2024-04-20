@@ -60,6 +60,12 @@ namespace RestaurantApp.Core.Services
 
 		public async Task<string> EditReservationAsync(ReservationFormModel model, string userId, string id)
 		{
+			var isReserved = await IsReservedAsync(DateTime.Parse(model.Date), userId);
+			if (isReserved)
+			{
+				return "You already have a reservation on this date. Please review your booking details!";
+			}
+
 			if (DateTime.Parse(model.Date).Date < DateTime.Now.Date)
 			{
 				return "You have enter invalid date!";
