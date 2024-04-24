@@ -100,7 +100,7 @@
 					@Html.AntiForgeryToken()
 					<img src="@Url.Content(item.Image.StartsWith("https") ? item.Image : $"~/{item.Image}")" class="menu-img" alt="">
 					<div class="menu-content">
-						<a href="#" class="product-image" data-bs-toggle="modal" data-bs-target="#imageModal" data-id="@item.Id" data-img-url="@Url.Content($"~/{item.Image}")">@item.Name</a>
+						<a href="#" class="product-image" data-bs-toggle="modal" data-bs-target="#imageModal" data-id="@item.Id" data-img-url="@Url.Content(item.Image.StartsWith("https") ? item.Image : $"~/{item.Image}")">@item.Name</a>
 						<span>$@item.Price</span>
 					</div>
 					<div class="menu-ingredients">
