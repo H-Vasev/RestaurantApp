@@ -46,6 +46,18 @@ RestaurantApp is developed with the aim of providing a complete and satisfying e
 
 ![Screenshot 2024-04-24 220744](https://github.com/H-Vasev/RestaurantApp/assets/134649175/0d0a7800-ec23-4bf4-83b9-6e43677744ed)
 
+### Administrator/Area Home page
+![Screenshot 2024-04-25 172420](https://github.com/H-Vasev/RestaurantApp/assets/134649175/dc9e4199-8ba5-4a01-89d8-5fbbd01343ea)
+
+### Administrator/Area Reservations
+![Screenshot 2024-04-25 172638](https://github.com/H-Vasev/RestaurantApp/assets/134649175/37da32ee-c3b5-4780-95a3-06a1aa5645f2)
+![Screenshot 2024-04-25 172737](https://github.com/H-Vasev/RestaurantApp/assets/134649175/407767e9-7262-4c09-8e4e-e19c77c7dba9)
+
+### Administrator/Area SignalR
+![Screenshot 2024-04-25 172903](https://github.com/H-Vasev/RestaurantApp/assets/134649175/b48abe2b-9e19-469a-9dbe-10a444f957dc)
+![Screenshot 2024-04-25 172933](https://github.com/H-Vasev/RestaurantApp/assets/134649175/afafe339-c66b-43a8-95ad-a0270234b442)
+
+
 ### Menu
 ![Screenshot 2024-04-24 221051](https://github.com/H-Vasev/RestaurantApp/assets/134649175/7d59fb9b-cc07-4f74-ae2c-5ac3108fe11b)
 
@@ -75,6 +87,7 @@ RestaurantApp is developed with the aim of providing a complete and satisfying e
 
 ### Contact Us
 ![Screenshot 2024-04-24 223544](https://github.com/H-Vasev/RestaurantApp/assets/134649175/cc34aa2f-ba8f-427b-8158-17a4e2c4d7c0)
+![Screenshot 2024-04-25 173033](https://github.com/H-Vasev/RestaurantApp/assets/134649175/053aa989-680c-47e5-8b2b-5840a76415dc)
 
 ## Author
 ### H Vasev
