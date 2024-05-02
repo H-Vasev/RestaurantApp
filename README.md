@@ -11,23 +11,31 @@ RestaurantApp is an innovative web application designed to simplify the process 
 
 RestaurantApp is developed with the aim of providing a complete and satisfying experience, facilitating the interaction between customers and the restaurant. Using modern technologies, the application ensures fast and reliable service.
 
-## Used Technologies:
+## Technology Stack
+
+### Web Development Frameworks and Libraries
 - **ASP.NET Core 6.0 MVC**
-- **ASP.NET Core Areas**
-- **Entity Framework Core 6.0**
-- **SQL Database**
-- **Google Storage**
-- **Newtonsoft.Json**
-- **SendGrid**
 - **Bootstrap**
+- **jQuery & JavaScript**
+
+### Real-time Technologies
 - **Ajax Real-time Requests**
-- **jQuery**
-- **JavaScript**
-- **CSS**
-- **NUnit**
-- **In-memory Cache**
 - **SignalR**
 
+### Data Access and Management
+- **Entity Framework Core 6.0**
+- **SQL Database & Google Storage**
+- **In-memory Cache**
+  
+###  Utilities and Tools
+- **ASP.NET Core Areas**
+- **Newtonsoft.Json**
+- **SendGrid**
+- **CSS**
+  
+### Testing
+- **NUnit & Moq**
+  
 ## Database Diagram
 
 ![restaurantApp-dataBase-diagram](https://github.com/H-Vasev/RestaurantApp/assets/134649175/b53fb9df-d36f-410f-a8ef-b4d01798d687)
